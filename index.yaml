@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  concept-catalog-etl:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: "2021-09-06T15:10:49.025362284+02:00"
+    description: Config for Concept catalog etl
+    digest: 1885bcc51374fd28826178922e85fdc98ebfc9a975a5003a958c0ef9aa509eca
+    home: https://github.com/Informasjonsforvaltning/concept-catalog-etl
+    name: concept-catalog-etl
+    urls:
+    - https://informasjonsforvaltning.github.io/concept-catalog-etl/concept-catalog-etl-0.1.0.tgz
+    version: 0.1.0
+generated: "2021-09-06T15:10:49.024967479+02:00"
