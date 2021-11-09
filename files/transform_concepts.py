@@ -22,7 +22,7 @@ def transform(c_file):
             transformed_concepts[concept_key] = result["transformed"]
             transformed_count += 1
         elif result["not_transformed"]:
-            failed[concept_key] = result["not_transformed"]
+            failed[concept_key] = concepts[concept_key]
             failed_count += 1
     print("Total number of transformed concepts: " + str(transformed_count))
     print("Total number of non-transformed concepts: " + str(failed_count))
@@ -48,7 +48,7 @@ def transform_concept(concept):
         transformed_concept["seOgså"] = new_see_also
         return {"transformed": transformed_concept}
     else:
-        return {"not_transformed": concept}
+        return {"transformed": None}
 
 
 def replace_url(url):
