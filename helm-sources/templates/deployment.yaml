@@ -36,12 +36,12 @@ spec:
               secretKeyRef:
                 name: mongo-{{ required "Missing value NAMESPACE" .Values.NAMESPACE }}
                 key: MONGO_PASSWORD
-          - name: OLD_URI
+          - name: OLD_BASE_URI
             valueFrom:
               secretKeyRef:
                 name: commonurl-{{ required "Missing value NAMESPACE" .Values.NAMESPACE }}
                 key: CONCEPT_CATALOGUE_COLLECTION_BASE_URI
-          - name: NEW_URI
+          - name: NEW_BASE_URI
             valueFrom:
               secretKeyRef:
                 name: commonurl-{{ required "Missing value NAMESPACE" .Values.NAMESPACE }}

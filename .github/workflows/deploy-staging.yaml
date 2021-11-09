@@ -3,7 +3,7 @@ name: Build and deploy to staging when pull request is created
 on:
   push:
     branches:
-      - chore/hos/add-versionnumber-etl
+      - chore/hos/see-also
 
 jobs:
   build-and-deploy:
