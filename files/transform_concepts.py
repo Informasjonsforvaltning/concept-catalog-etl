@@ -21,7 +21,7 @@ def transform(c_file):
         if result["transformed"]:
             transformed_concepts[concept_key] = result["transformed"]
             transformed_count += 1
-        elif result["not_transformed"]:
+        else:
             failed[concept_key] = concepts[concept_key]
             failed_count += 1
     print("Total number of transformed concepts: " + str(transformed_count))
