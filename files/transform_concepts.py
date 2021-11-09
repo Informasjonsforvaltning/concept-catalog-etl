@@ -26,7 +26,7 @@ def transform(c_file):
             failed_count += 1
     print("Total number of transformed concepts: " + str(transformed_count))
     print("Total number of non-transformed concepts: " + str(failed_count))
-    with open("not_transformed.json", 'w', encoding="utf-8") as err_file:
+    with open(args.outputdirectory + "not_transformed.json", 'w', encoding="utf-8") as err_file:
         json.dump(failed, err_file, ensure_ascii=False, indent=4)
     return transformed_concepts
 
