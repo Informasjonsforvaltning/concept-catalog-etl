@@ -9,7 +9,7 @@ parser.add_argument('-o', '--outputdirectory', help="the path to the directory o
 args = parser.parse_args()
 connection = MongoClient(
     f"""mongodb://{os.environ['MONGO_USERNAME']}:{os.environ['MONGO_PASSWORD']}@mongodb:27017/concept-catalogue?authSource=admin&authMechanism=SCRAM-SHA-1""")
-db = connection.begrep
+db = connection['concept-catalogue']
 
 with open(args.outputdirectory + 'transformed_concepts.json') as begrep_file:
     transformed_json = json.load(begrep_file)
@@ -28,7 +28,6 @@ with open(args.outputdirectory + 'transformed_concepts.json') as begrep_file:
             total_failed += 1
             print("Update failed: " + mongo_id)
             fail_log[mongo_id] = transformed_json[mongo_id]
-        total_updated += 1
     print("Total number of concepts updated: " + str(total_updated))
     print("Total number of concepts updates failed: " + str(total_failed))
     with open("load_errors.json", 'w', encoding="utf-8") as err_file:
