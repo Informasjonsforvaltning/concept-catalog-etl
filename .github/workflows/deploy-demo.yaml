@@ -3,7 +3,7 @@ name: Build and deploy to demo when merged to master
 on:
   push:
     branches:
-      - chore/hos/see-also
+      - no
 
 jobs:
   build-and-deploy:
