@@ -1,2 +1,3 @@
 #DValues for demo environment
 NAMESPACE: demo
+REALLY_OLD_BASE_URI: 'https://registrering-begrep-api.demo.fellesdatakatalog.brreg.no'

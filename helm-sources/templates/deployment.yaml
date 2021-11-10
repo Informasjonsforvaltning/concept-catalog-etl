@@ -46,6 +46,8 @@ spec:
               secretKeyRef:
                 name: commonurl-{{ required "Missing value NAMESPACE" .Values.NAMESPACE }}
                 key: CONCEPT_CATALOG_BASE_URI
+          - name: REALLY_OLD_BASE_URI
+            value: {{ required "Missing value REALLY_OLD_BASE_URI" .Values.REALLY_OLD_BASE_URI }}
           image: {{ required "Missing value DOCKER_IMAGE_NAME" .Values.DOCKER_IMAGE_NAME }}
           imagePullPolicy: Always
           name: concept-catalog-etl

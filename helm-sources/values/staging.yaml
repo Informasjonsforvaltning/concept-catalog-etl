@@ -1,2 +1,3 @@
 #DValues for staging environment
 NAMESPACE: staging
+REALLY_OLD_BASE_URI: 'https://registrering-begrep-api.staging.fellesdatakatalog.brreg.no'

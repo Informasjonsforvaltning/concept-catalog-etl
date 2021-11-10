@@ -8,6 +8,7 @@ parser.add_argument('-o', '--outputdirectory', help="the path to the directory o
 args = parser.parse_args()
 old_base_uri = os.environ['OLD_BASE_URI']
 new_base_uri = os.environ['NEW_BASE_URI']
+really_old_base_uri = os.environ['OLD_BASE_URI']
 
 
 def transform(c_file):
@@ -54,6 +55,8 @@ def transform_concept(concept):
 def replace_url(url):
     if old_base_uri in url:
         return url.replace(old_base_uri, f'{new_base_uri}/collections')
+    elif really_old_base_uri in url:
+        return url.replace(really_old_base_uri, f'{new_base_uri}/collections')
     return None
 
 
