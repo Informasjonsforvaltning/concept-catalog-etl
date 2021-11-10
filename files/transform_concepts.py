@@ -8,7 +8,7 @@ parser.add_argument('-o', '--outputdirectory', help="the path to the directory o
 args = parser.parse_args()
 old_base_uri = os.environ['OLD_BASE_URI']
 new_base_uri = os.environ['NEW_BASE_URI']
-really_old_base_uri = os.environ['OLD_BASE_URI']
+really_old_base_uri = os.environ['REALLY_OLD_BASE_URI']
 
 
 def transform(c_file):
