@@ -27,15 +27,15 @@ def transform_concept(concept):
     # Hva er vår term teknisk begrepsnavn? (tillattTerm? Datastrukturterm?)
 
     transformed_concept = {
-        "_id": concept.term.get("identifier"),
+        "_id": concept["term"].get("identifier"),
         "_class": "no.fdk.concept_catalog.model.Begrep",
         "anbefaltTerm": {
             "navn": {
-                "nb": concept.term.properties.get("value"),
-                "en": concept.term.localisedProperties
+                "nb": concept["term"].properties.get("value"),
+                "en": concept["term"].localisedProperties
                 .get("http:\/\/purl.org\/dc\/elements\/1.1\/title", {})
                 .get("English (United Kingdom)", {}).get("value"),
-                "nn": concept.term.localisedProperties
+                "nn": concept["term"].localisedProperties
                 .get("http:\/\/purl.org\/dc\/elements\/1.1\/title", {})
                 .get("Norwegian Nynorsk", {}).get("value"),
             }
@@ -44,7 +44,7 @@ def transform_concept(concept):
         "bruksområde": {},
         "definisjon": {
             "tekst": {
-                "nb": concept.term.properties
+                "nb": concept["term"].properties
                 .get("http:\/\/purl.org\/dc\/elements\/1.1\/description",{})
                 .get("value")
             }
