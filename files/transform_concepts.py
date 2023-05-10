@@ -36,12 +36,12 @@ def transform_concept(concept):
                 .get("value"),
                 "en": concept["term"]
                 .get("localisedProperties")
-                .get("http:\/\/purl.org\/dc\/elements\/1.1\/title", {})
+                .get("http://purl.org/dc/elements/1.1/title", {})
                 .get("English (United Kingdom)", {})
                 .get("value"),
                 "nn": concept["term"]
                 .get("localisedProperties")
-                .get("http:\/\/purl.org\/dc\/elements\/1.1\/title", {})
+                .get("http://purl.org/dc/elements/1.1/title", {})
                 .get("Norwegian Nynorsk", {}).get("value"),
             }
         },
@@ -50,7 +50,7 @@ def transform_concept(concept):
         "definisjon": {
             "tekst": {
                 "nb": concept["term"].get("properties")
-                .get("http:\/\/purl.org\/dc\/elements\/1.1\/description",{})
+                .get("http://purl.org/dc/elements/1.1/description", {})
                 .get("value")
             }
         }
@@ -65,7 +65,7 @@ def openfile(file_name):
         return json.load(json_file)
 
 
-concepts_file = args.outputdirectory + "skatt_concepts.json"
+concepts_file = "skatt_concepts.json"
 outputfileName = args.outputdirectory + "transformed_concepts.json"
 
 with open(outputfileName, 'w', encoding="utf-8") as outfile:
