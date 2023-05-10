@@ -19,7 +19,6 @@ jobs:
         python-version: 3.7
         architecture: x64
 
-
     - name: Auth gcloud CLI for image-store
       uses: google-github-actions/auth@v1
       with:
@@ -77,7 +76,7 @@ jobs:
     - name: Auth gcloud CLI for deploy
       uses: google-github-actions/auth@v1
       with:
-        credentials_json: ${{ secrets.DIGDIR_FDK_AUTODEPLOY }}
+        credentials_json: ${{ secrets.DIGDIR_FDK_DEV_AUTODEPLOY }}
 
     - name: Get credentials
       uses: google-github-actions/get-gke-credentials@v1
