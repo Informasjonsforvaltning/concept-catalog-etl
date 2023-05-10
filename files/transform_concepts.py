@@ -148,8 +148,8 @@ def setstatus(status):
 
 
 def convert_date(date):  # TODO
-    utc_date = date.astimezone(datetime.timezone.utc)
-    return utc_date
+    new_date = datetime.datetime.strptime(date, '%Y-/%m-/%d')
+    return new_date.astimezone(datetime.timezone.utc)
 
 
 concepts_file = "skatt_concepts.json"
