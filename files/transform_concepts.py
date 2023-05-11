@@ -13,18 +13,20 @@ def transform(c_file):
     for concept_key in concepts:
         originaltbegrep = concepts[concept_key]["originaltBegrep"]
         result = transform_concept(concepts[concept_key])
-        if transformed_concepts[originaltbegrep] and result:
+        if transformed_concepts.get(originaltbegrep) and result is not None:
             transformed_concepts[originaltbegrep] = transformed_concepts[originaltbegrep].append(result)
-        elif result:
+        elif result is not None:
             transformed_concepts[originaltbegrep] = [result]
     return transformed_concepts
 
 
 def transform_concept(concept):
-    if concept["_id"] != concept["originaltBegrep"] or concept["status"] != "PUBLISERT":
-        return concept
-    else:
+    if concept["_id"].equals(concept["originaltBegrep"]):
         return None
+    elif "PUBLISERT".equals(concept["status"]):
+        return None
+    else:
+        return concept
 
 
 def openfile(file_name):

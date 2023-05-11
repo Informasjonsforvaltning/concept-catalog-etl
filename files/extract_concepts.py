@@ -16,6 +16,7 @@ concepts = {}
 for id_dict in concept_list:
     _id = id_dict["_id"]
     concepts[_id] = {}
+    concepts[_id]["_id"] = _id
     concepts[_id]["originaltBegrep"] = id_dict["originaltBegrep"]
     concepts[_id]["status"] = id_dict["status"]
 print("Total number of extracted concepts: " + str(len(concepts)))
