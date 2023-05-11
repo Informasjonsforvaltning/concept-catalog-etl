@@ -149,8 +149,7 @@ def setstatus(status):
 
 def convert_date(date):  # TODO
     if date:
-        new_date = datetime.datetime.strptime(date, '%Y-%m-%d')
-        return new_date.astimezone(datetime.timezone.utc)
+        return datetime.datetime.strftime(datetime.datetime.strptime(date, '%Y-%m-%d'), "%Y-%m-%d %H:%M:%S %z")
     else:
         return ""
 
