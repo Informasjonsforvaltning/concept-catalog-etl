@@ -14,16 +14,18 @@ def transform(c_file):
         originaltbegrep = concepts[concept_key]["originaltBegrep"]
         result = transform_concept(concepts[concept_key])
         if transformed_concepts.get(originaltbegrep) and result is not None:
-            transformed_concepts[originaltbegrep] = transformed_concepts[originaltbegrep].append(result)
+            updated_list = transformed_concepts[originaltbegrep]
+            updated_list.append(result)
+            transformed_concepts[originaltbegrep] = updated_list
         elif result is not None:
             transformed_concepts[originaltbegrep] = [result]
     return transformed_concepts
 
 
 def transform_concept(concept):
-    if concept["_id"].equals(concept["originaltBegrep"]):
+    if concept["_id"] == concept["originaltBegrep"]:
         return None
-    elif "PUBLISERT".equals(concept["status"]):
+    elif "PUBLISERT" == concept["status"]:
         return None
     else:
         return concept
