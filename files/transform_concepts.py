@@ -84,7 +84,7 @@ def transform_concept(concept):
             "kilde": [
                 concept["term"]
                 .get("properties")
-                .get("http:\/\/www.skatteetaten.no\/schema\/properties\/sourceOfDefinition", {})
+                .get("http://www.skatteetaten.no/schema/properties/sourceOfDefinition", {})
                 .get("value")
                 ]
         },
@@ -92,7 +92,7 @@ def transform_concept(concept):
             "nb": [
                 concept["term"]
                 .get("properties")
-                .get("http:\/\/www.skatteetaten.no\/schema\/properties\/conceptNote", {})
+                .get("http://www.skatteetaten.no/schema/properties/conceptNote", {})
                 .get("value")
             ]
         },
@@ -149,7 +149,7 @@ def setstatus(status):
 
 def convert_date(date):  # TODO
     if date:
-        new_date = datetime.datetime.strptime(date, '%Y-/%m-/%d')
+        new_date = datetime.datetime.strptime(date, '%Y-%m-%d')
         return new_date.astimezone(datetime.timezone.utc)
     else:
         return ""
