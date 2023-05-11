@@ -147,9 +147,9 @@ def setstatus(status):
         return "UTKAST"
 
 
-def convert_date(date):  # TODO
+def convert_date(date):
     if date:
-        return datetime.datetime.strftime(datetime.datetime.strptime(date, '%Y-%m-%d'), "%Y-%m-%d %H:%M:%S %z")
+        return datetime.datetime.strftime(datetime.datetime.strptime(date, '%Y-%m-%d'), "%Y-%m-%dT%H:%M:%S.000Z")
     else:
         return ""
 
