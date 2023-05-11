@@ -24,10 +24,6 @@ def transform(c_file):
 
 
 def transform_concept(concept):
-    # Status er ikke 1-1, vi har enum UTKAST, GODKJENT, HOERING, PUBLISERT
-    # Hva er vår term teknisk begrepsnavn? (Datastrukturterm?)
-    # Hva er folkelig forklaring?
-
     transformed_concept = {
         "_id": concept["term"].get("identifier"),
         "_class": "no.fdk.concept_catalog.model.Begrep",
