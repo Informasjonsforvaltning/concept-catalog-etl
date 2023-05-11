@@ -4,5 +4,3 @@
 
 ##concept-catalog-etl
 CONCEPT_CATALOG_ETL_MEMORY: "1000Mi"
-NAMESPACE: staging
-CONCEPT_ETL_IMAGE: eu.gcr.io/digdir-fdk-infra/concept-catalog-etl:latest

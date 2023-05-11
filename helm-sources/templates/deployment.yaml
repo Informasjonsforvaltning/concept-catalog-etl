@@ -36,16 +36,6 @@ spec:
               secretKeyRef:
                 name: mongo-{{ required "Missing value NAMESPACE" .Values.NAMESPACE }}
                 key: MONGO_PASSWORD
-          - name: OLD_BASE_URI
-            valueFrom:
-              secretKeyRef:
-                name: commonurl-{{ required "Missing value NAMESPACE" .Values.NAMESPACE }}
-                key: CONCEPT_CATALOGUE_COLLECTION_BASE_URI
-          - name: NEW_BASE_URI
-            valueFrom:
-              secretKeyRef:
-                name: commonurl-{{ required "Missing value NAMESPACE" .Values.NAMESPACE }}
-                key: CONCEPT_CATALOGUE_BASE_URI
           image: {{ required "Missing value DOCKER_IMAGE_NAME" .Values.DOCKER_IMAGE_NAME }}
           imagePullPolicy: Always
           name: concept-catalog-etl
