@@ -9,123 +9,133 @@ args = parser.parse_args()
 
 
 def transform(c_file):
-    concepts = openfile(c_file)
+    con_file = openfile(c_file)
     transformed_concepts = {}
-    transformed_count = 0
-    failed = {}
+
+    projects = con_file["projects"]
+    project = next(prj for prj in projects if prj["name"] == "BEGREP")
+    concepts = project["issues"]
     for concept in concepts:
         result = transform_concept(concept)
         transformed_concepts[result.get("_id")] = result
-    #        transformed_count += 1
-    # print("Total number of transformed concepts: " + str(transformed_count))
-    # with open("not_transformed.json", 'w', encoding="utf-8") as err_file:
-    #     json.dump(failed, err_file, ensure_ascii=False, indent=4)
+
     return transformed_concepts
+
+# TODO:
+# Vi trenger ikke beholde gammel ID, ny ID opprettes automatisk på create
+# Endringslogelement: "Det er ganske viktig at vi ikke mister endringsloggen på eksisterende begrep. Det er ikke så viktig at dette vises på begrepet i første omgang, hvis det gjør det lettere."
+
+# "Begrepseier" ? "Begrepseier er av typen kodeliste"
+# "Ekstern begrepseier" ? "Ja, vi trenger denne så lenge vi ikke kan speile eksterne begreper i intern begrepskatalog er det greit å få en oversikt over begreper vi gjenbruker fra andre virksomheter"
+# "Forslag til fagområde" ? "forslag til fagområde er et enkelt tekstfelt"
+# "Forkortelse" ?
+# "Responsible" ? Kan virke som vi kan droppe, følger opp
+# "Kilde til merknad" ? "Ikke strengt nødvendig, men da er det greit å få migrert denne informasjonen over til kilde til merknad" (antar det skal være "over til kilde til definisjon"
+# "Offentlig tilgjengelig?" ? "Dette vil tilsvare publiseringstilstand hvis begrepet har godkjent; Hvis offentlig tilgjengelig er ja på et godkjent begrep skal begrepet ha publiseringstilstand "publisert". Hvis begrepet ikke har status godkjent kan vi se bort fra dette feltet. Hvis det er mulig."
 
 
 def transform_concept(concept):
     transformed_concept = {
-        "_id": concept["term"].get("identifier"),
         "_class": "no.fdk.concept_catalog.model.Begrep",
-        "anbefaltTerm": {
-            "navn": {
-                "nb": concept["term"]
-                .get("properties")
-                .get("http://purl.org/dc/elements/1.1/title")
-                .get("value"),
-                "en": concept["term"]
-                .get("localisedProperties")
-                .get("http://purl.org/dc/elements/1.1/title", {})
-                .get("English (United Kingdom)", {})
-                .get("value"),
-                "nn": concept["term"]
-                .get("localisedProperties")
-                .get("http://purl.org/dc/elements/1.1/title", {})
-                .get("Norwegian Nynorsk", {}).get("value"),
-            }
-        },
-        "ansvarligVirksomhet": {"_id": "974761076"},
-        "bruksområde": {},
-        "definisjon": {
-            "tekst": {
-                "nb": concept["term"]
-                .get("properties")
-                .get("http://purl.org/dc/elements/1.1/description", {})
-                .get("value")
-            }
-        },
-        "eksempel": {
-            "nb": [
-                concept["term"]
-                .get("properties")
-                .get("http://www.w3.org/2004/02/skos/core#example", {})
-                .get("value")
-            ]
-        },
+        "ansvarligVirksomhet": {"_id": "974760673"},
         "erPublisert": "false",
-        "frarådetTerm": {
-            "nb": [
-                concept["term"]
-                .get("properties")
-                .get("http://www.w3.org/2004/02/skos/core#hiddenLabel", {})
-                .get("value")
-            ]
-        },
-        "kildebeskrivelse": {
-            "forholdTilKilde":
-                concept["term"]
-                .get("properties")
-                .get("http://www.skatteetaten.no/schema/properties/sourceType", {})
-                .get("value"),
-            "kilde": [
-                concept["term"]
-                .get("properties")
-                .get("http://www.skatteetaten.no/schema/properties/sourceOfDefinition", {})
-                .get("value")
-                ]
-        },
-        "merknad": {
-            "nb": [
-                concept["term"]
-                .get("properties")
-                .get("http://www.skatteetaten.no/schema/properties/conceptNote", {})
-                .get("value")
-            ]
-        },
-        "originaltBegrep": concept["term"].get("identifier"),
-        "status": setstatus(
-            concept["term"]
-            .get("properties")
-            .get("http://www.skatteetaten.no/schema/properties/conceptstatus", {})
-            .get("value")
-        ),
-        "tillattTerm": {  # TODO
-            "nb": [
-                ""
-            ]
-        },
+        "bruksområde": {},
         "versjonsnr": {
             "major": 0,
             "minor": 0,
             "patch": 1
         },
-        "gyldigFom": {
-            "$date": convert_date(
-                concept["term"]
-                .get("properties")
-                .get("http://www.skatteetaten.no/schema/properties/validFrom", {})
-                .get("value")
-            )
-        },
-        "gyldigTom": {
-            "$date": convert_date(
-                concept["term"]
-                .get("properties")
-                .get("http://www.skatteetaten.no/schema/properties/validTo", {})
-                .get("value")
-            )
+        "originaltBegrep": "$_id",  # Mulig dette ikke funker på create, evt loope igjennom alle og sette ID i etterkant --> db.begrep.update({}, [{"$set": {"originaltBegrep": "$_id"}}],{upsert:false,multi:true})
+        "status": setstatus(concept.get("status")),
+        "kontaktpunkt": {
+            "harEpost": "informasjonsforvaltning@brreg.no",
+            "harTelefon": "(+47)75007500"
         }
     }
+    for field in concept["customFieldValues"]:
+        # Tillatt term
+        if field["fieldName"] == "Alternativ term":
+            tillattTerm = transformed_concept.get("tillattTerm", {})
+            tillattTerm["nb"] = [
+                field["value"]
+            ]
+            transformed_concept["tillattTerm"] = tillattTerm
+
+        # Anbefalt term
+        # if field["fieldName"] == "Term":  # TODO: Eksempeldata har ikke dette feltet, bekreftet korrekt antakelse
+        #     term = transformed_concept.get("anbefaltTerm", {}).get("navn", {})
+        #     term["nb"] = field["value"]
+        #     transformed_concept["anbefaltTerm"] = term
+        if field["fieldName"] == "Term engelsk":
+            term = transformed_concept.get("anbefaltTerm", {}).get("navn", {})
+            term["en"] = field["value"]
+            transformed_concept["anbefaltTerm"] = term
+        if field["fieldName"] == "Term nynorsk":
+            term = transformed_concept.get("anbefaltTerm", {}).get("navn", {})
+            term["nn"] = field["value"]
+            transformed_concept["anbefaltTerm"] = term
+
+        # Definisjon
+        if field["fieldName"] == "Definisjon":
+            definisjon = transformed_concept.get("definisjon", {}).get("tekst", {})
+            definisjon["nb"] = field["value"]
+            transformed_concept["definisjon"] = definisjon
+        if field["fieldName"] == "Definisjon engelsk":
+            definisjon = transformed_concept.get("definisjon", {}).get("tekst", {})
+            definisjon["en"] = field["value"]
+            transformed_concept["definisjon"] = definisjon
+        if field["fieldName"] == "Definisjon nynorsk":
+            definisjon = transformed_concept.get("definisjon", {}).get("tekst", {})
+            definisjon["nn"] = field["value"]
+            transformed_concept["definisjon"] = definisjon
+
+        # Eksempel
+        if field["fieldName"] == "Eksempel":
+            eksempel = transformed_concept.get("eksempel", {})
+            eksempel["nb"] = [
+                field["value"]
+            ]
+            transformed_concept["eksempel"] = eksempel
+
+        # Fagområde
+        if field["fieldName"] == "Fagområde":
+            subject_area = transformed_concept.get("fagområde", {})
+            subject_area["nb"] = field["value"]
+            transformed_concept["fagområde"] = subject_area
+
+        # FrarådetTerm
+        if field["fieldName"] == "Frarådet term":
+            unadvisedTerm = transformed_concept.get("frarådetTerm", {})
+            unadvisedTerm["nb"] = [
+                field["value"]
+            ]
+            transformed_concept["frarådetTerm"] = unadvisedTerm
+
+        # Kildebeskrivelse # #
+        # kildebeskrivelse {
+        #   forholdTilKilde: "Forhold til kilde" TODO: forholdTilKilde må ha en mapping (vi har enum)
+        #   kilde = [{"Definisjonskilde": "Nettadresse til definisjonskilde"}]
+        # }
+        #
+
+        # Folkelig forklaring # #
+        # if field["fieldName"] == "Folkelig forklaring":
+        #     folkelig_forklaring = transformed_concept.get("folkeligForklaring", {})
+        #     folkelig_forklaring["nb"] = field["value"]
+        #     transformed_concept["folkeligForklaring"] = folkelig_forklaring
+
+        # Merknad
+        if field["fieldName"] == "Merknad":
+            merknad = transformed_concept.get("merknad", {})
+            merknad["nb"] = [
+                field["value"]
+            ]
+            transformed_concept["merknad"] = merknad
+
+        # Gyldig fom  # TODO
+
+        # Gyldig tom  # TODO
+
 
     return transformed_concept
 
@@ -150,7 +160,7 @@ def convert_date(date):
         return ""
 
 
-concepts_file = "skatt_concepts.json"
+concepts_file = "brreg_concepts.json"
 outputfileName = args.outputdirectory + "transformed_concepts.json"
 
 with open(outputfileName, 'w', encoding="utf-8") as outfile:
