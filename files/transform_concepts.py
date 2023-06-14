@@ -22,6 +22,23 @@ def transform(c_file):
     #     json.dump(failed, err_file, ensure_ascii=False, indent=4)
     return transformed_concepts
 
+# TODO:
+#  «Teknisk begrepsnavn»: Dette feltet bruker vi til å beskrive hvordan begrepet ser ut i LowerCamelCase.
+#  «Kildetype» / «Interesseområde»:
+#  •	Kildetype er forhold til kilde: sitat fra kilde, basert på kilde eller egendefinert
+#  •	Interesseområde er Fagområde, som vi skal ha kodeliste på. Kanskje vi må snakkes om hvordan vi løser dette?
+#  «Sist oppdatert» / «Sist oppdatert av»:
+#  •	«Sist oppdatert av» er det mulig å få med denne informasjonen på en annen måte. Viktig for oss å få med.
+#  •	«Sist oppdatert» (dato) er viktig å få med.
+#  «Ansvarlig organisatorisk enhet»:
+#  •	Dette er et internt felt vi skal fase ut over tid, men trenger til å begynne med.
+#  •	Det er ikke det samme som ansvarligVirksomhet.
+#  «Skjult eksternt»:
+#  •	Skult eksternt er et felt med boolske verdier, Ja betyr at begrepet ikke er publisert på FDK.
+#  •	Skal brukes til Publiseringstilstand.
+#  «Teknisk term» / «Egenskapsnavn» / «Forretningsbegrep»
+#  •	Disse feltene skal migreres over.
+#  •	Det er interne felt for Skatteetaten.
 
 def transform_concept(concept):
     transformed_concept = {
@@ -136,6 +153,10 @@ def openfile(file_name):
 
 
 def setstatus(status):
+    # TODO: Registrert = Utkast
+    #  Kvalifisert - formell og innholdsmessig korrekt = Kvalitetssikring
+    #  Godkjent = Godkjent
+    #  Tilbaketrukket = Utgått
     supported_status = ["UTKAST", "GODKJENT", "HOERING", "PUBLISERT"]
     if status.upper() in supported_status:
         return status.upper()
