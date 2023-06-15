@@ -136,6 +136,10 @@ def transform_concept(concept):
 
         # Gyldig tom  # TODO
 
+        # TildeltBruker (kodeliste)
+        # tildelt = "uri til brukerkodeliste", gjøre oppslag mot admin-service basert på Assignee(brreg)
+
+
 
     return transformed_concept
 
