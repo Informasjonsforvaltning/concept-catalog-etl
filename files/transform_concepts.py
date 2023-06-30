@@ -79,12 +79,12 @@ def transform_concept(concept):
             }
         },
         "eksempel": {
-            "nb": [
-                concept["term"]
+            "nb": getstrings(
+                ["term"]
                 .get("properties")
                 .get("http://www.w3.org/2004/02/skos/core#example", {})
                 .get("value")
-            ]
+            )
         },
         "endringsLogElement": {
             "endretAv":
@@ -92,24 +92,22 @@ def transform_concept(concept):
                 .get("properties")
                 .get("http://www.skatteetaten.no/schema/properties/lastUpdatedBy")
                 .get("value"),
-            "endringstidspunkt": {
-                "$date":
-                    convert_date(
-                        concept["term"]
-                        .get("properties")
-                        .get("http://www.skatteetaten.no/schema/properties/lastUpdated")
-                        .get("value")
-                    )
-                }
+            "endringstidspunkt":
+                convert_date(
+                    concept["term"]
+                    .get("properties")
+                    .get("http://www.skatteetaten.no/schema/properties/lastUpdated")
+                    .get("value")
+                )
         },
         "erPublisert": "false",  # TODO: Migrere skjultEksternt inn i denne
         "frarådetTerm": {
-            "nb": [
+            "nb": getstrings(
                 concept["term"]
                 .get("properties")
                 .get("http://www.w3.org/2004/02/skos/core#hiddenLabel", {})
                 .get("value")
-            ]
+            )
         },
         "kildebeskrivelse": {
             "forholdTilKilde":
@@ -117,20 +115,20 @@ def transform_concept(concept):
                 .get("properties")
                 .get("http://www.skatteetaten.no/schema/properties/sourceType", {})
                 .get("value"),
-            "kilde": [
+            "kilde": getstrings(
                 concept["term"]
                 .get("properties")
                 .get("http://www.skatteetaten.no/schema/properties/sourceOfDefinition", {})
                 .get("value")
-                ]
+            )
         },
         "merknad": {
-            "nb": [
+            "nb": getstrings(
                 concept["term"]
                 .get("properties")
                 .get("http://www.skatteetaten.no/schema/properties/conceptNote", {})
                 .get("value")
-            ]
+            )
         },
         "originaltBegrep": concept["term"].get("identifier"),
         "status": setstatus(
@@ -140,7 +138,7 @@ def transform_concept(concept):
             .get("value")
         ),
         "tillattTerm": {
-            "nb": getaltlabel(
+            "nb": getstrings(
                     concept["term"]
                     .get("properties")
                     .get("http://www.w3.org/2004/02/skos/core#altLabel", {})
@@ -160,14 +158,13 @@ def transform_concept(concept):
                 .get("value")
             )
         },
-        "gyldigTom": {
-            "$date": convert_date(
+        "gyldigTom":
+            convert_date(
                 concept["term"]
                 .get("properties")
                 .get("http://www.skatteetaten.no/schema/properties/validTo", {})
                 .get("value")
             )
-        }
     }
 
     return transformed_concept
@@ -178,9 +175,9 @@ def openfile(file_name):
         return json.load(json_file)
 
 
-def getaltlabel(altbegrep):
-    if altbegrep is not None:
-        return altbegrep.split(";")
+def getstrings(value):
+    if value is not None:
+        return value.split(";")
     else:
         return [""]
 
@@ -196,11 +193,15 @@ def setstatus(status):
         return "UTKAST"
 
 
-def convert_date(date):
-    if date:
-        return datetime.datetime.strftime(datetime.datetime.strptime(date, '%Y-%m-%d'), "%Y-%m-%dT%H:%M:%S.000Z")
+def convert_date(dateobject):
+    if dateobject:
+        return {
+            "$date": datetime.datetime.strftime(
+                datetime.datetime.strptime(dateobject, '%Y-%m-%d'),
+                "%Y-%m-%dT%H:%M:%S.000Z")
+        }
     else:
-        return ""
+        return {}
 
 
 concepts_file = "skatt_concepts.json"
