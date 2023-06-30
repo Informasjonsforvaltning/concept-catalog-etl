@@ -1,6 +1,5 @@
 import json
 import argparse
-import os
 import datetime
 
 parser = argparse.ArgumentParser()
@@ -12,14 +11,11 @@ def transform(c_file):
     concepts = openfile(c_file)
     transformed_concepts = {}
     transformed_count = 0
-    failed = {}
     for concept in concepts:
         result = transform_concept(concept)
         transformed_concepts[result.get("_id")] = result
-    #        transformed_count += 1
-    # print("Total number of transformed concepts: " + str(transformed_count))
-    # with open("not_transformed.json", 'w', encoding="utf-8") as err_file:
-    #     json.dump(failed, err_file, ensure_ascii=False, indent=4)
+        transformed_count += 1
+    print("Total number of transformed concepts: " + str(transformed_count))
     return transformed_concepts
 
 # TODO:
@@ -199,13 +195,9 @@ def setstatus(status):
 
 def convert_date(dateobject):
     if dateobject:
-        return {
-            "$date": datetime.datetime.strftime(
-                datetime.datetime.strptime(dateobject, '%Y-%m-%d'),
-                "%Y-%m-%dT%H:%M:%S.000Z")
-        }
+        return datetime.datetime.strptime(dateobject, '%Y-%m-%d')
     else:
-        return {}
+        return None
 
 
 concepts_file = "skatt_concepts.json"
