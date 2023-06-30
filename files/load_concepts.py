@@ -17,7 +17,7 @@ errorfileName = args.outputdirectory + "load_errors.json"
 def convert_iso(begrep):
     endringstidspunkt = begrep["endringsLogElement"]["endringstidspunkt"]
     if endringstidspunkt is not None:
-        begrep["endringsLogElement"]["endringstidspunkt"] = datetime.fromisoformat(endringstidspunkt)
+        begrep["endringsLogElement"]["endringstidspunkt"] = datetime.strptime(endringstidspunkt, "%Y-%m-%dT%H:%M:%S.000Z")
     return begrep
 
 

@@ -187,13 +187,13 @@ def geturitekst(string_list):
 
 def mapkildetype(kildetype):
     if kildetype == "sitat fra kilde":
-        return "sitatFraKilde"
+        return "SITATFRAKILDE"
     elif kildetype == "basert på kilde":
-        return "basertPaaKilde"
+        return "BASERTPAAKILDE"
     elif kildetype == "egendefinert":
-        return kildetype
+        return "EGENDEFINERT"
     else:
-        sys.exit('Ukjent kildetype: ' + kildetype)
+        return None
 
 
 def setstatus(status):
@@ -209,7 +209,9 @@ def setstatus(status):
 
 def convert_date(dateobject):
     if dateobject:
-        return datetime.datetime.strptime(dateobject, '%Y-%m-%d').isoformat()
+        return datetime.datetime.strftime(
+                datetime.datetime.strptime(dateobject, '%Y-%m-%d'),
+                "%Y-%m-%dT%H:%M:%S.000Z")
     else:
         return None
 
