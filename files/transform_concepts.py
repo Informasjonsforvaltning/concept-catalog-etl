@@ -80,7 +80,7 @@ def transform_concept(concept):
         },
         "eksempel": {
             "nb": getstrings(
-                ["term"]
+                concept["term"]
                 .get("properties")
                 .get("http://www.w3.org/2004/02/skos/core#example", {})
                 .get("value")
@@ -151,7 +151,7 @@ def transform_concept(concept):
             "patch": 1
         },
         "gyldigFom": {
-            "$date": convert_date(
+            convert_date(
                 concept["term"]
                 .get("properties")
                 .get("http://www.skatteetaten.no/schema/properties/validFrom", {})
@@ -179,7 +179,7 @@ def getstrings(value):
     if value is not None:
         return value.split(";")
     else:
-        return [""]
+        return []
 
 
 def setstatus(status):
