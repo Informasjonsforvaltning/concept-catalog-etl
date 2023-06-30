@@ -3,7 +3,7 @@ name: Build and deploy to staging when pull request is created
 on:
   push:
     branches:
-      - no
+      - chore/hos/etl-skatt
 
 jobs:
   build-and-deploy:
