@@ -1,6 +1,7 @@
 import json
 import argparse
 import datetime
+import sys
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-o', '--outputdirectory', help="the path to the directory of the output files", required=True)
@@ -107,10 +108,12 @@ def transform_concept(concept):
         },
         "kildebeskrivelse": {
             "forholdTilKilde":
-                concept["term"]
-                .get("properties")
-                .get("http://www.skatteetaten.no/schema/properties/sourceType", {})
-                .get("value"),
+                mapkildetype(
+                    concept["term"]
+                    .get("properties")
+                    .get("http://www.skatteetaten.no/schema/properties/sourceType", {})
+                    .get("value")
+                ),
             "kilde": geturitekst(getstrings(
                 concept["term"]
                 .get("properties")
@@ -180,6 +183,17 @@ def getstrings(value):
 
 def geturitekst(string_list):
     return [{"tekst": string} for string in string_list]
+
+
+def mapkildetype(kildetype):
+    if kildetype == "sitat fra kilde":
+        return "sitatFraKilde"
+    elif kildetype == "basert på kilde":
+        return "basertPaaKilde"
+    elif kildetype == "egendefinert":
+        return kildetype
+    else:
+        sys.exit('Ukjent kildetype: ' + kildetype)
 
 
 def setstatus(status):
