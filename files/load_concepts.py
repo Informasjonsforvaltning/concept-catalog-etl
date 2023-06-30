@@ -18,7 +18,7 @@ def convert_iso(begrep):
     endringstidspunkt = begrep["endringsLogElement"]["endringstidspunkt"]
     if endringstidspunkt is not None:
         begrep["endringsLogElement"]["endringstidspunkt"] = datetime.fromisoformat(endringstidspunkt)
-    return
+    return begrep
 
 
 with open(args.outputdirectory + 'transformed_concepts.json') as begrep_file:
