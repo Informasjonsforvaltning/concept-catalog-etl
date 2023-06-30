@@ -195,7 +195,7 @@ def setstatus(status):
 
 def convert_date(dateobject):
     if dateobject:
-        return datetime.datetime.strptime(dateobject, '%Y-%m-%d')
+        return datetime.datetime.strptime(dateobject, '%Y-%m-%d').isoformat()
     else:
         return None
 

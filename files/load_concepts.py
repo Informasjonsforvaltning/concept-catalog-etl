@@ -1,5 +1,6 @@
 import json
 import os
+from datetime import datetime
 from pymongo import MongoClient
 import argparse
 
@@ -12,6 +13,14 @@ connection = MongoClient(
 db = connection['concept-catalogue']
 errorfileName = args.outputdirectory + "load_errors.json"
 
+
+def convert_iso(begrep):
+    endringstidspunkt = begrep["endringsLogElement"]["endringstidspunkt"]
+    if endringstidspunkt is not None:
+        begrep["endringsLogElement"]["endringstidspunkt"] = datetime.fromisoformat(endringstidspunkt)
+    return
+
+
 with open(args.outputdirectory + 'transformed_concepts.json') as begrep_file:
     transformed_json = json.load(begrep_file)
 
@@ -19,7 +28,7 @@ with open(args.outputdirectory + 'transformed_concepts.json') as begrep_file:
     total_failed = 0
     fail_log = {}
     for mongo_id in transformed_json:
-        transformed_begrep = transformed_json[mongo_id]
+        transformed_begrep = convert_iso(transformed_json[mongo_id])
         print("Inserting ID: " + mongo_id)
         insert_result = db.begrep.insert_one(transformed_begrep)
         if insert_result:
