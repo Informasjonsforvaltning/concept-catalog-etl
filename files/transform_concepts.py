@@ -115,12 +115,12 @@ def transform_concept(concept):
                 .get("properties")
                 .get("http://www.skatteetaten.no/schema/properties/sourceType", {})
                 .get("value"),
-            "kilde": getstrings(
+            "kilde": geturitekst(getstrings(
                 concept["term"]
                 .get("properties")
                 .get("http://www.skatteetaten.no/schema/properties/sourceOfDefinition", {})
                 .get("value")
-            )
+            ))
         },
         "merknad": {
             "nb": getstrings(
@@ -180,6 +180,10 @@ def getstrings(value):
         return value.split(";")
     else:
         return []
+
+
+def geturitekst(string_list):
+    return [{"tekst": string} for string in string_list]
 
 
 def setstatus(status):
