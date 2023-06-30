@@ -23,22 +23,29 @@ def transform(c_file):
     return transformed_concepts
 
 # TODO:
-#  «Teknisk begrepsnavn»: Dette feltet bruker vi til å beskrive hvordan begrepet ser ut i LowerCamelCase.
-#  «Kildetype» / «Interesseområde»:
+#  «Teknisk begrepsnavn»:  - Vil ha som internfelt
+#  Dette feltet bruker vi til å beskrive hvordan begrepet ser ut i LowerCamelCase.
+#  «Kildetype» / «Interesseområde»: - Vil ha som internfelt
 #  •	Kildetype er forhold til kilde: sitat fra kilde, basert på kilde eller egendefinert
 #  •	Interesseområde er Fagområde, som vi skal ha kodeliste på. Kanskje vi må snakkes om hvordan vi løser dette?
-#  «Sist oppdatert» / «Sist oppdatert av»:
+#  «Sist oppdatert» / «Sist oppdatert av»: Migrer as is
 #  •	«Sist oppdatert av» er det mulig å få med denne informasjonen på en annen måte. Viktig for oss å få med.
 #  •	«Sist oppdatert» (dato) er viktig å få med.
-#  «Ansvarlig organisatorisk enhet»:
+#  «Ansvarlig organisatorisk enhet»: - interne felt
 #  •	Dette er et internt felt vi skal fase ut over tid, men trenger til å begynne med.
 #  •	Det er ikke det samme som ansvarligVirksomhet.
-#  «Skjult eksternt»:
-#  •	Skult eksternt er et felt med boolske verdier, Ja betyr at begrepet ikke er publisert på FDK.
+#  •	Tekstfelt
+#  «Skjult eksternt»: - erPublisert
+#  •	Skjult eksternt er et felt med boolske verdier, Ja betyr at begrepet ikke er publisert på FDK.
 #  •	Skal brukes til Publiseringstilstand.
-#  «Teknisk term» / «Egenskapsnavn» / «Forretningsbegrep»
+#  «Teknisk term» / «Egenskapsnavn» / «Forretningsbegrep» - interne felt
 #  •	Disse feltene skal migreres over.
 #  •	Det er interne felt for Skatteetaten.
+#  «Forvaltningsmerknad» / «Beslutningskommentar»: - interne felt
+#  •	Dette er felt vi på sikt skal vurdere å ta bort, men som det er viktig at vi migrerer nå.
+#  •	Jeg tenker det beste er å få de inn som interne felt, på lik linje med andre interne felt.
+
+#
 
 def transform_concept(concept):
     transformed_concept = {
@@ -79,7 +86,23 @@ def transform_concept(concept):
                 .get("value")
             ]
         },
-        "erPublisert": "false",
+        "endringsLogElement": {
+            "endretAv":
+                concept["term"]
+                .get("properties")
+                .get("http://www.skatteetaten.no/schema/properties/lastUpdatedBy")
+                .get("value"),
+            "endringstidspunkt": {
+                "$date":
+                    convert_date(
+                        concept["term"]
+                        .get("properties")
+                        .get("http://www.skatteetaten.no/schema/properties/lastUpdated")
+                        .get("value")
+                    )
+                }
+        },
+        "erPublisert": "false",  # TODO: Migrere skjultEksternt inn i denne
         "frarådetTerm": {
             "nb": [
                 concept["term"]
@@ -116,10 +139,13 @@ def transform_concept(concept):
             .get("http://www.skatteetaten.no/schema/properties/conceptstatus", {})
             .get("value")
         ),
-        "tillattTerm": {  # TODO
-            "nb": [
-                ""
-            ]
+        "tillattTerm": {
+            "nb": getaltlabel(
+                    concept["term"]
+                    .get("properties")
+                    .get("http://www.w3.org/2004/02/skos/core#altLabel", {})
+                    .get("value")
+            )
         },
         "versjonsnr": {
             "major": 0,
@@ -152,10 +178,16 @@ def openfile(file_name):
         return json.load(json_file)
 
 
+def getaltlabel(altbegrep):
+    if altbegrep is not None:
+        return altbegrep.split(";")
+    else:
+        return [""]
+
+
 def setstatus(status):
     # TODO: Registrert = Utkast
     #  Kvalifisert - formell og innholdsmessig korrekt = Kvalitetssikring
-    #  Godkjent = Godkjent
     #  Tilbaketrukket = Utgått
     supported_status = ["UTKAST", "GODKJENT", "HOERING", "PUBLISERT"]
     if status.upper() in supported_status:
