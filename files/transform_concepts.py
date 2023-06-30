@@ -150,14 +150,14 @@ def transform_concept(concept):
             "minor": 0,
             "patch": 1
         },
-        "gyldigFom": {
+        "gyldigFom":
             convert_date(
                 concept["term"]
                 .get("properties")
                 .get("http://www.skatteetaten.no/schema/properties/validFrom", {})
                 .get("value")
             )
-        },
+        ,
         "gyldigTom":
             convert_date(
                 concept["term"]

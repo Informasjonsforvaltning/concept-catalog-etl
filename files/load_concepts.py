@@ -18,9 +18,9 @@ with open(args.outputdirectory + 'transformed_concepts.json') as begrep_file:
     total_failed = 0
     fail_log = {}
     for mongo_id in transformed_json:
-        to_be_updated = transformed_json[mongo_id]
-        print("Updating ID: " + mongo_id)
-        insert_result = db.begrep.find_one_and_update({'_id': mongo_id},  {'$set': to_be_updated})
+        transformed_begrep = transformed_json[mongo_id]
+        print("Inserting ID: " + mongo_id)
+        insert_result = db.begrep.insert_one(transformed_begrep)
         if insert_result:
             total_updated += 1
             print("Successfully updated: " + mongo_id)
@@ -29,7 +29,7 @@ with open(args.outputdirectory + 'transformed_concepts.json') as begrep_file:
             print("Update failed: " + mongo_id)
             fail_log[mongo_id] = transformed_json[mongo_id]
         total_updated += 1
-    print("Total number of concepts updated: " + str(total_updated))
-    print("Total number of concepts updates failed: " + str(total_failed))
+    print("Total number of concepts inserted: " + str(total_updated))
+    print("Total number of concept inserts failed: " + str(total_failed))
     with open("load_errors.json", 'w', encoding="utf-8") as err_file:
         json.dump(fail_log, err_file, ensure_ascii=False, indent=4)
