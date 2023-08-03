@@ -20,18 +20,20 @@ def transform(c_file):
     return transformed_concepts
 
 # TODO:
-#  «Teknisk begrepsnavn»:  - Vil ha som internfelt
-#  Dette feltet bruker vi til å beskrive hvordan begrepet ser ut i LowerCamelCase.
-#  «Kildetype» / «Interesseområde»: - Vil ha som internfelt
-#  •	Kildetype er forhold til kilde: sitat fra kilde, basert på kilde eller egendefinert
+#  «Interesseområde»:
 #  •	Interesseområde er Fagområde, som vi skal ha kodeliste på. Kanskje vi må snakkes om hvordan vi løser dette?
+#  «Skjult eksternt»: - erPublisert
+#  •	Skjult eksternt er et felt med boolske verdier, Ja betyr at begrepet ikke er publisert på FDK.
+#  •	Skal brukes til Publiseringstilstand.
+#  Internfelt:
+#  «Teknisk begrepsnavn»:  - Vil ha som internfelt
+#       Dette feltet bruker vi til å beskrive hvordan begrepet ser ut i LowerCamelCase.
+#  «Kildetype» - Vil ha som internfelt
+#  •	Kildetype er forhold til kilde: sitat fra kilde, basert på kilde eller egendefinert
 #  «Ansvarlig organisatorisk enhet»: - interne felt
 #  •	Dette er et internt felt vi skal fase ut over tid, men trenger til å begynne med.
 #  •	Det er ikke det samme som ansvarligVirksomhet.
 #  •	Tekstfelt
-#  «Skjult eksternt»: - erPublisert
-#  •	Skjult eksternt er et felt med boolske verdier, Ja betyr at begrepet ikke er publisert på FDK.
-#  •	Skal brukes til Publiseringstilstand.
 #  «Teknisk term» / «Egenskapsnavn» / «Forretningsbegrep» - interne felt
 #  •	Disse feltene skal migreres over.
 #  •	Det er interne felt for Skatteetaten.
