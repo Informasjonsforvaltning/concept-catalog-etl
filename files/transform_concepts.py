@@ -10,6 +10,7 @@ args = parser.parse_args()
 def transform(c_file):
     concepts = openfile(c_file)
     transformed_concepts = {}
+    multiple_drafts = []
     for concept_key in concepts:
         originaltbegrep = concepts[concept_key]["originaltBegrep"]
         result = transform_concept(concepts[concept_key])
@@ -19,7 +20,10 @@ def transform(c_file):
             transformed_concepts[originaltbegrep] = updated_list
         elif result is not None:
             transformed_concepts[originaltbegrep] = [result]
-    return transformed_concepts
+    for originalId in transformed_concepts:
+        if len(transformed_concepts[originalId]) > 1:
+            multiple_drafts.append(originalId)
+    return multiple_drafts
 
 
 def transform_concept(concept):
