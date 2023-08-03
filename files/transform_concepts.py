@@ -25,9 +25,6 @@ def transform(c_file):
 #  «Kildetype» / «Interesseområde»: - Vil ha som internfelt
 #  •	Kildetype er forhold til kilde: sitat fra kilde, basert på kilde eller egendefinert
 #  •	Interesseområde er Fagområde, som vi skal ha kodeliste på. Kanskje vi må snakkes om hvordan vi løser dette?
-#  «Sist oppdatert» / «Sist oppdatert av»: Migrer as is
-#  •	«Sist oppdatert av» er det mulig å få med denne informasjonen på en annen måte. Viktig for oss å få med.
-#  •	«Sist oppdatert» (dato) er viktig å få med.
 #  «Ansvarlig organisatorisk enhet»: - interne felt
 #  •	Dette er et internt felt vi skal fase ut over tid, men trenger til å begynne med.
 #  •	Det er ikke det samme som ansvarligVirksomhet.
@@ -82,7 +79,7 @@ def transform_concept(concept):
                 .get("value")
             )
         },
-        "endringsLogElement": {
+        "endringslogelement": {
             "endretAv":
                 concept["term"]
                 .get("properties")
