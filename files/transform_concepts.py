@@ -25,11 +25,9 @@ def transform(c_file):
 # Vi trenger ikke beholde gammel ID, ny ID opprettes automatisk på create
 # Endringslogelement: "Det er ganske viktig at vi ikke mister endringsloggen på eksisterende begrep. Det er ikke så viktig at dette vises på begrepet i første omgang, hvis det gjør det lettere."
 
-# "Begrepseier" ? "Begrepseier er av typen kodeliste"
 # "Ekstern begrepseier" ? "Ja, vi trenger denne så lenge vi ikke kan speile eksterne begreper i intern begrepskatalog er det greit å få en oversikt over begreper vi gjenbruker fra andre virksomheter"
 # "Forslag til fagområde" ? "forslag til fagområde er et enkelt tekstfelt"
 # "Forkortelse" ?
-# "Responsible" ? Kan virke som vi kan droppe, følger opp
 # "Kilde til merknad" ? "Ikke strengt nødvendig, men da er det greit å få migrert denne informasjonen over til kilde til merknad" (antar det skal være "over til kilde til definisjon"
 # "Offentlig tilgjengelig?" ? "Dette vil tilsvare publiseringstilstand hvis begrepet har godkjent; Hvis offentlig tilgjengelig er ja på et godkjent begrep skal begrepet ha publiseringstilstand "publisert". Hvis begrepet ikke har status godkjent kan vi se bort fra dette feltet. Hvis det er mulig."
 
