@@ -42,7 +42,6 @@ def transform(c_file):
 #  •	Dette er felt vi på sikt skal vurdere å ta bort, men som det er viktig at vi migrerer nå.
 #  •	Jeg tenker det beste er å få de inn som interne felt, på lik linje med andre interne felt.
 
-#
 
 def transform_concept(concept):
     transformed_concept = {
