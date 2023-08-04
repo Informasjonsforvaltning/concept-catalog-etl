@@ -1,7 +1,7 @@
 import json
 import argparse
 import os
-import datetime
+from datetime import datetime
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-o', '--outputdirectory', help="the path to the directory of the output files", required=True)
@@ -183,11 +183,10 @@ def setstatus(status):
         return "UTKAST"
 
 
-def convert_date(dateobject):
-    if dateobject:
-        return datetime.datetime.strftime(
-                datetime.datetime.strptime(dateobject, '%Y-%m-%d'),
-                "%Y-%m-%dT%H:%M:%S.000Z")
+def convert_date(timestamp_string):
+    if timestamp_string:
+        datetime_object = datetime.fromtimestamp(timestamp_string)
+        return datetime.strftime(datetime_object, "%Y-%m-%dT%H:%M:%S.000Z")
     else:
         return None
 
