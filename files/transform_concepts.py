@@ -119,16 +119,22 @@ def transform_concept(concept):
             transformed_concept["frarådetTerm"] = unadvisedTerm
 
         if field["fieldName"] == "Forhold til kilde":
-            transformed_concept["definisjon"]["kildebeskrivelse"]["forholdTilKilde"]: mapkildetype(field["value"])
+            kildebeskrivelse = transformed_concept.get("definisjon", {}).get("kildebeskrivelse", {})
+            kildebeskrivelse["forholdTilKilde"] = mapkildetype(field["value"])
+            transformed_concept["definisjon"]["kildebeskrivelse"]["forholdTilKilde"] = kildebeskrivelse
 
         if field["fieldName"] == "Kilde til definisjon":
-            transformed_concept["definisjon"]["kildebeskrivelse"]["kilde"]: geturitekst(getstrings(field["value"]))
+            kildebeskrivelse = transformed_concept.get("definisjon", {}).get("kildebeskrivelse", {})
+            kildebeskrivelse["kilde"] = geturitekst(getstrings(field["value"]))
+            transformed_concept["definisjon"]["kildebeskrivelse"]["kilde"] = kildebeskrivelse
 
         # Folkelig forklaring
         if field["fieldName"] == "Folkelig forklaring":
-            folkelig_forklaring = transformed_concept.get("folkeligForklaring", {})
-            folkelig_forklaring["tekst"]["nb"] = field["value"]
-            transformed_concept["folkeligForklaring"] = folkelig_forklaring
+            folkeligForklaring = transformed_concept.get("folkeligForklaring", {})
+            tekst = folkeligForklaring.get("tekst", {})
+            tekst["nb"] = field["value"]
+            folkeligForklaring["tekst"] = tekst
+            transformed_concept["folkeligForklaring"] = folkeligForklaring
 
         # Merknad
         if field["fieldName"] == "Merknad":
@@ -183,9 +189,10 @@ def setstatus(status):
         return "UTKAST"
 
 
-def convert_date(timestamp_string):
-    if timestamp_string:
-        datetime_object = datetime.fromtimestamp(timestamp_string)
+def convert_date(timestamp):
+    if timestamp:
+        # Remove milliseconds from timestamp
+        datetime_object = datetime.fromtimestamp(timestamp/1000)
         return datetime.strftime(datetime_object, "%Y-%m-%dT%H:%M:%S.000Z")
     else:
         return None
