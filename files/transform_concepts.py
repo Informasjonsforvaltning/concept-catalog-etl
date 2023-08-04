@@ -59,11 +59,10 @@ def transform_concept(concept):
             ]
             transformed_concept["tillattTerm"] = tillattTerm
 
-        # Anbefalt term
-        # if field["fieldName"] == "Term":  # TODO: Eksempeldata har ikke dette feltet, bekreftet korrekt antakelse
-        #     term = transformed_concept.get("anbefaltTerm", {}).get("navn", {})
-        #     term["nb"] = field["value"]
-        #     transformed_concept["anbefaltTerm"] = term
+        if field["fieldName"] == "Term":
+            term = transformed_concept.get("anbefaltTerm", {}).get("navn", {})
+            term["nb"] = field["value"]
+            transformed_concept["anbefaltTerm"] = term
         if field["fieldName"] == "Term engelsk":
             term = transformed_concept.get("anbefaltTerm", {}).get("navn", {})
             term["en"] = field["value"]
@@ -109,18 +108,11 @@ def transform_concept(concept):
             ]
             transformed_concept["frarådetTerm"] = unadvisedTerm
 
-
         if field["fieldName"] == "Forhold til kilde":
             transformed_concept["kildebeskrivelse"]["forholdTilKilde"]: mapkildetype(field["value"])
 
         if field["fieldName"] == "Kilde til definisjon":
-            transformed_concept["kildebeskrivelse"]["kilde"]: [geturitekst(field["value"])]
-            kildebeskrivelse {
-                forholdTilKilde: "Forhold til kilde"
-        #   kilde = [geturitekst(getstrings()]
-             }
-        #
-
+            transformed_concept["kildebeskrivelse"]["kilde"]: geturitekst(getstrings(field["value"]))
 
         # Folkelig forklaring # #
         # if field["fieldName"] == "Folkelig forklaring":
@@ -152,6 +144,7 @@ def openfile(file_name):
     with open(file_name) as json_file:
         return json.load(json_file)
 
+
 def mapkildetype(kildetype):
     if kildetype.lower() == "sitat fra kilde":
         return "SITATFRAKILDE"
@@ -162,8 +155,17 @@ def mapkildetype(kildetype):
     else:
         return None
 
+
 def geturitekst(string_list):
     return [{"tekst": string} for string in string_list]
+
+
+def getstrings(value):
+    if value is not None:
+        return value.split(";")
+    else:
+        return []
+
 
 def setstatus(status):
     supported_status = ["UTKAST", "GODKJENT", "HOERING", "PUBLISERT"]
