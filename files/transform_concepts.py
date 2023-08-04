@@ -157,6 +157,9 @@ def mapkildetype(kildetype):
     else:
         return None
 
+def geturitekst(string_list):
+    return [{"tekst": string} for string in string_list]
+
 def setstatus(status):
     supported_status = ["UTKAST", "GODKJENT", "HOERING", "PUBLISERT"]
     if status.upper() in supported_status:
