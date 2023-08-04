@@ -109,9 +109,9 @@ def transform_concept(concept):
             ]
             transformed_concept["frarådetTerm"] = unadvisedTerm
 
-        # Kildebeskrivelse # #
-        # kildebeskrivelse {
-        #   forholdTilKilde: "Forhold til kilde" TODO: forholdTilKilde må ha en mapping (vi har enum)
+        if field["fieldName"] == "Forhold til kilde":
+            kildebeskrivelse {
+                forholdTilKilde: "Forhold til kilde" TODO: forholdTilKilde må ha en mapping (vi har enum)
         #   kilde = [{"Definisjonskilde": "Nettadresse til definisjonskilde"}]
         # }
         #
