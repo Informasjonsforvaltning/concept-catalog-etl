@@ -117,7 +117,14 @@ def transform_concept(concept):
                 .get("properties")
                 .get("http://www.skatteetaten.no/schema/properties/sourceOfDefinition", {})
                 .get("value")
-            ))
+                ))
+                +
+                geturi(getstrings(
+                    concept["term"]
+                    .get("properties")
+                    .get("http://www.skatteetaten.no/schema/properties/urlSourceOfDefinition", {})
+                    .get("value")
+                ))
         },
         "merknad": {
             "nb": getstrings(
@@ -181,6 +188,10 @@ def getstrings(value):
 
 def geturitekst(string_list):
     return [{"tekst": string} for string in string_list]
+
+
+def geturi(string_list):
+    return [{"uri": string} for string in string_list]
 
 
 def mapkildetype(kildetype):
