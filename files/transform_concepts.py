@@ -114,7 +114,7 @@ def transform_concept(concept):
         if field["fieldName"] == "Kilde til definisjon":
             transformed_concept["kildebeskrivelse"]["kilde"]: geturitekst(getstrings(field["value"]))
 
-        # Folkelig forklaring # #
+        # Folkelig forklaring # # TODO Internt felt
         # if field["fieldName"] == "Folkelig forklaring":
         #     folkelig_forklaring = transformed_concept.get("folkeligForklaring", {})
         #     folkelig_forklaring["nb"] = field["value"]
