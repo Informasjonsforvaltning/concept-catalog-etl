@@ -111,14 +111,10 @@ def transform_concept(concept):
 
         if field["fieldName"] == "Forhold til kilde":
             kildebeskrivelse {
-                forholdTilKilde: "Forhold til kilde" TODO: forholdTilKilde må ha en mapping (vi har enum)
+                forholdTilKilde: "Forhold til kilde"
         #   kilde = [{"Definisjonskilde": "Nettadresse til definisjonskilde"}]
-        # }
+             }
         #
-
-        # EGENDEFINERT
-        # BASERTPAAKILDE
-        # SITATFRAKILDE
 
 
         # Folkelig forklaring # #
@@ -151,6 +147,15 @@ def openfile(file_name):
     with open(file_name) as json_file:
         return json.load(json_file)
 
+def mapkildetype(kildetype):
+    if kildetype.lower() == "sitat fra kilde":
+        return "SITATFRAKILDE"
+    elif kildetype.lower() == "basert på kilde":
+        return "BASERTPAAKILDE"
+    elif kildetype.lower() == "egendefinert":
+        return "EGENDEFINERT"
+    else:
+        return None
 
 def setstatus(status):
     supported_status = ["UTKAST", "GODKJENT", "HOERING", "PUBLISERT"]
