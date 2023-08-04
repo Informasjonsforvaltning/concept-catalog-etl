@@ -138,9 +138,9 @@ def transform_concept(concept):
             ]
             transformed_concept["merknad"] = merknad
 
-        # Gyldig fom  # Finnes ikke
+        # Gyldig fom/tom
+        # ser ikke ut til å eksistere i Brreg-dataen
 
-        # Gyldig tom  # Finnes ikke
 
         # TildeltBruker (kodeliste)
         # tildelt = "uri til brukerkodeliste", gjøre oppslag mot admin-service basert på Assignee(brreg)
