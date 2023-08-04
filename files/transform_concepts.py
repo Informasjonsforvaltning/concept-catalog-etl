@@ -22,20 +22,30 @@ def transform(c_file):
     return transformed_concepts
 
 # TODO:
-# Vi trenger ikke beholde gammel ID, ny ID opprettes automatisk på create
-# Endringslogelement: "Det er ganske viktig at vi ikke mister endringsloggen på eksisterende begrep. Det er ikke så viktig at dette vises på begrepet i første omgang, hvis det gjør det lettere."
+# "History": Egen ETL til catalog-history-service når begrepene er lastet opp
+# "Offentlig tilgjengelig?" ? "Dette vil tilsvare publiseringstilstand hvis begrepet har godkjent; Hvis offentlig tilgjengelig er ja på et godkjent begrep skal begrepet ha publiseringstilstand "publisert". Hvis begrepet ikke har status godkjent kan vi se bort fra dette feltet. Hvis det er mulig."
+# Assignee - Tildelt
+# Har de kilde til folkelig forklaring?
 
-# "Ekstern begrepseier" ? "Ja, vi trenger denne så lenge vi ikke kan speile eksterne begreper i intern begrepskatalog er det greit å få en oversikt over begreper vi gjenbruker fra andre virksomheter"
+# Interne felt:
+# "Ekstern begrepseier" ? Internt felt
 # "Forslag til fagområde" ? "forslag til fagområde er et enkelt tekstfelt"
 # "Forkortelse" ?
-# "Kilde til merknad" ? "Ikke strengt nødvendig, men da er det greit å få migrert denne informasjonen over til kilde til merknad" (antar det skal være "over til kilde til definisjon"
-# "Offentlig tilgjengelig?" ? "Dette vil tilsvare publiseringstilstand hvis begrepet har godkjent; Hvis offentlig tilgjengelig er ja på et godkjent begrep skal begrepet ha publiseringstilstand "publisert". Hvis begrepet ikke har status godkjent kan vi se bort fra dette feltet. Hvis det er mulig."
+# "Kilde til merknad" ? "Ikke strengt nødvendig, men da er det greit å få migrert denne informasjonen over til "kilde til definisjon"
+
+
 
 
 def transform_concept(concept):
     transformed_concept = {
         "_class": "no.fdk.concept_catalog.model.Begrep",
         "ansvarligVirksomhet": {"_id": "974760673"},
+        "endringslogelement": {
+            "endretAv":
+                concept["history"][-1]["author"],
+            "endringstidspunkt":
+                convert_date(concept["history"][-1]["created"])
+        },
         "erPublisert": "false",
         "bruksområde": {},
         "versjonsnr": {
@@ -109,16 +119,16 @@ def transform_concept(concept):
             transformed_concept["frarådetTerm"] = unadvisedTerm
 
         if field["fieldName"] == "Forhold til kilde":
-            transformed_concept["kildebeskrivelse"]["forholdTilKilde"]: mapkildetype(field["value"])
+            transformed_concept["definisjon"]["kildebeskrivelse"]["forholdTilKilde"]: mapkildetype(field["value"])
 
         if field["fieldName"] == "Kilde til definisjon":
-            transformed_concept["kildebeskrivelse"]["kilde"]: geturitekst(getstrings(field["value"]))
+            transformed_concept["definisjon"]["kildebeskrivelse"]["kilde"]: geturitekst(getstrings(field["value"]))
 
-        # Folkelig forklaring # # TODO Internt felt
-        # if field["fieldName"] == "Folkelig forklaring":
-        #     folkelig_forklaring = transformed_concept.get("folkeligForklaring", {})
-        #     folkelig_forklaring["nb"] = field["value"]
-        #     transformed_concept["folkeligForklaring"] = folkelig_forklaring
+        # Folkelig forklaring
+        if field["fieldName"] == "Folkelig forklaring":
+            folkelig_forklaring = transformed_concept.get("folkeligForklaring", {})
+            folkelig_forklaring["tekst"]["nb"] = field["value"]
+            transformed_concept["folkeligForklaring"] = folkelig_forklaring
 
         # Merknad
         if field["fieldName"] == "Merknad":
@@ -128,9 +138,9 @@ def transform_concept(concept):
             ]
             transformed_concept["merknad"] = merknad
 
-        # Gyldig fom  # TODO
+        # Gyldig fom  # Finnes ikke
 
-        # Gyldig tom  # TODO
+        # Gyldig tom  # Finnes ikke
 
         # TildeltBruker (kodeliste)
         # tildelt = "uri til brukerkodeliste", gjøre oppslag mot admin-service basert på Assignee(brreg)
