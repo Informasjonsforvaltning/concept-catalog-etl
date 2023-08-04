@@ -109,7 +109,12 @@ def transform_concept(concept):
             ]
             transformed_concept["frarådetTerm"] = unadvisedTerm
 
+
         if field["fieldName"] == "Forhold til kilde":
+            transformed_concept["kildebeskrivelse"]["forholdTilKilde"]: mapkildetype(field["value"])
+
+        if field["fieldName"] == "Kilde til definisjon":
+            transformed_concept["kildebeskrivelse"]["kilde"]: [geturitekst(field["value"])]
             kildebeskrivelse {
                 forholdTilKilde: "Forhold til kilde"
         #   kilde = [geturitekst(getstrings()]
