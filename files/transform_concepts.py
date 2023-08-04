@@ -17,7 +17,7 @@ def transform(c_file):
     concepts = project["issues"]
     for concept in concepts:
         result = transform_concept(concept)
-        transformed_concepts[result.get("_id")] = result
+        transformed_concepts[concept.get("key")] = result
 
     return transformed_concepts
 
