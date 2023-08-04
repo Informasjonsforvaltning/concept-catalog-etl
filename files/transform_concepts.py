@@ -116,6 +116,11 @@ def transform_concept(concept):
         # }
         #
 
+        # EGENDEFINERT
+        # BASERTPAAKILDE
+        # SITATFRAKILDE
+
+
         # Folkelig forklaring # #
         # if field["fieldName"] == "Folkelig forklaring":
         #     folkelig_forklaring = transformed_concept.get("folkeligForklaring", {})
