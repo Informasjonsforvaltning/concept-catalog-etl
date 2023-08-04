@@ -135,8 +135,6 @@ def transform_concept(concept):
         # TildeltBruker (kodeliste)
         # tildelt = "uri til brukerkodeliste", gjøre oppslag mot admin-service basert på Assignee(brreg)
 
-
-
     return transformed_concept
 
 
@@ -175,11 +173,13 @@ def setstatus(status):
         return "UTKAST"
 
 
-def convert_date(date):
-    if date:
-        return datetime.datetime.strftime(datetime.datetime.strptime(date, '%Y-%m-%d'), "%Y-%m-%dT%H:%M:%S.000Z")
+def convert_date(dateobject):
+    if dateobject:
+        return datetime.datetime.strftime(
+                datetime.datetime.strptime(dateobject, '%Y-%m-%d'),
+                "%Y-%m-%dT%H:%M:%S.000Z")
     else:
-        return ""
+        return None
 
 
 concepts_file = "brreg_concepts.json"
