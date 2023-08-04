@@ -121,12 +121,12 @@ def transform_concept(concept):
         if field["fieldName"] == "Forhold til kilde":
             kildebeskrivelse = transformed_concept.get("definisjon", {}).get("kildebeskrivelse", {})
             kildebeskrivelse["forholdTilKilde"] = mapkildetype(field["value"])
-            transformed_concept["definisjon"]["kildebeskrivelse"]["forholdTilKilde"] = kildebeskrivelse
+            transformed_concept["definisjon"]["kildebeskrivelse"] = kildebeskrivelse
 
         if field["fieldName"] == "Kilde til definisjon":
             kildebeskrivelse = transformed_concept.get("definisjon", {}).get("kildebeskrivelse", {})
             kildebeskrivelse["kilde"] = geturitekst(getstrings(field["value"]))
-            transformed_concept["definisjon"]["kildebeskrivelse"]["kilde"] = kildebeskrivelse
+            transformed_concept["definisjon"]["kildebeskrivelse"] = kildebeskrivelse
 
         # Folkelig forklaring
         if field["fieldName"] == "Folkelig forklaring":
