@@ -112,7 +112,7 @@ def transform_concept(concept):
         if field["fieldName"] == "Forhold til kilde":
             kildebeskrivelse {
                 forholdTilKilde: "Forhold til kilde"
-        #   kilde = [{"Definisjonskilde": "Nettadresse til definisjonskilde"}]
+        #   kilde = [geturitekst(getstrings()]
              }
         #
 
