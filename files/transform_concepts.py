@@ -17,7 +17,7 @@ def transform(c_file):
     concepts = project["issues"]
     for concept in concepts:
         result = transform_concept(concept)
-        transformed_concepts[concept.get("_id")] = result
+        transformed_concepts[result.get("_id")] = result
 
     return transformed_concepts
 
@@ -39,7 +39,14 @@ def transform_concept(concept):
     transformed_concept = {
         "_id": mongo_id,
         "_class": "no.fdk.concept_catalog.model.Begrep",
-        "ansvarligVirksomhet": {"_id": "974760673"},
+        "ansvarligVirksomhet": {
+            "_id": "974760673"
+        },
+        "anbefaltTerm": {
+            "navn": {
+                "nb": concept["summary"]
+            }
+        },
         "endringslogelement": {
             "endretAv":
                 concept["history"][-1]["author"],
@@ -69,31 +76,42 @@ def transform_concept(concept):
             ]
             transformed_concept["tillattTerm"] = tillattTerm
 
-        if field["fieldName"] == "Term":
-            term = transformed_concept.get("anbefaltTerm", {}).get("navn", {})
-            term["nb"] = field["value"]
-            transformed_concept["anbefaltTerm"] = term
+        # This field does not seem to exist
+        # if field["fieldName"] == "Term":
+        #     term = transformed_concept.get("anbefaltTerm", {}).get("navn", {})
+        #     term["nb"] = field["value"]
+        #     transformed_concept["anbefaltTerm"] = term
         if field["fieldName"] == "Term engelsk":
-            term = transformed_concept.get("anbefaltTerm", {}).get("navn", {})
-            term["en"] = field["value"]
+            term = transformed_concept.get("anbefaltTerm", {})
+            name = term.get("navn", {})
+            name["en"] = field["value"]
+            term["navn"] = name
             transformed_concept["anbefaltTerm"] = term
         if field["fieldName"] == "Term nynorsk":
-            term = transformed_concept.get("anbefaltTerm", {}).get("navn", {})
-            term["nn"] = field["value"]
+            term = transformed_concept.get("anbefaltTerm", {})
+            name = term.get("navn", {})
+            name["nn"] = field["value"]
+            term["navn"] = name
             transformed_concept["anbefaltTerm"] = term
 
         # Definisjon
         if field["fieldName"] == "Definisjon":
-            definisjon = transformed_concept.get("definisjon", {}).get("tekst", {})
-            definisjon["nb"] = field["value"]
+            definisjon = transformed_concept.get("definisjon", {})
+            text = definisjon.get("tekst", {})
+            text["nb"] = field["value"]
+            definisjon["tekst"] = text
             transformed_concept["definisjon"] = definisjon
         if field["fieldName"] == "Definisjon engelsk":
-            definisjon = transformed_concept.get("definisjon", {}).get("tekst", {})
-            definisjon["en"] = field["value"]
+            definisjon = transformed_concept.get("definisjon", {})
+            text = definisjon.get("tekst", {})
+            text["en"] = field["value"]
+            definisjon["tekst"] = text
             transformed_concept["definisjon"] = definisjon
         if field["fieldName"] == "Definisjon nynorsk":
-            definisjon = transformed_concept.get("definisjon", {}).get("tekst", {})
-            definisjon["nn"] = field["value"]
+            definisjon = transformed_concept.get("definisjon", {})
+            text = definisjon.get("tekst", {})
+            text["nn"] = field["value"]
+            definisjon["tekst"] = text
             transformed_concept["definisjon"] = definisjon
 
         # Eksempel
@@ -119,14 +137,18 @@ def transform_concept(concept):
             transformed_concept["frarådetTerm"] = unadvisedTerm
 
         if field["fieldName"] == "Forhold til kilde":
-            kildebeskrivelse = transformed_concept.get("definisjon", {}).get("kildebeskrivelse", {})
+            definisjon = transformed_concept.get("definisjon", {})
+            kildebeskrivelse = definisjon.get("kildebeskrivelse", {})
             kildebeskrivelse["forholdTilKilde"] = mapkildetype(field["value"])
-            transformed_concept["definisjon"]["kildebeskrivelse"] = kildebeskrivelse
+            definisjon["kildebeskrivelse"] = kildebeskrivelse
+            transformed_concept["definisjon"] = definisjon
 
         if field["fieldName"] == "Kilde til definisjon":
-            kildebeskrivelse = transformed_concept.get("definisjon", {}).get("kildebeskrivelse", {})
+            definisjon = transformed_concept.get("definisjon", {})
+            kildebeskrivelse = definisjon.get("kildebeskrivelse", {})
             kildebeskrivelse["kilde"] = geturitekst(getstrings(field["value"]))
-            transformed_concept["definisjon"]["kildebeskrivelse"] = kildebeskrivelse
+            definisjon["kildebeskrivelse"] = kildebeskrivelse
+            transformed_concept["definisjon"] = definisjon
 
         # Folkelig forklaring
         if field["fieldName"] == "Folkelig forklaring":
@@ -146,7 +168,6 @@ def transform_concept(concept):
 
         # Gyldig fom/tom
         # ser ikke ut til å eksistere i Brreg-dataen
-
 
         # TildeltBruker (kodeliste)
         # tildelt = "uri til brukerkodeliste", gjøre oppslag mot admin-service basert på Assignee(brreg)
@@ -185,6 +206,8 @@ def setstatus(status):
     supported_status = ["UTKAST", "GODKJENT", "HOERING", "PUBLISERT"]
     if status.upper() in supported_status:
         return status.upper()
+    elif status == "Høring":
+        return "HOERING"
     else:
         return "UTKAST"
 
