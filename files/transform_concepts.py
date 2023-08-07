@@ -64,8 +64,10 @@ def transform_concept(concept):
         "kontaktpunkt": {
             "harEpost": "informasjonsforvaltning@brreg.no",
             "harTelefon": "+47 75007500"
-        },
-        "tildeltBruker": getuser(concept["assignee"])
+        }
+        # ,
+        # TODO: Kommenter inn når klar
+        # "tildeltBruker": getuser(concept["assignee"])
     }
     if len(concept["history"]) > 0:
         transformed_concept["endringslogelement"] = {
@@ -201,7 +203,7 @@ def transform_concept(concept):
 def getuser(brreg_user):
     # TODO: Hent bruker fra admin-service, return brukerobjekt
     return {
-        "id": uuid.uuid3(namespace, brreg_user),
+        "id": str(uuid.uuid3(namespace, brreg_user)),
         "name": brreg_user,
         "email": "work_in_progress@example.com"
     }
