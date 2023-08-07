@@ -1,6 +1,6 @@
 import json
 import argparse
-import os
+import uuid
 from datetime import datetime
 
 parser = argparse.ArgumentParser()
@@ -17,7 +17,7 @@ def transform(c_file):
     concepts = project["issues"]
     for concept in concepts:
         result = transform_concept(concept)
-        transformed_concepts[concept.get("key")] = result
+        transformed_concepts[concept.get("_id")] = result
 
     return transformed_concepts
 
@@ -34,10 +34,9 @@ def transform(c_file):
 # "Kilde til merknad" ? "Ikke strengt nødvendig, men da er det greit å få migrert denne informasjonen over til "kilde til definisjon"
 
 
-
-
 def transform_concept(concept):
     transformed_concept = {
+        "_id": str(uuid.uuid4()),
         "_class": "no.fdk.concept_catalog.model.Begrep",
         "ansvarligVirksomhet": {"_id": "974760673"},
         "endringslogelement": {

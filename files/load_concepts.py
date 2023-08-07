@@ -29,6 +29,7 @@ def convert_iso(begrep):
 
 # TODO: Sett en uuid som mongo_id, den genererte er stygg
 
+
 with open(args.outputdirectory + 'transformed_concepts.json') as begrep_file:
     transformed_json = json.load(begrep_file)
 
