@@ -6,6 +6,7 @@ from datetime import datetime
 parser = argparse.ArgumentParser()
 parser.add_argument('-o', '--outputdirectory', help="the path to the directory of the output files", required=True)
 args = parser.parse_args()
+namespace = uuid.uuid4()
 
 
 def transform(c_file):
@@ -22,13 +23,15 @@ def transform(c_file):
     return transformed_concepts
 
 # TODO:
+# "Users: Hent users fra fil først, og kjør egen ETL til catalog-admin-service
 # "History": Egen ETL til catalog-history-service når begrepene er lastet opp
-# "Offentlig tilgjengelig?" ? "Dette vil tilsvare publiseringstilstand hvis begrepet har godkjent; Hvis offentlig tilgjengelig er ja på et godkjent begrep skal begrepet ha publiseringstilstand "publisert". Hvis begrepet ikke har status godkjent kan vi se bort fra dette feltet. Hvis det er mulig."
-# Assignee - Tildelt
+# "Comments": Egen ETL til catalog-comments-service når begrepene er lastet opp
+# "Offentlig tilgjengelig?" , se nedenfor
+# Assignee - Tildelt - Krever populert liste over brukere
 # Har de kilde til folkelig forklaring?
 
 # Interne felt:
-# "Ekstern begrepseier" ? Internt felt
+# "Ekstern begrepseier" ?
 # "Forslag til fagområde" ? "forslag til fagområde er et enkelt tekstfelt"
 # "Forkortelse" ?
 # "Kilde til merknad" ? "Ikke strengt nødvendig, men da er det greit å få migrert denne informasjonen over til "kilde til definisjon"
@@ -47,12 +50,6 @@ def transform_concept(concept):
                 "nb": concept["summary"]
             }
         },
-        "endringslogelement": {
-            "endretAv":
-                concept["history"][-1]["author"],
-            "endringstidspunkt":
-                convert_date(concept["history"][-1]["created"])
-        },
         "erPublisert": "false",
         "bruksområde": {},
         "versjonsnr": {
@@ -60,13 +57,31 @@ def transform_concept(concept):
             "minor": 0,
             "patch": 1
         },
+        "opprettet": convert_date(concept["created"]),
+        "opprettetAv": concept["reporter"],
         "originaltBegrep": mongo_id,
         "status": setstatus(concept.get("status")),
         "kontaktpunkt": {
             "harEpost": "informasjonsforvaltning@brreg.no",
-            "harTelefon": "(+47)75007500"
-        }
+            "harTelefon": "+47 75007500"
+        },
+        "tildeltBruker": getuser(concept["assignee"])
     }
+    if len(concept["history"]) > 0:
+        transformed_concept["endringslogelement"] = {
+            "endretAv":
+                getuser(concept["history"][-1]["author"])["name"],
+            "endringstidspunkt":
+                convert_date(concept["history"][-1]["created"])
+        }
+    else:
+        transformed_concept["endringslogelement"] = {
+            "endretAv":
+                getuser(concept["history"][-1]["author"])["name"],
+            "endringstidspunkt":
+                convert_date(concept["created"])
+        }
+
     for field in concept["customFieldValues"]:
         # Tillatt term
         if field["fieldName"] == "Alternativ term":
@@ -166,6 +181,14 @@ def transform_concept(concept):
             ]
             transformed_concept["merknad"] = merknad
 
+        # TODO: Set status "erPublisert":
+        #  Avvent å sette denne inntil vi har sikret at opprettede begrep er publiserbare
+        # if field["fieldName"] == "Offentlig tilgjengelig":
+        #     if len(field["value"]) > 1:
+        #         print(str(concept["key"]) + ": Multiple values in Offentlig tilgjengelig")
+        #     if (transformed_concept["status"] == "GODKJENT") and (field["value"][0] == "Ja"):
+        #         transformed_concept["erPublisert"] = "true"
+
         # Gyldig fom/tom
         # ser ikke ut til å eksistere i Brreg-dataen
 
@@ -173,6 +196,15 @@ def transform_concept(concept):
         # tildelt = "uri til brukerkodeliste", gjøre oppslag mot admin-service basert på Assignee(brreg)
 
     return transformed_concept
+
+
+def getuser(brreg_user):
+    # TODO: Hent bruker fra admin-service, return brukerobjekt
+    return {
+        "id": uuid.uuid3(namespace, brreg_user),
+        "name": brreg_user,
+        "email": "work_in_progress@example.com"
+    }
 
 
 def openfile(file_name):
