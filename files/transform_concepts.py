@@ -35,8 +35,9 @@ def transform(c_file):
 
 
 def transform_concept(concept):
+    mongo_id = str(uuid.uuid4())
     transformed_concept = {
-        "_id": str(uuid.uuid4()),
+        "_id": mongo_id,
         "_class": "no.fdk.concept_catalog.model.Begrep",
         "ansvarligVirksomhet": {"_id": "974760673"},
         "endringslogelement": {
@@ -52,7 +53,7 @@ def transform_concept(concept):
             "minor": 0,
             "patch": 1
         },
-        "originaltBegrep": "$_id",  # Mulig dette ikke funker på create, evt loope igjennom alle og sette ID i etterkant --> db.begrep.update({}, [{"$set": {"originaltBegrep": "$_id"}}],{upsert:false,multi:true})
+        "originaltBegrep": mongo_id,
         "status": setstatus(concept.get("status")),
         "kontaktpunkt": {
             "harEpost": "informasjonsforvaltning@brreg.no",
