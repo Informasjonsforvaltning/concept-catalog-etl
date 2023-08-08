@@ -9,11 +9,13 @@ args = parser.parse_args()
 namespace = uuid.uuid4()
 
 
-def transform(c_file):
-    con_file = openfile(c_file)
+def transform(u_file):
+    con_file = openfile(u_file)
     transformed_concepts = {}
     comments_filename = args.outputdirectory + "brreg_comments.json"
+    history_filename = args.outputdirectory + "brreg_history.json"
     comments = {}
+    history = {}
 
     projects = con_file["projects"]
     project = next(prj for prj in projects if prj["name"] == "BEGREP")
@@ -21,10 +23,13 @@ def transform(c_file):
     for concept in concepts:
         result = transform_concept(concept)
         transformed_concepts[result.get("_id")] = result
-        comments[[result.get("_id")]] = concept["comments"]
+        comments[result.get("_id")] = concept["comments"]
+        history[result.get("_id")] = concept["history"]
 
     with open(comments_filename, 'w', encoding="utf-8") as brreg_comments_file:
         json.dump(comments, brreg_comments_file, ensure_ascii=False, indent=4)
+    with open(history_filename, 'w', encoding="utf-8") as brreg_history_file:
+        json.dump(history, brreg_history_file, ensure_ascii=False, indent=4)
 
     return transformed_concepts
 
