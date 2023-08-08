@@ -10,13 +10,13 @@ def transform(c_file):
     concepts = openfile(c_file)
     transformed_concepts = {}
 
-    for concept in concepts:
+    for key in concepts:
+        concept = concepts[key]
         transformed_concept = {
-            "_id": concept["_id"],
             "merknad": join_strings(concept["merknad"]),
             "eksempel": join_strings(concept["eksempel"])
         }
-        transformed_concepts[concept["_id"]] = transformed_concept
+        transformed_concepts[key] = transformed_concept
 
     return transformed_concepts
 
@@ -33,7 +33,7 @@ def join_strings(langs):
     return new_langs
 
 
-concepts_file = "brreg_concepts.json"
+concepts_file = args.outputdirectory + "mongo_concepts.json"
 outputfileName = args.outputdirectory + "transformed_concepts.json"
 
 with open(outputfileName, 'w', encoding="utf-8") as outfile:
