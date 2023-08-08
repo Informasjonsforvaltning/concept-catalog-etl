@@ -1,5 +1,9 @@
 .PHONY: test
-all: transform load
+all: extract transform load
+
+extract:
+	echo "Extracting concepts...."
+	python3 ./extract_concepts.py -o ./tmp/
 
 transform:
 	echo "Transforming concepts...."

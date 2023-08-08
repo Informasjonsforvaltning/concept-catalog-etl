@@ -1,6 +1,5 @@
 import json
 import os
-from datetime import datetime
 from pymongo import MongoClient
 import argparse
 
@@ -14,23 +13,6 @@ db = connection['concept-catalogue']
 errorfileName = args.outputdirectory + "load_errors.json"
 
 
-def convert_iso(begrep):
-    endringstidspunkt = begrep["endringslogelement"]["endringstidspunkt"]
-    opprettet = begrep["opprettet"]
-    # GyldigFom/Tom ser ikke ut til å finnes i BRREG-dataen
-    # gyldigFom = begrep["gyldigFom"]
-    # gyldigTom = begrep["gyldigTom"]
-    if endringstidspunkt is not None:
-        begrep["endringslogelement"]["endringstidspunkt"] = datetime.strptime(endringstidspunkt, "%Y-%m-%dT%H:%M:%S.000Z")
-    if opprettet is not None:
-        begrep["opprettet"] = datetime.strptime(opprettet, "%Y-%m-%dT%H:%M:%S.000Z")
-    # if gyldigFom is not None:
-    #     begrep["gyldigFom"] = datetime.strptime(gyldigFom, "%Y-%m-%dT%H:%M:%S.000Z")
-    # if gyldigTom is not None:
-    #     begrep["gyldigTom"] = datetime.strptime(gyldigTom, "%Y-%m-%dT%H:%M:%S.000Z")
-    return begrep
-
-
 with open(args.outputdirectory + 'transformed_concepts.json') as begrep_file:
     transformed_json = json.load(begrep_file)
 
@@ -38,9 +20,8 @@ with open(args.outputdirectory + 'transformed_concepts.json') as begrep_file:
     total_failed = 0
     fail_log = {}
     for mongo_id in transformed_json:
-        transformed_begrep = convert_iso(transformed_json[mongo_id])
         print("Inserting ID: " + mongo_id)
-        insert_result = db.begrep.insert_one(transformed_begrep)
+        insert_result = db.begrep.insert_one(transformed_json[mongo_id])
         if insert_result:
             total_inserted += 1
             print("Successfully updated: " + mongo_id)
