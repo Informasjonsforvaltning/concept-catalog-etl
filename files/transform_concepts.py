@@ -30,7 +30,7 @@ def join_strings(langs):
     new_langs = {}
     if langs:
         for language in langs:
-            new_langs[language] = ",".join(language)
+            new_langs[language] = ",".join(langs[language])
         return new_langs
     else:
         return langs
