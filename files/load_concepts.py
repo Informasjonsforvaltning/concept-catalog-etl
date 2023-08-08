@@ -20,8 +20,9 @@ with open(args.outputdirectory + 'transformed_concepts.json') as begrep_file:
     total_failed = 0
     fail_log = {}
     for mongo_id in transformed_json:
+        to_be_updated = transformed_json[mongo_id]
         print("Inserting ID: " + mongo_id)
-        insert_result = db.begrep.insert_one(transformed_json[mongo_id])
+        insert_result = db.begrep.find_one_and_update({'_id': mongo_id},  {'$set': to_be_updated})
         if insert_result:
             total_inserted += 1
             print("Successfully updated: " + mongo_id)

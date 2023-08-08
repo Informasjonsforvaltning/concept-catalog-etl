@@ -12,12 +12,15 @@ def transform(c_file):
 
     for key in concepts:
         concept = concepts[key]
-        transformed_concept = {
-            "merknad": join_strings(concept.get("merknad")),
-            "eksempel": join_strings(concept.get("eksempel"))
-        }
-        transformed_concepts[key] = transformed_concept
-
+        transformed_merknad = join_strings(concept.get("merknad"))
+        transformed_eksempel = join_strings(concept.get("eksempel"))
+        transformed_concept = {}
+        if len(transformed_merknad) > 0:
+            transformed_concept["merknad"] = transformed_merknad
+        if len(transformed_eksempel) > 0:
+            transformed_concept["eksempel"] = transformed_eksempel
+        if len(transformed_concept) > 0:
+            transformed_concepts[key] = transformed_concept
     return transformed_concepts
 
 
@@ -30,10 +33,8 @@ def join_strings(langs):
     new_langs = {}
     if langs:
         for language in langs:
-            new_langs[language] = ",".join(langs[language])
-        return new_langs
-    else:
-        return langs
+            new_langs[language] = ", ".join(langs[language])
+    return new_langs
 
 
 concepts_file = args.outputdirectory + "mongo_concepts.json"
