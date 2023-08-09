@@ -12,14 +12,10 @@ def transform(c_file):
 
     for key in concepts:
         concept = concepts[key]
-        transformed_merknad = join_strings(concept.get("merknad"))
-        transformed_eksempel = join_strings(concept.get("eksempel"))
+        transformed_fagomrade = join_values(concept.get("fagområde"), concept.get("bruksområde"))
         transformed_concept = {}
-        if len(transformed_merknad) > 0:
-            transformed_concept["merknad"] = transformed_merknad
-        if len(transformed_eksempel) > 0:
-            transformed_concept["eksempel"] = transformed_eksempel
-        if len(transformed_concept) > 0:
+        if len(transformed_fagomrade) > 0:
+            transformed_concept["fagområde"] = transformed_fagomrade
             transformed_concepts[key] = transformed_concept
     return transformed_concepts
 
@@ -29,12 +25,20 @@ def openfile(file_name):
         return json.load(json_file)
 
 
-def join_strings(langs):
-    new_langs = {}
-    if langs:
-        for language in langs:
-            new_langs[language] = ", ".join(langs[language])
-    return new_langs
+def join_values(fagomrade, bruksomrade):
+    new_fagomrade = {}
+    if bruksomrade:
+        for language in bruksomrade:
+            new_fagomrade[language] = bruksomrade[language]
+    if fagomrade:
+        for language in fagomrade:
+            if fagomrade[language] is not None:
+                lang_list = new_fagomrade.get(language)
+                if lang_list is None:
+                    lang_list = []
+                lang_list.append(fagomrade[language])
+                new_fagomrade[language] = lang_list
+    return new_fagomrade
 
 
 concepts_file = args.outputdirectory + "mongo_concepts.json"

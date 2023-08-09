@@ -16,8 +16,8 @@ concepts = {}
 for id_dict in concept_list:
     _id = id_dict["_id"]
     concepts[_id] = {}
-    concepts[_id]["merknad"] = id_dict.get("merknad")
-    concepts[_id]["eksempel"] = id_dict.get("eksempel")
+    concepts[_id]["bruksområde"] = id_dict.get("bruksområde")
+    concepts[_id]["fagområde"] = id_dict.get("fagområde")
 print("Total number of extracted concepts: " + str(len(concepts)))
 
 with open(args.outputdirectory + 'mongo_concepts.json', 'w', encoding="utf-8") as outfile:

@@ -3,7 +3,7 @@ name: Build and deploy to prod when merged to master
 on:
   push:
     branches:
-      - chore/hos/etl-merknad-eksempel
+      - chore/hos/etl-bruksfagområde
 
 jobs:
   build-and-deploy:
