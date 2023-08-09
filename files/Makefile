@@ -19,7 +19,6 @@ transform_history:
 	echo "Transforming history...."
 	python3 ./transform_history.py -o ./tmp/
 
-
 load_users:
 	echo "Loading users...."
 	python3 ./load_users.py -o ./tmp/

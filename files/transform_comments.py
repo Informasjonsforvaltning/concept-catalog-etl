@@ -22,65 +22,31 @@ def transform(c_file):
 
 def transform_comment(comment):
     mongo_id = str(uuid.uuid4())
-    transformed_concept = {
+    transformed_comment = {
         "_id": mongo_id,
-        "_class": "no.fdk.concept_catalog.model.Begrep",
-        "ansvarligVirksomhet": {
-            "_id": "974760673"
+        "_class": "no.digdir.catalog_comments_service.model.CommentDBO",
+        "comment": {
+            comment["body"]
         },
-        "anbefaltTerm": {
-            "navn": {
-                "nb": concept["summary"]
-            }
-        },
-        "erPublisert": "false",
-        "bruksområde": {},
-        "versjonsnr": {
-            "major": 0,
-            "minor": 0,
-            "patch": 1
-        },
-        "opprettet": convert_date(concept["created"]),
-        "opprettetAv": concept["reporter"],
-        "originaltBegrep": mongo_id,
-        "status": setstatus(concept.get("status")),
-        "kontaktpunkt": {
-            "harEpost": "informasjonsforvaltning@brreg.no",
-            "harTelefon": "+47 75007500"
-        }
-        # ,
-        # TODO: Kommenter inn når klar
-        # "tildeltBruker": getuser(concept["assignee"])
+        "createdDate": convert_date(comment["created"]),
+        "orgNumber": "974760673",
+        "topicId": comment,
+        "user": getuser(comment["author"])
     }
-    if len(concept["history"]) > 0:
-        transformed_concept["endringslogelement"] = {
-            "endretAv":
-                getuser(concept["history"][-1]["author"])["name"],
-            "endringstidspunkt":
-                convert_date(concept["history"][-1]["created"])
-        }
-    else:
-        transformed_concept["endringslogelement"] = {
-            "endretAv":
-                getuser(concept["history"][-1]["author"])["name"],
-            "endringstidspunkt":
-                convert_date(concept["created"])
-        }
-
-    for field in concept["customFieldValues"]:
-        # Tillatt term
-
-
-    return transformed_concept
+    return transformed_comment
 
 
 def getuser(brreg_user):
-    # TODO: Åpne brukerfil og populer liste på starten, hent bruker i denne metoden
-    return
+    for user in brreg_users:
+        if user["name"] == brreg_user:
+            return user["_id"]
+    return None
+
 
 def openfile(file_name):
     with open(file_name) as json_file:
         return json.load(json_file)
+
 
 def getstrings(value):
     if value is not None:

@@ -11,7 +11,7 @@ args = parser.parse_args()
 connection = MongoClient(
     f"""mongodb://{os.environ['MONGO_USERNAME']}:{os.environ['MONGO_PASSWORD']}@mongodb:27017/concept-catalogue?authSource=admin&authMechanism=SCRAM-SHA-1""")
 db = connection['concept-catalogue']
-errorfileName = args.outputdirectory + "load_errors.json"
+errorfileName = args.outputdirectory + "load_concept_errors.json"
 
 
 def convert_iso(begrep):
