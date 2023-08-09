@@ -37,7 +37,7 @@ def transform_comment(comment):
 
 
 def getuser(brreg_user):
-    for user in brreg_users:
+    for user in comment_users:
         if user["name"] == brreg_user:
             return user["_id"]
     return None
@@ -65,8 +65,8 @@ def convert_date(timestamp):
 
 
 brreg_comments_file = "brreg_comments.json"
-brreg_users_file = "brreg_users.json"
-brreg_users = openfile(brreg_users_file)
+comment_users_file = "transformed_comment_users.json"
+comment_users = openfile(comment_users_file)
 outputfileName = args.outputdirectory + "transformed_comments.json"
 
 with open(outputfileName, 'w', encoding="utf-8") as outfile:

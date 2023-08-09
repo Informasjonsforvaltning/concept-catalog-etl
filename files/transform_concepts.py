@@ -34,11 +34,7 @@ def transform(u_file):
     return transformed_concepts
 
 # TODO:
-# "Users: Hent users fra fil først, og kjør egen ETL til catalog-admin-service
-# "History": Egen ETL til catalog-history-service når begrepene er lastet opp
-# "Comments": Egen ETL til catalog-comments-service når begrepene er lastet opp
 # "Offentlig tilgjengelig?" , se nedenfor
-# Assignee - Tildelt - Krever populert liste over brukere
 # Har de kilde til folkelig forklaring?
 
 # Interne felt:
@@ -75,10 +71,8 @@ def transform_concept(concept):
         "kontaktpunkt": {
             "harEpost": "informasjonsforvaltning@brreg.no",
             "harTelefon": "+47 75007500"
-        }
-        # ,
-        # TODO: Kommenter inn når klar
-        # "tildeltBruker": getuser(concept["assignee"])
+        },
+        "tildeltBruker": getuser(concept["assignee"])
     }
     if len(concept["history"]) > 0:
         transformed_concept["endringslogelement"] = {
@@ -104,11 +98,6 @@ def transform_concept(concept):
             ]
             transformed_concept["tillattTerm"] = tillattTerm
 
-        # This field does not seem to exist
-        # if field["fieldName"] == "Term":
-        #     term = transformed_concept.get("anbefaltTerm", {}).get("navn", {})
-        #     term["nb"] = field["value"]
-        #     transformed_concept["anbefaltTerm"] = term
         if field["fieldName"] == "Term engelsk":
             term = transformed_concept.get("anbefaltTerm", {})
             name = term.get("navn", {})
@@ -205,19 +194,14 @@ def transform_concept(concept):
         # Gyldig fom/tom
         # ser ikke ut til å eksistere i Brreg-dataen
 
-        # TildeltBruker (kodeliste)
-        # tildelt = "uri til brukerkodeliste", gjøre oppslag mot admin-service basert på Assignee(brreg)
-
     return transformed_concept
 
 
 def getuser(brreg_user):
-    # TODO: Hent bruker fra admin-service, return brukerobjekt
-    return {
-        "id": str(uuid.uuid3(namespace, brreg_user)),
-        "name": brreg_user,
-        "email": "work_in_progress@example.com"
-    }
+    for user in admin_users:
+        if user["name"] == brreg_user:
+            return user["_id"]
+    return None
 
 
 def openfile(file_name):
@@ -267,6 +251,8 @@ def convert_date(timestamp):
 
 
 concepts_file = "brreg_concepts.json"
+admin_users_file = "transformed_admin_users.json"
+admin_users = openfile(admin_users_file)
 outputfileName = args.outputdirectory + "transformed_concepts.json"
 
 with open(outputfileName, 'w', encoding="utf-8") as outfile:
