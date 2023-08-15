@@ -69,7 +69,8 @@ def create_jsonpatch(item):
 
 
 def getuser(brreg_user):
-    for user in comment_users:
+    for user_id in comment_users:
+        user = comment_users[user_id]
         if user["name"] == brreg_user:
             return {
                 "id": brreg_user["_id"],

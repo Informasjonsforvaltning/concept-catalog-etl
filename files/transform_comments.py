@@ -37,7 +37,8 @@ def transform_comment(comment):
 
 
 def getuser(brreg_user):
-    for user in comment_users:
+    for user_id in comment_users:
+        user = comment_users[user_id]
         if user["name"] == brreg_user:
             return user["_id"]
     return None
