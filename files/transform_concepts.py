@@ -23,8 +23,10 @@ def transform(u_file):
     for concept in concepts:
         result = transform_concept(concept)
         transformed_concepts[result.get("_id")] = result
-        comments[result.get("_id")] = concept["comments"]
-        history[result.get("_id")] = concept["history"]
+        if concept.get("comments") is not None:
+            comments[result.get("_id")] = concept["comments"]
+        if concept.get("history") is not None:
+            history[result.get("_id")] = concept["history"]
 
     with open(comments_filename, 'w', encoding="utf-8") as brreg_comments_file:
         json.dump(comments, brreg_comments_file, ensure_ascii=False, indent=4)
