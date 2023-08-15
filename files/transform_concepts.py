@@ -198,7 +198,8 @@ def transform_concept(concept):
 
 
 def getuser(brreg_user):
-    for user in admin_users:
+    for user_id in admin_users:
+        user = admin_users[user_id]
         if user["name"] == brreg_user:
             return user["_id"]
     return None
@@ -251,7 +252,7 @@ def convert_date(timestamp):
 
 
 concepts_file = "brreg_concepts.json"
-admin_users_file = "transformed_admin_users.json"
+admin_users_file = args.outputdirectory + "transformed_admin_users.json"
 admin_users = openfile(admin_users_file)
 outputfileName = args.outputdirectory + "transformed_concepts.json"
 

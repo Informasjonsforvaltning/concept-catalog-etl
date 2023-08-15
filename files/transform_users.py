@@ -54,5 +54,5 @@ admin_outputfileName = args.outputdirectory + "transformed_admin_users.json"
 with open(comment_outputfileName, 'w', encoding="utf-8") as outfile:
     json.dump(transform(input_file, "comment"), outfile, ensure_ascii=False, indent=4)
 
-with open(comment_outputfileName, 'w', encoding="utf-8") as outfile:
+with open(admin_outputfileName, 'w', encoding="utf-8") as outfile:
     json.dump(transform(input_file, "admin"), outfile, ensure_ascii=False, indent=4)
