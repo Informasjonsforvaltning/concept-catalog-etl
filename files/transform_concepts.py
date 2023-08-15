@@ -72,7 +72,7 @@ def transform_concept(concept):
             "harEpost": "informasjonsforvaltning@brreg.no",
             "harTelefon": "+47 75007500"
         },
-        "tildeltBruker": getuser(concept["assignee"])
+        "tildeltBruker": getuser(concept["assignee"])["_id"]
     }
     if len(concept["history"]) > 0:
         transformed_concept["endringslogelement"] = {
@@ -201,7 +201,7 @@ def getuser(brreg_user):
     for user_id in admin_users:
         user = admin_users[user_id]
         if user["name"] == brreg_user:
-            return user["_id"]
+            return user
     return None
 
 
