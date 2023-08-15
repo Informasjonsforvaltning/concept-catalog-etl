@@ -1,5 +1,4 @@
 import json
-import jsonpatch
 import argparse
 import uuid
 from datetime import datetime
@@ -21,36 +20,52 @@ def transform(h_file):
 
 def transform_change(history_list):
     transformed_changes = []
-    for history in history_list:
+    for story in history_list:
         mongo_id = str(uuid.uuid4())
-        transformed_changes = {
+        transformed_story = {
             "_id": mongo_id,
             "catalogId": "974760673",
-            "dateTime": convert_date(history["created"]),
-            "operations": transform_story(history),
-            "person": getuser(history["author"]),
-            "resourceId": history
+            "dateTime": convert_date(story["created"]),
+            "operations": transform_story(story["items"]),
+            "person": getuser(story["author"]),
+            "resourceId": story
         }
+        if len(transformed_story["operations"]) > 0:
+            transformed_changes.append(transformed_story)
     return transformed_changes
 
 
-def transform_story(history):
+def transform_story(items):
     transformed_operations = []
-    for story in history:
-        for item in story:
-            new_value = item.get("newDisplayValue")
-            if new_value is not None:
-                patch = jsonpatch.JsonPatch.from_diff(
-                    {"fieldType": item["fieldType"],
-                     "field": item["fieldType"],
-                     "value": item.get("oldDisplayValue")},
-                    {"fieldType": item["fieldType"],
-                     "field": item["fieldType"],
-                     "value": new_value
-                     }
-                )
-                transformed_operations.append(patch)
+    for item in items:
+        patch = create_jsonpatch(item)
+        if patch:
+            transformed_operations.append(patch)
     return transformed_operations
+
+
+def create_jsonpatch(item):
+    fdk_field = json_field_map.get(item["field"])
+    operation = {}
+    if fdk_field is not None:
+        # Add
+        if item.get("oldValue") is None and item.get("newValue") is not None:
+            operation["op"] = "add"
+            operation["path"] = fdk_field
+            operation["value"] = item["newValue"]
+        # Replace
+        if item.get("oldValue") is not None and item.get("newValue") is not None:
+            operation["op"] = "replace"
+            operation["path"] = fdk_field
+            operation["value"] = item["newValue"]
+        # Remove
+        if item.get("oldValue") is not None and item.get("newValue") is None:
+            operation["op"] = "remove"
+            operation["path"] = fdk_field
+    else:
+        with open(unknown_fields_file, "a") as myfile:
+            myfile.write(item["field"] + "\n")
+    return operation
 
 
 def getuser(brreg_user):
@@ -82,6 +97,29 @@ brreg_history_file = "brreg_history.json"
 comment_users_file = "transformed_comment_users.json"
 comment_users = openfile(comment_users_file)
 outputfileName = args.outputdirectory + "transformed_history.json"
+unknown_fields_file = args.outputdirectory + "unknown_fields.txt"
+json_field_map = {
+    "summary": "anbefaltTerm/navn/nb",
+    "created": "opprettet",
+    "reporter": "opprettetAv",
+    "Offentlig tilgjengelig": "erPublisert",
+    "status": "status",
+    "assignee": "tildeltBruker",
+    "Alternativ term": "tillattTerm/nb",
+    "Term engelsk": "anbefaltTerm/navn/en",
+    "Term nynorsk": "anbefaltTerm/navn/nn",
+    "Definisjon": "definisjon/tekst/nb",
+    "Definisjon engelsk": "definisjon/tekst/en",
+    "Definisjon nynorsk": "definisjon/tekst/nn",
+    "Eksempel": "eksempel/nb",
+    "Fagområde": "fagområde/nb",
+    #  TODO: "Bruksområde inn i fagområde"
+    "Frarådet term": "frarådetTerm/nb",
+    "Forhold til kilde": "definisjon/kildebeskrivelse/forholdTilKilde",
+    "Kilde til definisjon": "definisjon/kildebeskrivelse/kilde",
+    "Folkelig forklaring": "folkeligForklaring/tekst/nb",
+    "Merknad": "merknad/nb"
+}
 
 with open(outputfileName, 'w', encoding="utf-8") as outfile:
     json.dump(transform(brreg_history_file), outfile, ensure_ascii=False, indent=4)

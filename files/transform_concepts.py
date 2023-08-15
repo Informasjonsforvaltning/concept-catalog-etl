@@ -58,7 +58,7 @@ def transform_concept(concept):
             }
         },
         "erPublisert": "false",
-        "bruksområde": {},
+        "bruksområde": {},  # TODO: Må legges inn i fagområde
         "versjonsnr": {
             "major": 0,
             "minor": 0,
