@@ -15,13 +15,12 @@ def transform(c_file):
 
     for comment_list in comment_file:
         result = transform_comment(comment_file[comment_list])
-        transformed_comments[result.get("_id")] = result
-
+        transformed_comments[comment_list] = result
     return transformed_comments
 
 
 def transform_comment(comment_list):
-    transformed_comments = []
+    transformed_comments = {}
     for comment in comment_list:
         mongo_id = str(uuid.uuid4())
         transformed_comment = {
@@ -35,7 +34,7 @@ def transform_comment(comment_list):
             "topicId": comment,
             "user": getuser(comment["author"])
         }
-        transformed_comments.append(transformed_comment)
+        transformed_comments[transformed_comment["_id"]] = transformed_comment
     return transformed_comments
 
 
