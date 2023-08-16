@@ -13,27 +13,30 @@ def transform(c_file):
     comment_file = openfile(c_file)
     transformed_comments = {}
 
-    for comment in comment_file:
-        result = transform_comment(comment)
+    for comment_list in comment_file:
+        result = transform_comment(comment_file[comment_list])
         transformed_comments[result.get("_id")] = result
 
     return transformed_comments
 
 
-def transform_comment(comment):
-    mongo_id = str(uuid.uuid4())
-    transformed_comment = {
-        "_id": mongo_id,
-        "_class": "no.digdir.catalog_comments_service.model.CommentDBO",
-        "comment": {
-            comment["body"]
-        },
-        "createdDate": convert_date(comment["created"]),
-        "orgNumber": "974760673",
-        "topicId": comment,
-        "user": getuser(comment["author"])
-    }
-    return transformed_comment
+def transform_comment(comment_list):
+    transformed_comments = []
+    for comment in comment_list:
+        mongo_id = str(uuid.uuid4())
+        transformed_comment = {
+            "_id": mongo_id,
+            "_class": "no.digdir.catalog_comments_service.model.CommentDBO",
+            "comment": {
+                comment["body"]
+            },
+            "createdDate": convert_date(comment["created"]),
+            "orgNumber": "974760673",
+            "topicId": comment,
+            "user": getuser(comment["author"])
+        }
+        transformed_comments.append(transformed_comment)
+    return transformed_comments
 
 
 def getuser(brreg_user):
@@ -65,8 +68,8 @@ def convert_date(timestamp):
         return None
 
 
-brreg_comments_file = "brreg_comments.json"
-comment_users_file = "transformed_comment_users.json"
+brreg_comments_file = args.outputdirectory + "brreg_comments.json"
+comment_users_file = args.outputdirectory + "transformed_comment_users.json"
 comment_users = openfile(comment_users_file)
 outputfileName = args.outputdirectory + "transformed_comments.json"
 
