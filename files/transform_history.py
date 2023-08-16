@@ -12,13 +12,13 @@ namespace = uuid.uuid4()
 def transform(h_file):
     history_file = openfile(h_file)
     transformed_history = {}
-    for history_list in history_file:
-        result = transform_change(history_list)
-        transformed_history[history_list] = result
+    for concept_id in history_file:
+        result = transform_change(history_file[concept_id], concept_id)
+        transformed_history[concept_id] = result
     return transformed_history
 
 
-def transform_change(history_list):
+def transform_change(history_list, concept_id):
     transformed_changes = []
     for story in history_list:
         mongo_id = str(uuid.uuid4())
@@ -28,7 +28,7 @@ def transform_change(history_list):
             "dateTime": convert_date(story["created"]),
             "operations": transform_story(story["items"]),
             "person": getuser(story["author"]),
-            "resourceId": story
+            "resourceId": concept_id
         }
         if len(transformed_story["operations"]) > 0:
             transformed_changes.append(transformed_story)
@@ -73,9 +73,9 @@ def getuser(brreg_user):
         user = comment_users[user_id]
         if user["name"] == brreg_user:
             return {
-                "id": brreg_user["_id"],
-                "email": brreg_user["email"],
-                "name": brreg_user["name"]
+                "id": user["_id"],
+                "email": user["email"],
+                "name": user["name"]
             }
     return None
 
@@ -94,8 +94,8 @@ def convert_date(timestamp):
         return None
 
 
-brreg_history_file = "brreg_history.json"
-comment_users_file = "transformed_comment_users.json"
+brreg_history_file = args.outputdirectory + "brreg_history.json"
+comment_users_file = args.outputdirectory + "transformed_comment_users.json"
 comment_users = openfile(comment_users_file)
 outputfileName = args.outputdirectory + "transformed_history.json"
 unknown_fields_file = args.outputdirectory + "unknown_fields.txt"
