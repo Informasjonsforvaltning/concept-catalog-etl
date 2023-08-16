@@ -13,28 +13,26 @@ def transform(c_file):
     comment_file = openfile(c_file)
     transformed_comments = {}
 
-    for comment_list in comment_file:
-        result = transform_comment(comment_file[comment_list])
-        transformed_comments[comment_list] = result
+    for concept_id in comment_file:
+        result = transform_comment(comment_file[concept_id], concept_id)
+        transformed_comments[concept_id] = result
     return transformed_comments
 
 
-def transform_comment(comment_list):
-    transformed_comments = {}
+def transform_comment(comment_list, concept_id):
+    transformed_comments = []
     for comment in comment_list:
         mongo_id = str(uuid.uuid4())
         transformed_comment = {
             "_id": mongo_id,
             "_class": "no.digdir.catalog_comments_service.model.CommentDBO",
-            "comment": {
-                comment["body"]
-            },
+            "comment": comment["body"],
             "createdDate": convert_date(comment["created"]),
             "orgNumber": "974760673",
-            "topicId": comment,
+            "topicId": concept_id,
             "user": getuser(comment["author"])
         }
-        transformed_comments[transformed_comment["_id"]] = transformed_comment
+        transformed_comments.append(transformed_comment)
     return transformed_comments
 
 
