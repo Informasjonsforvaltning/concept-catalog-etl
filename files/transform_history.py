@@ -47,7 +47,7 @@ def transform_story(items):
 def create_jsonpatch(item):
     fdk_field = json_field_map.get(item["field"])
     operation = {}
-    user_field = ["opprettetAv", "tildeltBruker"]
+    user_field = ["/opprettetAv", "/tildeltBruker"]
     if fdk_field is not None and fdk_field not in user_field:
         # Add
         if item.get("oldDisplayValue") is None and item.get("newDisplayValue") is not None:
@@ -69,12 +69,12 @@ def create_jsonpatch(item):
         if item.get("oldValue") is None and item.get("newValue") is not None:
             operation["op"] = "add"
             operation["path"] = fdk_field
-            operation["value"] = item["newDisplayValue"]
+            operation["value"] = item["newValue"]
         # Replace
         if item.get("oldValue") is not None and item.get("newValue") is not None:
             operation["op"] = "replace"
             operation["path"] = fdk_field
-            operation["value"] = item["newDisplayValue"]
+            operation["value"] = item["newValue"]
         # Remove
         if item.get("oldValue") is not None and item.get("newValue") is None:
             operation["op"] = "remove"
@@ -117,26 +117,26 @@ comment_users = openfile(comment_users_file)
 outputfileName = args.outputdirectory + "transformed_history.json"
 unknown_fields_file = args.outputdirectory + "unknown_fields.txt"
 json_field_map = {
-    "summary": "anbefaltTerm/navn/nb",
-    "created": "opprettet",
-    "reporter": "opprettetAv",
-    "Offentlig tilgjengelig": "erPublisert",
-    "status": "status",
-    "assignee": "tildeltBruker",
-    "Alternativ term": "tillattTerm/nb",
-    "Term engelsk": "anbefaltTerm/navn/en",
-    "Term nynorsk": "anbefaltTerm/navn/nn",
-    "Definisjon": "definisjon/tekst/nb",
-    "Definisjon engelsk": "definisjon/tekst/en",
-    "Definisjon nynorsk": "definisjon/tekst/nn",
-    "Eksempel": "eksempel/nb",
-    "Fagområde": "fagområde/nb",
+    "summary": "/anbefaltTerm/navn/nb",
+    "created": "/opprettet",
+    "reporter": "/opprettetAv",
+    "Offentlig tilgjengelig": "/erPublisert",
+    "status": "/status",
+    "assignee": "/tildeltBruker",
+    "Alternativ term": "/tillattTerm/nb",
+    "Term engelsk": "/anbefaltTerm/navn/en",
+    "Term nynorsk": "/anbefaltTerm/navn/nn",
+    "Definisjon": "/definisjon/tekst/nb",
+    "Definisjon engelsk": "/definisjon/tekst/en",
+    "Definisjon nynorsk": "/definisjon/tekst/nn",
+    "Eksempel": "/eksempel/nb",
+    "Fagområde": "/fagområde/nb",
     #  TODO: "Bruksområde inn i fagområde"
-    "Frarådet term": "frarådetTerm/nb",
-    "Forhold til kilde": "definisjon/kildebeskrivelse/forholdTilKilde",
-    "Kilde til definisjon": "definisjon/kildebeskrivelse/kilde",
-    "Folkelig forklaring": "folkeligForklaring/tekst/nb",
-    "Merknad": "merknad/nb"
+    "Frarådet term": "/frarådetTerm/nb",
+    "Forhold til kilde": "/definisjon/kildebeskrivelse/forholdTilKilde",
+    "Kilde til definisjon": "/definisjon/kildebeskrivelse/kilde",
+    "Folkelig forklaring": "/folkeligForklaring/tekst/nb",
+    "Merknad": "/merknad/nb"
 }
 
 with open(outputfileName, 'w', encoding="utf-8") as outfile:
