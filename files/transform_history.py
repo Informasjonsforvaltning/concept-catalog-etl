@@ -82,10 +82,6 @@ def create_jsonpatch(item):
     else:
         with open(unknown_fields_file, "a") as myfile:
             myfile.write(item["field"] + "\n")
-    with open(unknown_fields_file, "r") as unsorted_file:
-        lines = set(unsorted_file.readlines())
-    with open(unknown_fields_file, "w", encoding="utf-8") as sorted_file:
-        sorted_file.writelines(sorted(lines))
     return operation
 
 
@@ -145,3 +141,7 @@ json_field_map = {
 
 with open(outputfileName, 'w', encoding="utf-8") as outfile:
     json.dump(transform(brreg_history_file), outfile, ensure_ascii=False, indent=4)
+with open(unknown_fields_file, "r") as unsorted_file:
+    lines = set(unsorted_file.readlines())
+with open(unknown_fields_file, "w", encoding="utf-8") as sorted_file:
+    sorted_file.writelines(sorted(lines))
