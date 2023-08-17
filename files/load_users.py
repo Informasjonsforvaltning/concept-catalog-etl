@@ -19,11 +19,11 @@ with open(args.outputdirectory + 'transformed_comment_users.json') as user_file:
     total_failed = 0
     fail_log = {}
     for mongo_id in transformed_json:
-        print("Inserting ID: " + mongo_id)
+        # print("Inserting ID: " + mongo_id)
         insert_result = db.user.insert_one(transformed_json[mongo_id])
         if insert_result:
             total_inserted += 1
-            print("Successfully updated: " + mongo_id)
+            # print("Successfully updated: " + mongo_id)
         else:
             total_failed += 1
             print("Update failed: " + mongo_id)
@@ -44,11 +44,11 @@ with open(args.outputdirectory + 'transformed_admin_users.json') as user_file:
     total_failed = 0
     fail_log = {}
     for mongo_id in transformed_json:
-        print("Inserting ID: " + mongo_id)
+        # print("Inserting ID: " + mongo_id)
         insert_result = db.users.insert_one(transformed_json[mongo_id])
         if insert_result:
             total_inserted += 1
-            print("Successfully updated: " + mongo_id)
+            # print("Successfully updated: " + mongo_id)
         else:
             total_failed += 1
             print("Update failed: " + mongo_id)
