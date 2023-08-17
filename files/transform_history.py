@@ -47,24 +47,48 @@ def transform_story(items):
 def create_jsonpatch(item):
     fdk_field = json_field_map.get(item["field"])
     operation = {}
-    if fdk_field is not None:
+    user_field = ["opprettetAv", "tildeltBruker"]
+    if fdk_field is not None and fdk_field not in user_field:
+        # Add
+        if item.get("oldDisplayValue") is None and item.get("newDisplayValue") is not None:
+            operation["op"] = "add"
+            operation["path"] = fdk_field
+            operation["value"] = item["newDisplayValue"]
+        # Replace
+        if item.get("oldDisplayValue") is not None and item.get("newDisplayValue") is not None:
+            operation["op"] = "replace"
+            operation["path"] = fdk_field
+            operation["value"] = item["newDisplayValue"]
+        # Remove
+        if item.get("oldDisplayValue") is not None and item.get("newDisplayValue") is None:
+            operation["op"] = "remove"
+            operation["path"] = fdk_field
+    elif fdk_field is not None and fdk_field in user_field:
+        # For users, we are interested in the newValue-field
         # Add
         if item.get("oldValue") is None and item.get("newValue") is not None:
             operation["op"] = "add"
             operation["path"] = fdk_field
-            operation["value"] = item["newValue"]
+            operation["value"] = item["newDisplayValue"]
         # Replace
         if item.get("oldValue") is not None and item.get("newValue") is not None:
             operation["op"] = "replace"
             operation["path"] = fdk_field
-            operation["value"] = item["newValue"]
+            operation["value"] = item["newDisplayValue"]
         # Remove
         if item.get("oldValue") is not None and item.get("newValue") is None:
             operation["op"] = "remove"
             operation["path"] = fdk_field
     else:
         with open(unknown_fields_file, "a") as myfile:
-            myfile.write(item["field"] + "\n")
+            if item["field"] not in myfile.read():
+                myfile.write(item["field"] + "\n")
+    lines = []
+    with open(unknown_fields_file, "r") as unsorted_file:
+        lines = unsorted_file.readlines()
+    lines.sort()
+    with open(unknown_fields_file, "w", encoding="utf-8") as sorted_file:
+        sorted_file.writelines(lines)
     return operation
 
 
