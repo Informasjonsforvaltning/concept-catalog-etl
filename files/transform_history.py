@@ -81,14 +81,11 @@ def create_jsonpatch(item):
             operation["path"] = fdk_field
     else:
         with open(unknown_fields_file, "a") as myfile:
-            if item["field"] not in myfile.read():
-                myfile.write(item["field"] + "\n")
-    lines = []
+            myfile.write(item["field"] + "\n")
     with open(unknown_fields_file, "r") as unsorted_file:
-        lines = unsorted_file.readlines()
-    lines.sort()
+        lines = set(unsorted_file.readlines())
     with open(unknown_fields_file, "w", encoding="utf-8") as sorted_file:
-        sorted_file.writelines(lines)
+        sorted_file.writelines(sorted(lines))
     return operation
 
 
