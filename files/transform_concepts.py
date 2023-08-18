@@ -95,7 +95,16 @@ def transform_concept(concept):
                     .get("value")
                 )
         },
-        "erPublisert": "false",  # TODO: Migrere skjultEksternt inn i denne
+        "erPublisert": "false",  # TODO: Migrere skjultEksternt inn i denne, med motsatt verdi, må sikre at begrepet er publiserbart
+        "fagområde": {
+            "nb": [
+                concept["voc_names"][concept["term"]["vocabIdentifier"] + ":Skatteetaten"]["properties"]["http://purl.org/dc/elements/1.1/title"]["value"]
+            ]
+            #  TODO: Må kanskje ta høyde for om fagområde allerede finnes
+            #   Ligger alle fagområder for alle begrep samlet i voc_names?
+            #   Har alle strukturen vocabId:Skatteetaten?
+            #   Skal være en kodeliste
+        },
         "frarådetTerm": {
             "nb": getstrings(
                 concept["term"]
