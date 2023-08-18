@@ -30,7 +30,7 @@ with open(args.outputdirectory + 'transformed_history.json') as history_file:
     for mongo_id in transformed_json:
         print("Inserting history for concept: " + mongo_id)
         for history in transformed_json[mongo_id]:
-            transformed_history = convert_iso(transformed_json[mongo_id])
+            transformed_history = convert_iso(history)
             # print("Inserting ID: " + transformed_history["_id"])
             insert_result = db.updates.insert_one(transformed_history)
             if insert_result:

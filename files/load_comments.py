@@ -30,9 +30,9 @@ with open(args.outputdirectory + 'transformed_comments.json') as comment_file:
     for mongo_id in transformed_json:
         print("Inserting history for concept: " + mongo_id)
         for comment in transformed_json[mongo_id]:
-            transformed_comment = convert_iso(transformed_json[mongo_id])
+            transformed_comment = convert_iso(comment)
             # print("Inserting ID: " + mongo_id)
-            insert_result = db.comments.insert_one(transformed_comment)
+            insert_result = db.comment.insert_one(transformed_comment)
             if insert_result:
                 total_inserted += 1
                 # print("Successfully updated: " + mongo_id)
