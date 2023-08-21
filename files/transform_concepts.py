@@ -26,18 +26,18 @@ def transform(c_file):
 #  •	Skjult eksternt er et felt med boolske verdier, Ja betyr at begrepet ikke er publisert på FDK.
 #  •	Skal brukes til Publiseringstilstand.
 #  Internfelt:
-#  «Teknisk begrepsnavn»:  - Vil ha som internfelt
+#  «Teknisk begrepsnavn»:  - Vil ha som internfelt -> Lagt inn
 #       Dette feltet bruker vi til å beskrive hvordan begrepet ser ut i LowerCamelCase.
-#  «Kildetype» - Vil ha som internfelt
+#  «Kildetype» - Vil ha som internfelt  -> Lagt inn
 #  •	Kildetype er forhold til kilde: sitat fra kilde, basert på kilde eller egendefinert
-#  «Ansvarlig organisatorisk enhet»: - interne felt
+#  «Ansvarlig organisatorisk enhet»: - interne felt  -> Lagt inn
 #  •	Dette er et internt felt vi skal fase ut over tid, men trenger til å begynne med.
 #  •	Det er ikke det samme som ansvarligVirksomhet.
 #  •	Tekstfelt
-#  «Teknisk term» / «Egenskapsnavn» / «Forretningsbegrep» - interne felt
+#  «Teknisk term» / «Egenskapsnavn» / «Forretningsbegrep» - interne felt  -> Lagt inn
 #  •	Disse feltene skal migreres over.
 #  •	Det er interne felt for Skatteetaten.
-#  «Forvaltningsmerknad» / «Beslutningskommentar»: - interne felt
+#  «Forvaltningsmerknad» / «Beslutningskommentar»: - interne felt  -> Lagt inn
 #  •	Dette er felt vi på sikt skal vurdere å ta bort, men som det er viktig at vi migrerer nå.
 #  •	Jeg tenker det beste er å få de inn som interne felt, på lik linje med andre interne felt.
 
