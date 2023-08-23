@@ -37,7 +37,6 @@ def transform(u_file):
 
 # TODO:
 # "Offentlig tilgjengelig?" , se nedenfor
-# Har de kilde til folkelig forklaring?
 
 # Interne felt:
 # "Ekstern begrepseier" ?
