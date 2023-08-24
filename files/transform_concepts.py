@@ -26,20 +26,12 @@ def transform(c_file):
 #  •	Skjult eksternt er et felt med boolske verdier, Ja betyr at begrepet ikke er publisert på FDK.
 #  •	Skal brukes til Publiseringstilstand.
 #  Internfelt:
-#  «Teknisk begrepsnavn»:  - Vil ha som internfelt -> Lagt inn
-#       Dette feltet bruker vi til å beskrive hvordan begrepet ser ut i LowerCamelCase.
 #  «Kildetype» - Vil ha som internfelt  -> Lagt inn
 #  •	Kildetype er forhold til kilde: sitat fra kilde, basert på kilde eller egendefinert
 #  «Ansvarlig organisatorisk enhet»: - interne felt  -> Lagt inn
 #  •	Dette er et internt felt vi skal fase ut over tid, men trenger til å begynne med.
 #  •	Det er ikke det samme som ansvarligVirksomhet.
 #  •	Tekstfelt
-#  «Teknisk term» / «Egenskapsnavn» / «Forretningsbegrep» - interne felt  -> Lagt inn
-#  •	Disse feltene skal migreres over.
-#  •	Det er interne felt for Skatteetaten.
-#  «Forvaltningsmerknad» / «Beslutningskommentar»: - interne felt  -> Lagt inn
-#  •	Dette er felt vi på sikt skal vurdere å ta bort, men som det er viktig at vi migrerer nå.
-#  •	Jeg tenker det beste er å få de inn som interne felt, på lik linje med andre interne felt.
 
 
 def transform_concept(concept):
@@ -105,6 +97,27 @@ def transform_concept(concept):
             #   Har alle strukturen vocabId:Skatteetaten?
             #   Skal være en kodeliste
         },
+        "folkeligForklaring": {
+            "tekst": {
+                "nb":
+                    concept["term"]
+                    .get("properties")
+                    .get("http://www.skatteetaten.no/schema/properties/popularExplanation")
+                    .get("value")
+            },
+            "kildebeskrivelse": {
+                "forholdTilKilde": None,
+                "kilde":
+                    getstrings(
+                        concept["term"]
+                        .get("properties")
+                        .get("http://www.skatteetaten.no/schema/properties/sourceForPopularExplanation", {})
+                        .get("value")
+                    )
+            }
+        },
+        # {"tekst": {"nb": "dette er en definisjon for allmennheten på det nye begrepet", "nn": "nynorsk ",
+        #            "en": "engelsk"}, "kildebeskrivelse": {"forholdTilKilde": "EGENDEFINERT", "kilde": []}}
         "frarådetTerm": {
             "nb": getstrings(
                 concept["term"]
@@ -112,6 +125,61 @@ def transform_concept(concept):
                 .get("http://www.w3.org/2004/02/skos/core#hiddenLabel", {})
                 .get("value")
             )
+        },
+        "interneFelt": {
+            # Ansvarlig organisatorisk enhet
+            "337872c1-36e8-4d2c-a52c-bef0c0437b58": {
+                "value": concept["term"]
+                .get("properties")
+                .get("http://www.skatteetaten.no/schema/properties/responsibleOrganisationalUnit", {})
+                .get("value")
+            },
+            # Beslutningskommentar
+            "7280610b-0fcd-4ec3-8da7-c7ad32fd76dc": {
+                "value": concept["term"]
+                .get("properties")
+                .get("http://www.w3.org/2004/02/skos/core#changeNote", {})
+                .get("value")
+            },
+            # Egenskapsnavn
+            "cd68dbc3-eea4-4a47-bd1d-c0d7650222f8": {
+                "value": convert_bool(
+                    concept["term"]
+                    .get("properties")
+                    .get("http://www.skatteetaten.no/schema/properties/propertyName", {})
+                    .get("value")
+                )
+            },
+            # Forretningsbegrep
+            "76fed193-c34d-469f-b38d-6a236f247fcc": {
+                "value": convert_bool(
+                    concept["term"]
+                    .get("properties")
+                    .get("http://www.skatteetaten.no/schema/properties/businessConcept", {})
+                    .get("value")
+                )
+            },
+            # Forvaltningsmerknad
+            "ea21bbec-a262-4223-b234-09045c499098": {
+                "value": concept["term"]
+                .get("properties")
+                .get("http://www.skatteetaten.no/schema/properties/forvaltningsmerknad", {})
+                .get("value")
+            },
+            # Kildetype
+            "95f567ce-001d-411c-8da4-de58c6880413": {
+                "value": concept["term"]
+                .get("properties")
+                .get("http://www.skatteetaten.no/schema/properties/sourceType", {})
+                .get("value")
+            },
+            # Teknisk begrepsnavn
+            "5dc1d0ba-1638-4ed8-b5b4-ea4fa43df5d3": {
+                "value": concept["term"]
+                .get("properties")
+                .get("http://www.skatteetaten.no/schema/properties/tekniskTerm", {})
+                .get("value")
+            }
         },
         "kildebeskrivelse": {
             "forholdTilKilde":
@@ -186,6 +254,20 @@ def transform_concept(concept):
 def openfile(file_name):
     with open(file_name) as json_file:
         return json.load(json_file)
+
+
+def convert_bool(string_value):
+    if string_value:
+        if string_value.lower() == "ja":
+            return "true"
+        elif string_value.lower() == "nei":
+            return "false"
+        else:
+            print("Warning - Expected boolean value is not ja/nei: " + string_value)
+            print("Returning noneValue")
+            return None
+    else:
+        return string_value
 
 
 def getstrings(value):
