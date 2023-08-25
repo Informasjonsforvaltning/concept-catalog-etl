@@ -39,10 +39,10 @@ with open(args.outputdirectory + 'transformed_concepts.json') as begrep_file:
         insert_result = db.begrep.insert_one(transformed_begrep)
         if insert_result:
             total_inserted += 1
-            print("Successfully updated: " + mongo_id)
+            print("Successfully inserted: " + mongo_id)
         else:
             total_failed += 1
-            print("Update failed: " + mongo_id)
+            print("Insertion failed: " + mongo_id)
             fail_log[mongo_id] = transformed_json[mongo_id]
     print("Total number of concepts inserted: " + str(total_inserted))
     print("Total number of concept inserts failed: " + str(total_failed))

@@ -55,6 +55,28 @@ def transform_concept(concept):
                 .get("properties")
                 .get("http://purl.org/dc/elements/1.1/description", {})
                 .get("value")
+            },
+            "kildebeskrivelse": {
+                "forholdTilKilde":
+                    mapkildetype(
+                        concept["term"]
+                        .get("properties")
+                        .get("http://www.skatteetaten.no/schema/properties/sourceType", {})
+                        .get("value")
+                    ),
+                "kilde": geturitekst(getstrings(
+                    concept["term"]
+                    .get("properties")
+                    .get("http://www.skatteetaten.no/schema/properties/sourceOfDefinition", {})
+                    .get("value")
+                    ))
+                    +
+                    geturi(getstrings(
+                        concept["term"]
+                        .get("properties")
+                        .get("http://www.skatteetaten.no/schema/properties/urlSourceOfDefinition", {})
+                        .get("value")
+                    ))
             }
         },
         "eksempel": {
@@ -164,28 +186,6 @@ def transform_concept(concept):
                 .get("http://www.skatteetaten.no/schema/properties/tekniskTerm", {})
                 .get("value")
             }
-        },
-        "kildebeskrivelse": {
-            "forholdTilKilde":
-                mapkildetype(
-                    concept["term"]
-                    .get("properties")
-                    .get("http://www.skatteetaten.no/schema/properties/sourceType", {})
-                    .get("value")
-                ),
-            "kilde": geturitekst(getstrings(
-                concept["term"]
-                .get("properties")
-                .get("http://www.skatteetaten.no/schema/properties/sourceOfDefinition", {})
-                .get("value")
-                ))
-                +
-                geturi(getstrings(
-                    concept["term"]
-                    .get("properties")
-                    .get("http://www.skatteetaten.no/schema/properties/urlSourceOfDefinition", {})
-                    .get("value")
-                ))
         },
         "merknad": {
             "nb": getstrings(
