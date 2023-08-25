@@ -64,19 +64,18 @@ def transform_concept(concept):
                         .get("http://www.skatteetaten.no/schema/properties/sourceType", {})
                         .get("value")
                     ),
-                "kilde": geturitekst(getstrings(
-                    concept["term"]
-                    .get("properties")
-                    .get("http://www.skatteetaten.no/schema/properties/sourceOfDefinition", {})
-                    .get("value")
-                    ))
-                    +
-                    geturi(getstrings(
+                "kilde": {
+                    "tekst":
+                        concept["term"]
+                        .get("properties")
+                        .get("http://www.skatteetaten.no/schema/properties/sourceOfDefinition", {})
+                        .get("value"),
+                    "uri":
                         concept["term"]
                         .get("properties")
                         .get("http://www.skatteetaten.no/schema/properties/urlSourceOfDefinition", {})
                         .get("value")
-                    ))
+                }
             }
         },
         "eksempel": {
@@ -121,12 +120,10 @@ def transform_concept(concept):
             },
             "kildebeskrivelse": {
                 "kilde":
-                    getstrings(
-                        concept["term"]
-                        .get("properties")
-                        .get("http://www.skatteetaten.no/schema/properties/sourceForPopularExplanation", {})
-                        .get("value")
-                    )
+                    concept["term"]
+                    .get("properties")
+                    .get("http://www.skatteetaten.no/schema/properties/sourceForPopularExplanation", {})
+                    .get("value")
             }
         },
         # {"tekst": {"nb": "dette er en definisjon for allmennheten på det nye begrepet", "nn": "nynorsk ",
@@ -188,12 +185,11 @@ def transform_concept(concept):
             }
         },
         "merknad": {
-            "nb": getstrings(
+            "nb":
                 concept["term"]
                 .get("properties")
                 .get("http://www.skatteetaten.no/schema/properties/conceptNote", {})
                 .get("value")
-            )
         },
         "originaltBegrep": concept["term"].get("identifier"),
         "status": setstatus(
@@ -259,14 +255,6 @@ def getstrings(value):
         return value.split(";")
     else:
         return []
-
-
-def geturitekst(string_list):
-    return [{"tekst": string} for string in string_list]
-
-
-def geturi(string_list):
-    return [{"uri": string} for string in string_list]
 
 
 def mapkildetype(kildetype):
