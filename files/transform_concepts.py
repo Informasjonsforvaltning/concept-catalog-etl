@@ -64,7 +64,7 @@ def transform_concept(concept):
                         .get("http://www.skatteetaten.no/schema/properties/sourceType", {})
                         .get("value")
                     ),
-                "kilde": {
+                "kilde": [{
                     "tekst":
                         concept["term"]
                         .get("properties")
@@ -75,7 +75,7 @@ def transform_concept(concept):
                         .get("properties")
                         .get("http://www.skatteetaten.no/schema/properties/urlSourceOfDefinition", {})
                         .get("value")
-                }
+                    }]
             }
         },
         "eksempel": {
