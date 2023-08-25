@@ -24,9 +24,6 @@ def transform(c_file):
 #  «Skjult eksternt»: - erPublisert
 #  •	Skjult eksternt er et felt med boolske verdier, Ja betyr at begrepet ikke er publisert på FDK.
 #  •	Skal brukes til Publiseringstilstand.
-#  Internfelt:
-#  «Kildetype» - Vil ha som internfelt  -> Lagt inn
-#  •	Kildetype er forhold til kilde: sitat fra kilde, basert på kilde eller egendefinert
 
 
 def transform_concept(concept):
