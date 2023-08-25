@@ -1,7 +1,6 @@
 import json
 import argparse
 import datetime
-import sys
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-o', '--outputdirectory', help="the path to the directory of the output files", required=True)
@@ -28,10 +27,6 @@ def transform(c_file):
 #  Internfelt:
 #  «Kildetype» - Vil ha som internfelt  -> Lagt inn
 #  •	Kildetype er forhold til kilde: sitat fra kilde, basert på kilde eller egendefinert
-#  «Ansvarlig organisatorisk enhet»: - interne felt  -> Lagt inn
-#  •	Dette er et internt felt vi skal fase ut over tid, men trenger til å begynne med.
-#  •	Det er ikke det samme som ansvarligVirksomhet.
-#  •	Tekstfelt
 
 
 def transform_concept(concept):
@@ -106,7 +101,6 @@ def transform_concept(concept):
                     .get("value")
             },
             "kildebeskrivelse": {
-                "forholdTilKilde": None,
                 "kilde":
                     getstrings(
                         concept["term"]
@@ -164,13 +158,6 @@ def transform_concept(concept):
                 "value": concept["term"]
                 .get("properties")
                 .get("http://www.skatteetaten.no/schema/properties/forvaltningsmerknad", {})
-                .get("value")
-            },
-            # Kildetype
-            "95f567ce-001d-411c-8da4-de58c6880413": {
-                "value": concept["term"]
-                .get("properties")
-                .get("http://www.skatteetaten.no/schema/properties/sourceType", {})
                 .get("value")
             },
             # Teknisk begrepsnavn
