@@ -1,12 +1,14 @@
 import json
 import argparse
 import uuid
+import random
 from datetime import datetime
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-o', '--outputdirectory', help="the path to the directory of the output files", required=True)
 args = parser.parse_args()
-namespace = uuid.uuid4()
+rd = random.Random()
+rd.seed(5)
 
 
 def transform(c_file):
@@ -22,7 +24,7 @@ def transform(c_file):
 def transform_comment(comment_list, concept_id):
     transformed_comments = []
     for comment in comment_list:
-        mongo_id = str(uuid.uuid4())
+        mongo_id = uuid.UUID(int=rd.getrandbits(128), version=4)
         transformed_comment = {
             "_id": mongo_id,
             "_class": "no.digdir.catalog_comments_service.model.CommentDBO",

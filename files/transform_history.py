@@ -1,12 +1,14 @@
 import json
 import argparse
 import uuid
+import random
 from datetime import datetime
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-o', '--outputdirectory', help="the path to the directory of the output files", required=True)
 args = parser.parse_args()
-namespace = uuid.uuid4()
+rd = random.Random()
+rd.seed(10)
 
 
 def transform(h_file):
@@ -21,7 +23,7 @@ def transform(h_file):
 def transform_change(history_list, concept_id):
     transformed_changes = []
     for story in history_list:
-        mongo_id = str(uuid.uuid4())
+        mongo_id = uuid.UUID(int=rd.getrandbits(128), version=4)
         transformed_story = {
             "_id": mongo_id,
             "catalogId": "974760673",

@@ -1,10 +1,13 @@
 import json
 import argparse
 import uuid
+import random
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-o', '--outputdirectory', help="the path to the directory of the output files", required=True)
 args = parser.parse_args()
+rd = random.Random()
+rd.seed(15)
 
 
 def transform(u_file, usertype):
@@ -15,14 +18,14 @@ def transform(u_file, usertype):
     project = next(prj for prj in projects if prj["name"] == "BEGREP")
     users = project["users"]
     for user in users:
-        result = transform_user(user, usertype)
-        transformed_users[result.get("_id")] = result
+        mongo_id = uuid.UUID(int=rd.getrandbits(128), version=4)
+        result = transform_user(user, usertype, mongo_id)
+        transformed_users[mongo_id] = result
 
     return transformed_users
 
 
-def transform_user(user, usertype):
-    mongo_id = str(uuid.uuid4())
+def transform_user(user, usertype, mongo_id):
     transformed_user = {}
     if usertype == "comment":
         transformed_user = {

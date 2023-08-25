@@ -1,12 +1,14 @@
 import json
 import argparse
 import uuid
+import random
 from datetime import datetime
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-o', '--outputdirectory', help="the path to the directory of the output files", required=True)
 args = parser.parse_args()
-namespace = uuid.uuid4()
+rd = random.Random()
+rd.seed(0)
 
 
 def transform(u_file):
@@ -21,12 +23,13 @@ def transform(u_file):
     project = next(prj for prj in projects if prj["name"] == "BEGREP")
     concepts = project["issues"]
     for concept in concepts:
-        result = transform_concept(concept)
-        transformed_concepts[result.get("_id")] = result
+        mongo_id = uuid.UUID(int=rd.getrandbits(128), version=4)
+        result = transform_concept(concept, mongo_id)
+        transformed_concepts[mongo_id] = result
         if concept.get("comments") is not None:
-            comments[result.get("_id")] = concept["comments"]
+            comments[mongo_id] = concept["comments"]
         if concept.get("history") is not None:
-            history[result.get("_id")] = concept["history"]
+            history[mongo_id] = concept["history"]
 
     with open(comments_filename, 'w', encoding="utf-8") as brreg_comments_file:
         json.dump(comments, brreg_comments_file, ensure_ascii=False, indent=4)
@@ -45,8 +48,7 @@ def transform(u_file):
 # "Kilde til merknad" ? "Ikke strengt nødvendig, men da er det greit å få migrert denne informasjonen over til "kilde til definisjon"
 
 
-def transform_concept(concept):
-    mongo_id = str(uuid.uuid4())
+def transform_concept(concept, mongo_id):
     transformed_concept = {
         "_id": mongo_id,
         "_class": "no.fdk.concept_catalog.model.Begrep",
