@@ -29,7 +29,7 @@ def transform(c_file):
 def transform_concept(concept):
     transformed_concept = {
         "_id": concept["term"].get("identifier"),
-        "_class": "no.fdk.concept_catalog.model.Begrep",
+        "_class": "no.fdk.concept_catalog.model.BegrepDBO",
         "anbefaltTerm": {
             "navn": {
                 "nb": concept["term"]
@@ -65,15 +65,15 @@ def transform_concept(concept):
                         .get("value")
                     ),
                 "kilde": [{
-                    "tekst":
-                        concept["term"]
-                        .get("properties")
-                        .get("http://www.skatteetaten.no/schema/properties/sourceOfDefinition", {})
-                        .get("value"),
                     "uri":
                         concept["term"]
                         .get("properties")
                         .get("http://www.skatteetaten.no/schema/properties/urlSourceOfDefinition", {})
+                        .get("value"),
+                    "tekst":
+                        concept["term"]
+                        .get("properties")
+                        .get("http://www.skatteetaten.no/schema/properties/sourceOfDefinition", {})
                         .get("value")
                     }]
             }
@@ -119,11 +119,12 @@ def transform_concept(concept):
                     .get("value")
             },
             "kildebeskrivelse": {
-                "kilde":
+                "kilde": [{
                     concept["term"]
                     .get("properties")
                     .get("http://www.skatteetaten.no/schema/properties/sourceForPopularExplanation", {})
                     .get("value")
+                }]
             }
         },
         # {"tekst": {"nb": "dette er en definisjon for allmennheten på det nye begrepet", "nn": "nynorsk ",
