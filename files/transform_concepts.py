@@ -42,9 +42,6 @@ def transform(u_file):
 # "Offentlig tilgjengelig?" , se nedenfor
 
 # Interne felt:
-# "Ekstern begrepseier" ?
-# "Forslag til fagområde" ? "forslag til fagområde er et enkelt tekstfelt"
-# "Forkortelse" ?
 # "Kilde til merknad" ? "Ikke strengt nødvendig, men da er det greit å få migrert denne informasjonen over til "kilde til definisjon"
 
 
@@ -75,7 +72,7 @@ def transform_concept(concept, mongo_id):
             "harEpost": "informasjonsforvaltning@brreg.no",
             "harTelefon": "+47 75007500"
         },
-        "tildeltBruker": getuser(concept["assignee"])["_id"]
+        "assignedUser": getuser(concept["assignee"])["_id"]
     }
     if len(concept["history"]) > 0:
         transformed_concept["endringslogelement"] = {
@@ -142,11 +139,27 @@ def transform_concept(concept, mongo_id):
             ]
             transformed_concept["eksempel"] = eksempel
 
+        # Ekstern begrepseier (internfelt)
+        if field["fieldName"] == "Ekstern begrepseier":
+            internal_fields = transformed_concept.get("interneFelt", {})
+            internal_fields["0da72785-ede5-49ab-b2de-20f7790320f0"]["value"] = field["value"]
+            transformed_concept["interneFelt"] = internal_fields
+
         # Fagområde
         if field["fieldName"] == "Fagområde":
             subject_area = transformed_concept.get("fagområde", {})
             subject_area["nb"] = field["value"]
             transformed_concept["fagområde"] = subject_area
+
+        # Forkortelse
+        if field["fieldName"] == "Forkortelse":
+            transformed_concept["abbreviatedLabel"] = field["value"]
+
+        # Forslag til fagområde (internfelt)
+        if field["fieldName"] == "Forslag til fagområde":
+            internal_fields = transformed_concept.get("interneFelt", {})
+            internal_fields["568acb38-485c-445f-a773-caace03a8483"]["value"] = field["value"]
+            transformed_concept["interneFelt"] = internal_fields
 
         # FrarådetTerm
         if field["fieldName"] == "Frarådet term":
@@ -156,6 +169,7 @@ def transform_concept(concept, mongo_id):
             ]
             transformed_concept["frarådetTerm"] = unadvisedTerm
 
+        # Forhold til kilde
         if field["fieldName"] == "Forhold til kilde":
             definisjon = transformed_concept.get("definisjon", {})
             kildebeskrivelse = definisjon.get("kildebeskrivelse", {})
@@ -163,12 +177,20 @@ def transform_concept(concept, mongo_id):
             definisjon["kildebeskrivelse"] = kildebeskrivelse
             transformed_concept["definisjon"] = definisjon
 
+        # Kilde til definisjon
         if field["fieldName"] == "Kilde til definisjon":
             definisjon = transformed_concept.get("definisjon", {})
             kildebeskrivelse = definisjon.get("kildebeskrivelse", {})
             kildebeskrivelse["kilde"] = geturitekst(getstrings(field["value"]))
             definisjon["kildebeskrivelse"] = kildebeskrivelse
             transformed_concept["definisjon"] = definisjon
+
+        # Kilde til merknad
+        # if field["fieldName"] == "Kilde til merknad":
+        #     definisjon = transformed_concept.get("definisjon", {})
+        #     kildebeskrivelse = definisjon.get("kildebeskrivelse", {})
+            # TODO: Legg inn kilde til merknad i kilde til definisjon.
+            #  Vil vi merke disse så de kan skilles?
 
         # Folkelig forklaring
         if field["fieldName"] == "Folkelig forklaring":
