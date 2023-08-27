@@ -120,10 +120,11 @@ def transform_concept(concept):
             },
             "kildebeskrivelse": {
                 "kilde": [{
-                    concept["term"]
-                    .get("properties")
-                    .get("http://www.skatteetaten.no/schema/properties/sourceForPopularExplanation", {})
-                    .get("value")
+                    "tekst":
+                        concept["term"]
+                        .get("properties")
+                        .get("http://www.skatteetaten.no/schema/properties/sourceForPopularExplanation", {})
+                        .get("value")
                 }]
             }
         },
@@ -218,8 +219,7 @@ def transform_concept(concept):
                 .get("properties")
                 .get("http://www.skatteetaten.no/schema/properties/validFrom", {})
                 .get("value")
-            )
-        ,
+            ),
         "gyldigTom":
             convert_date(
                 concept["term"]
