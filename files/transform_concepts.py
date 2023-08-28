@@ -46,7 +46,7 @@ def transform(u_file):
 def transform_concept(concept, mongo_id):
     transformed_concept = {
         "_id": mongo_id,
-        "_class": "no.fdk.concept_catalog.model.Begrep",
+        "_class": "no.fdk.concept_catalog.model.BegrepDBO",
         "ansvarligVirksomhet": {
             "_id": "974760673"
         },
