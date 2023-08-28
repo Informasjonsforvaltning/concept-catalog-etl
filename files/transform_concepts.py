@@ -12,11 +12,12 @@ def transform(c_file):
 
     for key in concepts:
         concept = concepts[key]
-        transformed_fagomrade = join_values(concept.get("fagområde"), concept.get("bruksområde"))
-        transformed_concept = {}
-        if len(transformed_fagomrade) > 0:
-            transformed_concept["fagområde"] = transformed_fagomrade
-            transformed_concepts[key] = transformed_concept
+        status_uri = set_status(concept, get_highest_published_version(concepts, concept["originalId"]))
+        transformed_concept = {
+            "statusURI": status_uri
+        }
+        transformed_concepts[key] = transformed_concept
+
     return transformed_concepts
 
 
@@ -25,20 +26,41 @@ def openfile(file_name):
         return json.load(json_file)
 
 
-def join_values(fagomrade, bruksomrade):
-    new_fagomrade = {}
-    if bruksomrade:
-        for language in bruksomrade:
-            new_fagomrade[language] = bruksomrade[language]
-    if fagomrade:
-        for language in fagomrade:
-            if fagomrade[language] is not None:
-                lang_list = new_fagomrade.get(language)
-                if lang_list is None:
-                    lang_list = []
-                lang_list.append(fagomrade[language])
-                new_fagomrade[language] = lang_list
-    return new_fagomrade
+def get_highest_published_version(concepts, originalId):
+    highest_version = {"major": 0, "minor": 0, "patch": 1}
+    for concept in concepts:
+        if concept["originalId"] == originalId and (concept["versjonsnr"], highest_version):
+            highest_version = concept["versjonsnr"]
+    return highest_version
+
+
+def compare_semver(sv_1, sv_2):
+    if sv_1["major"] > sv_2["major"]:
+        return True
+    elif sv_1["major"] < sv_2["major"]:
+        return False
+    elif sv_1["minor"] > sv_2["minor"]:
+        return True
+    elif sv_1["minor"] < sv_2["minor"]:
+        return False
+    else:
+        return sv_1["patch"] >= sv_2["patch"]
+
+
+def set_status(concept, highest_published_version):
+    if concept["status"] == "UTKAST":
+        return "http://publications.europa.eu/resource/authority/concept-status/DRAFT"
+    elif concept["status"] == "HOERING":
+        return "http://publications.europa.eu/resource/authority/concept-status/CANDIDATE"
+    elif concept["status"] == "GODKJENT" or concept["status"] == "PUBLISERT":
+        if not bool(concept["erPublisert"]):
+            return "http://publications.europa.eu/resource/authority/concept-status/CURRENT"
+        elif compare_semver(highest_published_version, concept["versjonsnr"]):
+            return "http://publications.europa.eu/resource/authority/concept-status/DEPRECATED"
+        else:
+            return "http://publications.europa.eu/resource/authority/concept-status/CURRENT"
+    else:
+        print("Unknown status: " + concept["status"])
 
 
 concepts_file = args.outputdirectory + "mongo_concepts.json"

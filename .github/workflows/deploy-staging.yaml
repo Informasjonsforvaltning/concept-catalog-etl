@@ -3,7 +3,7 @@ name: Build and deploy to staging when pull request is created
 on:
   push:
     branches:
-      - chore/hos/etl-bruksfagområde
+      - chore/hos/etl-statusURI
 
 jobs:
   build-and-deploy:
