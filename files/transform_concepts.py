@@ -12,7 +12,7 @@ def transform(c_file):
 
     for key in concepts:
         concept = concepts[key]
-        status_uri = set_status(concept, get_highest_published_version(concepts, concept["originalId"]))
+        status_uri = set_status(concept, get_highest_published_version(concepts, concept["originaltBegrep"]))
         transformed_concept = {
             "statusURI": status_uri
         }
@@ -28,8 +28,9 @@ def openfile(file_name):
 
 def get_highest_published_version(concepts, originalId):
     highest_version = {"major": 0, "minor": 0, "patch": 1}
-    for concept in concepts:
-        if concept["originalId"] == originalId and (concept["versjonsnr"], highest_version):
+    for key in concepts:
+        concept = concepts[key]
+        if concept["originaltBegrep"] == originalId and (concept["versjonsnr"], highest_version):
             highest_version = concept["versjonsnr"]
     return highest_version
 
