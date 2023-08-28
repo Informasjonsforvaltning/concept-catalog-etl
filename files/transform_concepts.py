@@ -40,9 +40,7 @@ def transform(u_file):
 
 # TODO:
 # "Offentlig tilgjengelig?" , se nedenfor
-
-# Interne felt:
-# "Kilde til merknad" ? "Ikke strengt nødvendig, men da er det greit å få migrert denne informasjonen over til "kilde til definisjon"
+# Bruksområde
 
 
 def transform_concept(concept, mongo_id):
@@ -58,7 +56,7 @@ def transform_concept(concept, mongo_id):
             }
         },
         "erPublisert": "false",
-        "bruksområde": {},  # TODO: Må legges inn i fagområde
+        # "bruksområde": {},  # TODO: Må legges inn i fagområde
         "versjonsnr": {
             "major": 0,
             "minor": 0,
@@ -111,6 +109,14 @@ def transform_concept(concept, mongo_id):
             term["navn"] = name
             transformed_concept["anbefaltTerm"] = term
 
+        # Fagområde & Bruksområde
+        if field["fieldName"] == "Fagområde" or field["fieldName"] == "Bruksområde":
+            subject_area = transformed_concept.get("fagområde", {})
+            text_list = subject_area.get("nb", [])
+            text_list.append(field["value"])
+            subject_area["nb"] = text_list
+            transformed_concept["fagområde"] = subject_area
+
         # Definisjon
         if field["fieldName"] == "Definisjon":
             definisjon = transformed_concept.get("definisjon", {})
@@ -148,7 +154,9 @@ def transform_concept(concept, mongo_id):
         # Fagområde
         if field["fieldName"] == "Fagområde":
             subject_area = transformed_concept.get("fagområde", {})
-            subject_area["nb"] = field["value"]
+            text_list = subject_area.get("nb", [])
+            text_list.append(field["value"])
+            subject_area["nb"] = text_list
             transformed_concept["fagområde"] = subject_area
 
         # Forkortelse
@@ -181,16 +189,21 @@ def transform_concept(concept, mongo_id):
         if field["fieldName"] == "Kilde til definisjon":
             definisjon = transformed_concept.get("definisjon", {})
             kildebeskrivelse = definisjon.get("kildebeskrivelse", {})
-            kildebeskrivelse["kilde"] = geturitekst(getstrings(field["value"]))
+            kilde = kildebeskrivelse.get("kilde", [])
+            kilde.append(geturitekst(getstrings(field["value"])))
+            kildebeskrivelse["kilde"] = kilde
             definisjon["kildebeskrivelse"] = kildebeskrivelse
             transformed_concept["definisjon"] = definisjon
 
         # Kilde til merknad
-        # if field["fieldName"] == "Kilde til merknad":
-        #     definisjon = transformed_concept.get("definisjon", {})
-        #     kildebeskrivelse = definisjon.get("kildebeskrivelse", {})
-            # TODO: Legg inn kilde til merknad i kilde til definisjon.
-            #  Vil vi merke disse så de kan skilles?
+        if field["fieldName"] == "Kilde til merknad":
+            definisjon = transformed_concept.get("definisjon", {})
+            kildebeskrivelse = definisjon.get("kildebeskrivelse", {})
+            kilde = kildebeskrivelse.get("kilde", [])
+            kilde.append(getmerknadtekst(getstrings(field["value"])))
+            kildebeskrivelse["kilde"] = kilde
+            definisjon["kildebeskrivelse"] = kildebeskrivelse
+            transformed_concept["definisjon"] = definisjon
 
         # Folkelig forklaring
         if field["fieldName"] == "Folkelig forklaring":
@@ -248,6 +261,10 @@ def mapkildetype(kildetype):
 
 def geturitekst(string_list):
     return [{"tekst": string} for string in string_list]
+
+
+def getmerknadtekst(string_list):
+    return [{"tekst": "Kilde til merknad: " + string} for string in string_list]
 
 
 def getstrings(value):
