@@ -30,7 +30,7 @@ def get_highest_published_version(concepts, originalId):
     highest_version = {"major": 0, "minor": 0, "patch": 1}
     for key in concepts:
         concept = concepts[key]
-        if concept["originaltBegrep"] == originalId and (concept["versjonsnr"], highest_version):
+        if concept["originaltBegrep"] == originalId and compare_semver(concept["versjonsnr"], highest_version) and concept["erPublisert"]:
             highest_version = concept["versjonsnr"]
     return highest_version
 
