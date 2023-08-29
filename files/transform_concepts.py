@@ -16,8 +16,6 @@ def transform(c_file):
         transformed_concept = {
             "statusURI": status_uri
         }
-        print(concept)
-        print(transformed_concept)
         transformed_concepts[key] = transformed_concept
 
     return transformed_concepts
@@ -58,10 +56,10 @@ def set_status(concept, highest_published_version):
     elif concept["status"] == "GODKJENT" or concept["status"] == "PUBLISERT":
         if not bool(concept["erPublisert"]):
             return "http://publications.europa.eu/resource/authority/concept-status/CURRENT"
-        elif compare_semver(highest_published_version, concept["versjonsnr"]):
-            return "http://publications.europa.eu/resource/authority/concept-status/DEPRECATED"
-        else:
+        elif compare_semver(concept["versjonsnr"], highest_published_version):
             return "http://publications.europa.eu/resource/authority/concept-status/CURRENT"
+        else:
+            return "http://publications.europa.eu/resource/authority/concept-status/DEPRECATED"
     else:
         print("Unknown status: " + concept["status"])
 
