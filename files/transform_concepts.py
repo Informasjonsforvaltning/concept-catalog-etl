@@ -40,7 +40,6 @@ def transform(u_file):
 
 # TODO:
 # "Offentlig tilgjengelig?" , se nedenfor
-# Bruksområde
 
 
 def transform_concept(concept, mongo_id):
@@ -56,7 +55,6 @@ def transform_concept(concept, mongo_id):
             }
         },
         "erPublisert": "false",
-        # "bruksområde": {},  # TODO: Må legges inn i fagområde
         "versjonsnr": {
             "major": 0,
             "minor": 0,
@@ -108,14 +106,6 @@ def transform_concept(concept, mongo_id):
             name["nn"] = field["value"]
             term["navn"] = name
             transformed_concept["anbefaltTerm"] = term
-
-        # Fagområde & Bruksområde
-        if field["fieldName"] == "Fagområde" or field["fieldName"] == "Bruksområde":
-            subject_area = transformed_concept.get("fagområde", {})
-            text_list = subject_area.get("nb", [])
-            text_list.append(field["value"])
-            subject_area["nb"] = text_list
-            transformed_concept["fagområde"] = subject_area
 
         # Definisjon
         if field["fieldName"] == "Definisjon":
