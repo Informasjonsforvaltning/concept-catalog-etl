@@ -107,6 +107,16 @@ def transform_concept(concept, mongo_id):
             term["navn"] = name
             transformed_concept["anbefaltTerm"] = term
 
+        # Begrepseier (internfelt)
+        if field["fieldName"] == "Begrepseier":
+            internal_fields = transformed_concept.get("interneFelt", {})
+            owner = intern_begrepseier.get(field["value"])
+            if owner:
+                internal_fields["8317e9b4-ec05-470a-9f94-deb12d87f033"]["value"] = owner
+            else:
+                print(str(concept["key"]) + ": Unknown owner: " + field["value"])
+            transformed_concept["interneFelt"] = internal_fields
+
         # Definisjon
         if field["fieldName"] == "Definisjon":
             definisjon = transformed_concept.get("definisjon", {})
@@ -138,7 +148,11 @@ def transform_concept(concept, mongo_id):
         # Ekstern begrepseier (internfelt)
         if field["fieldName"] == "Ekstern begrepseier":
             internal_fields = transformed_concept.get("interneFelt", {})
-            internal_fields["0da72785-ede5-49ab-b2de-20f7790320f0"]["value"] = field["value"]
+            ext_owner = ekstern_begrepseier.get(field["value"])
+            if ext_owner:
+                internal_fields["0da72785-ede5-49ab-b2de-20f7790320f0"]["value"] = ext_owner
+            else:
+                print(str(concept["key"]) + ": Unknown external owner: " + field["value"])
             transformed_concept["interneFelt"] = internal_fields
 
         # Fagområde
@@ -287,6 +301,52 @@ concepts_file = "brreg_concepts.json"
 admin_users_file = args.outputdirectory + "transformed_admin_users.json"
 admin_users = openfile(admin_users_file)
 outputfileName = args.outputdirectory + "transformed_concepts.json"
+
+# Kodelisteverdi for ekstern_begrepseier - FDK
+ekstern_begrepseier = {
+    "Arkivverket": "0",
+    "Datatilsynet": "1",
+    "Digitaliseringsdirektoratet": "2",
+    "Direktoratet for e-helse": "3",
+    "Direktøratet for forvaltning og økonomistyring": "4",
+    "Helsedirektoratet": "5",
+    "Kartverket": "6",
+    "KS": "7",
+    "Lotteri- og stiftelsestilsynet": "8",
+    "Lånekassen": "9",
+    "NAV": "10",
+    "Politiet": "11",
+    "Posten Norge": "12",
+    "Skatteetaten": "13",
+    "Språkrådet": "14",
+    "SSB": "15",
+    "UDI": "16"
+}
+# Kodelisteverdi for intern_begrepseier - FDK
+intern_begrepseier = {
+    "Ektepaktregisteret": 0,
+    "Enhetsregisteret": 1,
+    "Foretaksregisteret": 2,
+    "FU - Datadrevet utvikling": 3,
+    "FU - Registerutvikling": 4,
+    "Informasjonsteknologi (IT)": 5,
+    "IT - Infrastruktur": 6,
+    "IT - Styring": 7,
+    "IT - Systemutvikling 1": 8,
+    "IT - Systemutvikling 2": 9,
+    "Løsøreregisteret": 10,
+    "Register over reelle rettighetshavere": 11,
+    "Registerforvaltning (RF)": 12,
+    "Regnskapsregisteret": 13,
+    "RF - Jus": 14,
+    "RF - Registerdrift": 15,
+    "RF - Samordning og system": 16,
+    "RF - Tinglysning og regnskap": 17,
+    "Virksomhetsstyring (VST)": 18,
+    "VST - Fellestjenester": 19,
+    "VST - HR": 20,
+    "VST - Plan og styring": 21
+}
 
 with open(outputfileName, 'w', encoding="utf-8") as outfile:
     json.dump(transform(concepts_file), outfile, ensure_ascii=False, indent=4)
