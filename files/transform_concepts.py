@@ -276,6 +276,8 @@ def setstatus(status):
     supported_status = ["UTKAST", "GODKJENT", "HOERING", "PUBLISERT"]
     if status.upper() in supported_status:
         return status.upper()
+    if status == "Kvalifisert - formell og innholdsmessig korrekt":
+        return "KVALIFISERT"
     else:
         return "UTKAST"
 
