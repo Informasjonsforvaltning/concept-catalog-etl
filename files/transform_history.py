@@ -51,12 +51,11 @@ def create_jsonpatch(item):
     operation = {}
     user_field = ["/opprettetAv", "/tildeltBruker"]
     internal_field = ["/interneFelt"]
-    if fdk_field is not None and fdk_field not in user_field: # and fdk_field not in internal_field:
+    if fdk_field is not None and fdk_field not in user_field:
         # Add
         if item.get("oldDisplayValue") is None and item.get("newDisplayValue") is not None:
             operation["op"] = "add"
             operation["path"] = fdk_field
-            # operation["value"] = item["newDisplayValue"]
             operation["value"] = get_operation(item["field"], item ["newValue"], item["newDisplayValue"])
         # Replace
         if item.get("oldDisplayValue") is not None and item.get("newDisplayValue") is not None:
@@ -83,31 +82,6 @@ def create_jsonpatch(item):
         if item.get("oldValue") is not None and item.get("newValue") is None:
             operation["op"] = "remove"
             operation["path"] = fdk_field
-    # elif fdk_field is not None and fdk_field in internal_field:
-    #     # For internal fields/codelists, we need to set the value a bit differently
-    #     if item["field"] in internal_codelists:
-    #         # Add
-    #         if item.get("oldDisplayValue") is None and item.get("newDisplayValue") is not None:
-    #             operation["op"] = "add"
-    #             operation["path"] = fdk_field
-    #             operation["value"] = {
-    #                 internal_codelists[item["field"]]: {
-    #                     "value": get_codelist_value(item["newDisplayValue"])
-    #                 }
-    #             }
-    #         # Replace
-    #         if item.get("oldDisplayValue") is not None and item.get("newDisplayValue") is not None:
-    #             operation["op"] = "replace"
-    #             operation["path"] = fdk_field
-    #             operation["value"] = {
-    #                 internal_codelists[item["field"]]: {
-    #                     "value": get_codelist_value(item["newDisplayValue"])
-    #                 }
-    #             }
-    #         # Remove
-    #         if item.get("oldDisplayValue") is not None and item.get("newDisplayValue") is None:
-    #             operation["op"] = "remove"
-    #             operation["path"] = fdk_field
     else:
         with open(unknown_fields_file, "a") as myfile:
             myfile.write(item["field"] + "\n")
