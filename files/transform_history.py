@@ -51,12 +51,13 @@ def create_jsonpatch(item):
     operation = {}
     user_field = ["/opprettetAv", "/tildeltBruker"]
     internal_field = ["/interneFelt"]
-    if fdk_field is not None and fdk_field not in user_field and fdk_field not in internal_field:
+    if fdk_field is not None and fdk_field not in user_field: # and fdk_field not in internal_field:
         # Add
         if item.get("oldDisplayValue") is None and item.get("newDisplayValue") is not None:
             operation["op"] = "add"
             operation["path"] = fdk_field
-            operation["value"] = item["newDisplayValue"]
+            # operation["value"] = item["newDisplayValue"]
+            operation["value"] = get_operation(item["field"], item ["newValue"], item["newDisplayValue"])
         # Replace
         if item.get("oldDisplayValue") is not None and item.get("newDisplayValue") is not None:
             operation["op"] = "replace"
@@ -82,19 +83,31 @@ def create_jsonpatch(item):
         if item.get("oldValue") is not None and item.get("newValue") is None:
             operation["op"] = "remove"
             operation["path"] = fdk_field
-    elif fdk_field is not None and fdk_field in internal_field:
-        # For internal fields/codelists, we need to set the value a bit differently
-        if item["field"] in internal_codelists:
-            # Add
-            if item.get("oldDisplayValue") is None and item.get("newDisplayValue") is not None:
-                operation["op"] = "add"
-                operation["path"] = fdk_field
-                operation["value"] = {
-                    internal_codelists[item["field"]]: {
-                        # TODO: Sjekk om finnes i codelist, hvis ikke legg inn displayvalue
-                        # "value": begrepseier[]
-                    }
-                }
+    # elif fdk_field is not None and fdk_field in internal_field:
+    #     # For internal fields/codelists, we need to set the value a bit differently
+    #     if item["field"] in internal_codelists:
+    #         # Add
+    #         if item.get("oldDisplayValue") is None and item.get("newDisplayValue") is not None:
+    #             operation["op"] = "add"
+    #             operation["path"] = fdk_field
+    #             operation["value"] = {
+    #                 internal_codelists[item["field"]]: {
+    #                     "value": get_codelist_value(item["newDisplayValue"])
+    #                 }
+    #             }
+    #         # Replace
+    #         if item.get("oldDisplayValue") is not None and item.get("newDisplayValue") is not None:
+    #             operation["op"] = "replace"
+    #             operation["path"] = fdk_field
+    #             operation["value"] = {
+    #                 internal_codelists[item["field"]]: {
+    #                     "value": get_codelist_value(item["newDisplayValue"])
+    #                 }
+    #             }
+    #         # Remove
+    #         if item.get("oldDisplayValue") is not None and item.get("newDisplayValue") is None:
+    #             operation["op"] = "remove"
+    #             operation["path"] = fdk_field
     else:
         with open(unknown_fields_file, "a") as myfile:
             myfile.write(item["field"] + "\n")
@@ -111,6 +124,29 @@ def getuser(brreg_user):
                 "name": user["name"]
             }
     return None
+
+
+def get_operation(field, value, display_value):
+    if field in internal_codelists:
+        internal_field_key = internal_codelists[field]
+        if value in begrepseier or value in ekstern_begrepseier:
+            internal_field_value = value
+        else:
+            internal_field_value = display_value
+        return {
+            internal_field_key: {
+                "value": internal_field_value
+            }
+        }
+    elif field in internal_fields:
+        internal_field_key = internal_fields[field]
+        return {
+            internal_field_key: {
+                "value": display_value
+            }
+        }
+    else:
+        return display_value
 
 
 def openfile(file_name):
@@ -157,35 +193,35 @@ json_field_map = {
     "Merknad": "/merknad/nb"
 }
 begrepseier = {
-    "Ektepaktregisteret": 0,
-    "Enhetsregisteret": 1,
-    "Foretaksregisteret": 2,
-    "FU - Datadrevet utvikling": 3,
-    "FU - Registerutvikling": 4,
-    "Informasjonsteknologi (IT)": 5,
-    "IT - Infrastruktur": 6,
-    "IT - Styring": 7,
-    "IT - Systemutvikling 1": 8,
-    "IT - Systemutvikling 2": 9,
-    "Løsøreregisteret": 10,
-    "Register over reelle rettighetshavere": 11,
-    "Registerforvaltning (RF)": 12,
-    "Regnskapsregisteret": 13,
-    "RF - Jus": 14,
-    "RF - Registerdrift": 15,
-    "RF - Samordning og system": 16,
-    "RF - Tinglysning og regnskap": 17,
-    "Virksomhetsstyring (VST)": 18,
-    "VST - Fellestjenester": 19,
-    "VST - HR": 20,
-    "VST - Plan og styring": 21
+    "10506": "Informasjonsteknologi (IT)",
+    "10507": "Registerforvaltning (RF)",
+    "10511": "IT - Infrastruktur",
+    "10901": "IT - Systemutvikling 1",
+    "10902": "IT - Systemutvikling 2",
+    "10911": "RF - Tinglysning og regnskap",
+    "15301": "RF - Registerdrift",
+    "15302": "RF - Jus",
+    "15303": "RF - Samordning og system",
+    "15305": "FU - Registerutvikling",
+    "15306": "FU - Datadrevet utvikling",
+    "15307": "IT - Styring",
+    "15310": "Virksomhetsstyring (VST)",
+    "15311": "VST - Plan og styring",
+    "15312": "VST - HR",
+    "15313": "VST - Fellestjenester",
+    "15800": "Enhetsregisteret",
+    "15801": "Foretaksregisteret",
+    "15802": "Ektepaktregisteret",
+    "15803": "Løsøreregisteret",
+    "15804": "Regnskapsregisteret",
+    "15900": "Register over reelle rettighetshavere"
 }
 ekstern_begrepseier = {
     "11160": "Arkivverket",
     "11420": "Datatilsynet",
     "11162": "Digitaliseringsdirektoratet",
     "11161": "Direktoratet for e-helse",
-    "11337": "Direktøratet for forvaltning og økonomistyring",
+    "11337": "Direktoratet for forvaltning og økonomistyring",
     "11163": "Helsedirektoratet",
     "11164": "Kartverket",
     "11165": "KS",
