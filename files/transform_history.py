@@ -56,12 +56,12 @@ def create_jsonpatch(item):
         if item.get("oldDisplayValue") is None and item.get("newDisplayValue") is not None:
             operation["op"] = "add"
             operation["path"] = fdk_field
-            operation["value"] = get_operation(item["field"], item ["newValue"], item["newDisplayValue"])
+            operation["value"] = get_operation(item["field"], item["newValue"], item["newDisplayValue"])
         # Replace
         if item.get("oldDisplayValue") is not None and item.get("newDisplayValue") is not None:
             operation["op"] = "replace"
             operation["path"] = fdk_field
-            operation["value"] = item["newDisplayValue"]
+            operation["value"] = get_operation(item["field"], item["newValue"], item["newDisplayValue"])
         # Remove
         if item.get("oldDisplayValue") is not None and item.get("newDisplayValue") is None:
             operation["op"] = "remove"
