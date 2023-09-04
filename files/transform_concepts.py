@@ -225,16 +225,15 @@ def transform_concept(concept, mongo_id):
             ]
             transformed_concept["merknad"] = merknad
 
-        # TODO: Set status "erPublisert":
-        #  Avvent å sette denne inntil vi har sikret at opprettede begrep er publiserbare
-        # if field["fieldName"] == "Offentlig tilgjengelig":
-        #     if len(field["value"]) > 1:
-        #         print(str(concept["key"]) + ": Multiple values in Offentlig tilgjengelig")
-        #     if (transformed_concept["status"] == "GODKJENT") and (field["value"][0] == "Ja"):
-        #         transformed_concept["erPublisert"] = "true"
-
-        # Gyldig fom/tom
-        # ser ikke ut til å eksistere i Brreg-dataen
+        # Print id to file if concept should be published in publish job
+        if field["fieldName"] == "Offentlig tilgjengelig":
+            if len(field["value"]) > 1:
+                print(str(concept["key"]) + ": Multiple values in Offentlig tilgjengelig")
+            if (transformed_concept["status"] == "GODKJENT") and (field["value"][0] == "Ja"):
+                listObj = openfile(publish_ids)
+                listObj.append({"_id": mongo_id})
+                with open(publish_ids, 'w', encoding="utf-8") as publish_file:
+                    json.dump(listObj, publish_file, ensure_ascii=False, indent=4)
 
     return transformed_concept
 
@@ -301,52 +300,54 @@ concepts_file = "brreg_concepts.json"
 admin_users_file = args.outputdirectory + "transformed_admin_users.json"
 admin_users = openfile(admin_users_file)
 outputfileName = args.outputdirectory + "transformed_concepts.json"
+publish_ids = "publish_ids.json"
 
 # Kodelisteverdi for ekstern_begrepseier - FDK
 ekstern_begrepseier = {
-    "Arkivverket": "0",
-    "Datatilsynet": "1",
-    "Digitaliseringsdirektoratet": "2",
-    "Direktoratet for e-helse": "3",
-    "Direktøratet for forvaltning og økonomistyring": "4",
-    "Helsedirektoratet": "5",
-    "Kartverket": "6",
-    "KS": "7",
-    "Lotteri- og stiftelsestilsynet": "8",
-    "Lånekassen": "9",
-    "NAV": "10",
-    "Politiet": "11",
-    "Posten Norge": "12",
-    "Skatteetaten": "13",
-    "Språkrådet": "14",
-    "SSB": "15",
-    "UDI": "16"
+    "Arkivverket": "11160",
+    "Datatilsynet": "11420",
+    "Digitaliseringsdirektoratet": "11162",
+    "Direktoratet for e-helse": "11161",
+    "Direktoratet for forvaltning og økonomistyring": "11337",
+    "Helsedirektoratet": "11163",
+    "Kartverket": "11164",
+    "KS": "11165",
+    "Lotteri- og stiftelsestilsynet": "15104",
+    "Lånekassen": "11166",
+    "NAV": "11167",
+    "Politiet": "11168",
+    "Posten Norge": "12600",
+    "Skatteetaten": "11169",
+    "Språkrådet": "11336",
+    "SSB": "11170",
+    "UDI": "11171"
 }
 # Kodelisteverdi for intern_begrepseier - FDK
 intern_begrepseier = {
-    "Ektepaktregisteret": 0,
-    "Enhetsregisteret": 1,
-    "Foretaksregisteret": 2,
-    "FU - Datadrevet utvikling": 3,
-    "FU - Registerutvikling": 4,
-    "Informasjonsteknologi (IT)": 5,
-    "IT - Infrastruktur": 6,
-    "IT - Styring": 7,
-    "IT - Systemutvikling 1": 8,
-    "IT - Systemutvikling 2": 9,
-    "Løsøreregisteret": 10,
-    "Register over reelle rettighetshavere": 11,
-    "Registerforvaltning (RF)": 12,
-    "Regnskapsregisteret": 13,
-    "RF - Jus": 14,
-    "RF - Registerdrift": 15,
-    "RF - Samordning og system": 16,
-    "RF - Tinglysning og regnskap": 17,
-    "Virksomhetsstyring (VST)": 18,
-    "VST - Fellestjenester": 19,
-    "VST - HR": 20,
-    "VST - Plan og styring": 21
+    "Informasjonsteknologi (IT)": "10506",
+    "Registerforvaltning (RF)": "10507",
+    "IT - Infrastruktur": "10511",
+    "IT - Systemutvikling 1": "10901",
+    "IT - Systemutvikling 2": "10902",
+    "RF - Tinglysning og regnskap": "10911",
+    "RF - Registerdrift": "15301",
+    "RF - Jus": "15302",
+    "RF - Samordning og system": "15303",
+    "FU - Registerutvikling": "15305",
+    "FU - Datadrevet utvikling": "15306",
+    "IT - Styring": "15307",
+    "Virksomhetsstyring (VST)": "15310",
+    "VST - Plan og styring": "15311",
+    "VST - HR": "15312",
+    "VST - Fellestjenester": "15313",
+    "Enhetsregisteret": "15800",
+    "Foretaksregisteret": "15801",
+    "Ektepaktregisteret": "15802",
+    "Løsøreregisteret": "15803",
+    "Regnskapsregisteret": "15804",
+    "Register over reelle rettighetshavere": "15900"
 }
+
 
 with open(outputfileName, 'w', encoding="utf-8") as outfile:
     json.dump(transform(concepts_file), outfile, ensure_ascii=False, indent=4)
