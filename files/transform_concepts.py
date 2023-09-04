@@ -23,7 +23,7 @@ def transform(u_file):
     project = next(prj for prj in projects if prj["name"] == "BEGREP")
     concepts = project["issues"]
     for concept in concepts:
-        mongo_id = uuid.UUID(int=rd.getrandbits(128), version=4)
+        mongo_id = str(uuid.UUID(int=rd.getrandbits(128), version=4))
         result = transform_concept(concept, mongo_id)
         transformed_concepts[mongo_id] = result
         if concept.get("comments") is not None:

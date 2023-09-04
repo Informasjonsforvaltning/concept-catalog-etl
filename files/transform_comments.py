@@ -24,7 +24,7 @@ def transform(c_file):
 def transform_comment(comment_list, concept_id):
     transformed_comments = []
     for comment in comment_list:
-        mongo_id = uuid.UUID(int=rd.getrandbits(128), version=4)
+        mongo_id = str(uuid.UUID(int=rd.getrandbits(128), version=4))
         transformed_comment = {
             "_id": mongo_id,
             "_class": "no.digdir.catalog_comments_service.model.CommentDBO",

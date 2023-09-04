@@ -23,7 +23,7 @@ def transform(h_file):
 def transform_change(history_list, concept_id):
     transformed_changes = []
     for story in history_list:
-        mongo_id = uuid.UUID(int=rd.getrandbits(128), version=4)
+        mongo_id = str(uuid.UUID(int=rd.getrandbits(128), version=4))
         transformed_story = {
             "_id": mongo_id,
             "catalogId": "974760673",

@@ -18,7 +18,7 @@ def transform(u_file, usertype):
     project = next(prj for prj in projects if prj["name"] == "BEGREP")
     users = project["users"]
     for user in users:
-        mongo_id = uuid.UUID(int=rd.getrandbits(128), version=4)
+        mongo_id = str(uuid.UUID(int=rd.getrandbits(128), version=4))
         result = transform_user(user, usertype, mongo_id)
         transformed_users[mongo_id] = result
 
