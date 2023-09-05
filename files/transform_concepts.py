@@ -112,7 +112,9 @@ def transform_concept(concept, mongo_id):
             internal_fields = transformed_concept.get("interneFelt", {})
             owner = intern_begrepseier.get(field["value"])
             if owner:
-                internal_fields["8317e9b4-ec05-470a-9f94-deb12d87f033"]["value"] = owner
+                internal_fields["8317e9b4-ec05-470a-9f94-deb12d87f033"] = {
+                    "value": owner
+                }
             else:
                 print(str(concept["key"]) + ": Unknown owner: " + field["value"])
             transformed_concept["interneFelt"] = internal_fields
@@ -150,7 +152,9 @@ def transform_concept(concept, mongo_id):
             internal_fields = transformed_concept.get("interneFelt", {})
             ext_owner = ekstern_begrepseier.get(field["value"])
             if ext_owner:
-                internal_fields["0da72785-ede5-49ab-b2de-20f7790320f0"]["value"] = ext_owner
+                internal_fields["0da72785-ede5-49ab-b2de-20f7790320f0"] = {
+                    "value": ext_owner
+                }
             else:
                 print(str(concept["key"]) + ": Unknown external owner: " + field["value"])
             transformed_concept["interneFelt"] = internal_fields
@@ -170,7 +174,9 @@ def transform_concept(concept, mongo_id):
         # Forslag til fagområde (internfelt)
         if field["fieldName"] == "Forslag til fagområde":
             internal_fields = transformed_concept.get("interneFelt", {})
-            internal_fields["568acb38-485c-445f-a773-caace03a8483"]["value"] = field["value"]
+            internal_fields["568acb38-485c-445f-a773-caace03a8483"] = {
+                "value": field["value"]
+            }
             transformed_concept["interneFelt"] = internal_fields
 
         # FrarådetTerm
