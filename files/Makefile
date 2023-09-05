@@ -3,6 +3,10 @@ all: transform load
 transform: transform_users transform_concepts transform_comments transform_history
 load: load_users load_concepts load_comments load_history
 
+delete:
+	echo "Make delete-file"
+	python3 ./get_ids.py -o ./tmp/
+
 transform_users:
 	echo "Transforming users...."
 	python3 ./transform_users.py -o ./tmp/
