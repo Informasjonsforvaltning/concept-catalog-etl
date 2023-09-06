@@ -39,5 +39,9 @@ load_history:
 	echo "Loading history...."
 	python3 ./load_history.py -o ./tmp/
 
+publish:
+	echo "Publishing...."
+	python3 ./publish.py -o ./tmp/
+
 clean:
 	rm ./tmp/*.json

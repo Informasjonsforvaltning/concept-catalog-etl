@@ -1,8 +1,6 @@
 import json
 import argparse
-import uuid
-import random
-from datetime import datetime
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-o', '--outputdirectory', help="the path to the directory of the output files", required=True)
@@ -11,7 +9,7 @@ args = parser.parse_args()
 
 def create_id_file():
     admin_users = openfile(admin_users_file)
-    history_users = openfile(comment_users_file)
+    comment_users = openfile(comment_users_file)
     concepts = openfile(concepts_file)
     id_file = {
         "admin_users": [],
@@ -21,8 +19,8 @@ def create_id_file():
 
     for key in admin_users:
         id_file["admin_users"].append(key)
-    for key in history_users:
-        id_file["history_users"].append(key)
+    for key in comment_users:
+        id_file["comment_users"].append(key)
     for key in concepts:
         id_file["concepts"].append(key)
     return id_file

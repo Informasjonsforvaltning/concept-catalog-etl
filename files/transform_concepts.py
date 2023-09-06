@@ -200,7 +200,7 @@ def transform_concept(concept, mongo_id):
             definisjon = transformed_concept.get("definisjon", {})
             kildebeskrivelse = definisjon.get("kildebeskrivelse", {})
             kilde = kildebeskrivelse.get("kilde", [])
-            kilde.append(geturitekst(getstrings(field["value"])))
+            kilde += geturitekst(getstrings(field["value"]))
             kildebeskrivelse["kilde"] = kilde
             definisjon["kildebeskrivelse"] = kildebeskrivelse
             transformed_concept["definisjon"] = definisjon
@@ -210,7 +210,7 @@ def transform_concept(concept, mongo_id):
             definisjon = transformed_concept.get("definisjon", {})
             kildebeskrivelse = definisjon.get("kildebeskrivelse", {})
             kilde = kildebeskrivelse.get("kilde", [])
-            kilde.append(getmerknadtekst(getstrings(field["value"])))
+            kilde += getmerknadtekst(getstrings(field["value"]))
             kildebeskrivelse["kilde"] = kilde
             definisjon["kildebeskrivelse"] = kildebeskrivelse
             transformed_concept["definisjon"] = definisjon
