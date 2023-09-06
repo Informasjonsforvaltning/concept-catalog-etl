@@ -19,8 +19,8 @@ def transform(u_file):
     comments = {}
     history = {}
 
-    projects = con_file["projects"]
-    project = next(prj for prj in projects if prj["name"] == "BEGREP")
+    project = con_file["projects"]
+    # project = next(prj for prj in projects if prj["name"] == "BEGREP")
     concepts = project["issues"]
     for concept in concepts:
         mongo_id = str(uuid.UUID(int=rd.getrandbits(128), version=4))
@@ -287,7 +287,7 @@ def set_status(status):
     if status == "Utkast":
         return "http://publications.europa.eu/resource/authority/concept-status/DRAFT"
     elif status == "Høring":
-        return "http://publications.europa.eu/resource/authority/concept-status/CANDIDATE"  # TODO: Bekreft antakelse
+        return "http://publications.europa.eu/resource/authority/concept-status/CANDIDATE"
     elif status == "Godkjent":
         return "http://publications.europa.eu/resource/authority/concept-status/CURRENT"
     elif status == "Klar til godkjenning":
