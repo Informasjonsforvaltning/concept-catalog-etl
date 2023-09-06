@@ -63,7 +63,7 @@ def transform_concept(concept, mongo_id):
         "opprettet": convert_date(concept["created"]),
         "opprettetAv": concept["reporter"],
         "originaltBegrep": mongo_id,
-        "status": setstatus(concept.get("status")),
+        "statusURI": set_status(concept.get("status")),
         "kontaktpunkt": {
             "harEpost": "informasjonsforvaltning@brreg.no",
             "harTelefon": "+47 75007500"
@@ -283,14 +283,19 @@ def getstrings(value):
         return []
 
 
-def setstatus(status):
-    supported_status = ["UTKAST", "GODKJENT", "HOERING", "PUBLISERT"]
-    if status.upper() in supported_status:
-        return status.upper()
+def set_status(status):
+    if status == "Utkast":
+        return "http://publications.europa.eu/resource/authority/concept-status/DRAFT"
     elif status == "Høring":
-        return "HOERING"
+        return "http://publications.europa.eu/resource/authority/concept-status/CANDIDATE"  # TODO: Bekreft antakelse
+    elif status == "Godkjent":
+        return "http://publications.europa.eu/resource/authority/concept-status/CURRENT"
+    elif status == "Klar til godkjenning":
+        return "http://publications.europa.eu/resource/authority/concept-status/WAITING"
+    elif status == "Kvalitetssikring":
+        return "http://publications.europa.eu/resource/authority/concept-status/CANDIDATE"
     else:
-        return "UTKAST"
+        print("Unknown status: " + str(status))
 
 
 def convert_date(timestamp):
