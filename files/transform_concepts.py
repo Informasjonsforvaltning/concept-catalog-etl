@@ -19,8 +19,8 @@ def transform(u_file):
     comments = {}
     history = {}
 
-    project = con_file["projects"]
-    # project = next(prj for prj in projects if prj["name"] == "BEGREP")
+    projects = con_file["projects"]
+    project = next(prj for prj in projects if prj["name"] == "BEGREP")
     concepts = project["issues"]
     for concept in concepts:
         mongo_id = str(uuid.UUID(int=rd.getrandbits(128), version=4))
