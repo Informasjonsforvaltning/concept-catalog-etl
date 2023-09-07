@@ -68,7 +68,7 @@ def transform_concept(concept, mongo_id):
             "harEpost": "informasjonsforvaltning@brreg.no",
             "harTelefon": "+47 75007500"
         },
-        "assignedUser": getuser(concept["assignee"])["_id"]
+        "assignedUser": getuser(concept["assignee"])["_id"] if concept.get("assignee") and getuser(concept["assignee"]) is not None else None
     }
     if len(concept["history"]) > 0:
         transformed_concept["endringslogelement"] = {
@@ -232,10 +232,10 @@ def transform_concept(concept, mongo_id):
             transformed_concept["merknad"] = merknad
 
         # Print id to file if concept should be published in publish job
-        if field["fieldName"] == "Offentlig tilgjengelig":
+        if field["fieldName"] == "Offentlig tilgjengelig?":
             if len(field["value"]) > 1:
                 print(str(concept["key"]) + ": Multiple values in Offentlig tilgjengelig")
-            if (transformed_concept["status"] == "GODKJENT") and (field["value"][0] == "Ja"):
+            if (concept["status"].upper() == "GODKJENT") and (field["value"][0].upper() == "JA"):
                 listObj = openfile(publish_ids)
                 listObj.append({"_id": mongo_id})
                 with open(publish_ids, 'w', encoding="utf-8") as publish_file:
@@ -311,7 +311,7 @@ concepts_file = "brreg_concepts.json"
 admin_users_file = args.outputdirectory + "transformed_admin_users.json"
 admin_users = openfile(admin_users_file)
 outputfileName = args.outputdirectory + "transformed_concepts.json"
-publish_ids = "publish_ids.json"
+publish_ids = args.outputdirectory + "publish_ids.json"
 
 # Kodelisteverdi for ekstern_begrepseier - FDK
 ekstern_begrepseier = {

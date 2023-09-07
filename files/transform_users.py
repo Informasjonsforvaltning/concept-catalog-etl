@@ -31,7 +31,7 @@ def transform_user(user, usertype, mongo_id):
         transformed_user = {
             "_id": mongo_id,
             "_class": "no.digdir.catalog_comments_service.model.UserDBO",
-            "email": user["email"],
+            "email": user["email"] if user["email"] is not None else "",
             "name": user["name"]
         }
     elif usertype == "admin":
@@ -39,7 +39,7 @@ def transform_user(user, usertype, mongo_id):
             "_id": mongo_id,
             "_class": "no.digdir.catalog_admin_service.model.User",
             "catalogId": "974760673",
-            "email": user["email"],
+            "email": user["email"] if user["email"] is not None else "",
             "name": user["name"]
         }
     return transformed_user
