@@ -236,7 +236,7 @@ def transform_concept(concept, mongo_id):
             if len(field["value"]) > 1:
                 print(str(concept["key"]) + ": Multiple values in Offentlig tilgjengelig")
             if (concept["status"].upper() == "GODKJENT") and (field["value"][0].upper() == "JA"):
-                listObj = openfile(publish_ids)
+                listObj = openfile(publish_ids)  # TODO: Fails on first open (file does not exist)
                 listObj.append({"_id": mongo_id})
                 with open(publish_ids, 'w', encoding="utf-8") as publish_file:
                     json.dump(listObj, publish_file, ensure_ascii=False, indent=4)
@@ -312,6 +312,7 @@ admin_users_file = args.outputdirectory + "transformed_admin_users.json"
 admin_users = openfile(admin_users_file)
 outputfileName = args.outputdirectory + "transformed_concepts.json"
 publish_ids = args.outputdirectory + "publish_ids.json"
+open(publish_ids, 'w', encoding="utf-8").close()
 
 # Kodelisteverdi for ekstern_begrepseier - FDK
 ekstern_begrepseier = {
