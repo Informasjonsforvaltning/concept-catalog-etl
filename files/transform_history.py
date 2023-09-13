@@ -150,13 +150,16 @@ json_field_map = {
     "status": "/status",
     "assignee": "/tildeltBruker",
     "Alternativ term": "/tillattTerm/nb",
+    "Alternativt term": "/tillattTerm/nb",  # Typo exists in BRREG-comments
     "Begrepseier": "/interneFelt",
     "Ekstern begrepseier": "/interneFelt",
     "Forslag til fagområde": "/interneFelt",
     "Term engelsk": "/anbefaltTerm/navn/en",
+    "Term Engelsk": "/anbefaltTerm/navn/en",
     "Term nynorsk": "/anbefaltTerm/navn/nn",
     "Definisjon": "/definisjon/tekst/nb",
     "Definisjon engelsk": "/definisjon/tekst/en",
+    "Definisjon Engelsk": "/definisjon/tekst/en",
     "Definisjon nynorsk": "/definisjon/tekst/nn",
     "Eksempel": "/eksempel/nb",
     "Fagområde": "/fagområde/nb",
@@ -164,7 +167,8 @@ json_field_map = {
     "Forhold til kilde": "/definisjon/kildebeskrivelse/forholdTilKilde",
     "Kilde til definisjon": "/definisjon/kildebeskrivelse/kilde",
     "Folkelig forklaring": "/folkeligForklaring/tekst/nb",
-    "Merknad": "/merknad/nb"
+    "Merknad": "/merknad/nb",
+    "Merknad - nynorsk": "/merknad/nn"
 }
 begrepseier = {
     "10506": "Informasjonsteknologi (IT)",

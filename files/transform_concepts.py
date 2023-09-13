@@ -3,6 +3,7 @@ import argparse
 import uuid
 import random
 from datetime import datetime
+import os.path
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-o', '--outputdirectory', help="the path to the directory of the output files", required=True)
@@ -231,12 +232,20 @@ def transform_concept(concept, mongo_id):
             ]
             transformed_concept["merknad"] = merknad
 
+        # Merknad - nynorsk
+        if field["fieldName"] == "Merknad - nynorsk":
+            merknad = transformed_concept.get("merknad", {})
+            merknad["nn"] = [
+                field["value"]
+            ]
+            transformed_concept["merknad"] = merknad
+
         # Print id to file if concept should be published in publish job
         if field["fieldName"] == "Offentlig tilgjengelig?":
             if len(field["value"]) > 1:
                 print(str(concept["key"]) + ": Multiple values in Offentlig tilgjengelig")
             if (concept["status"].upper() == "GODKJENT") and (field["value"][0].upper() == "JA"):
-                listObj = openfile(publish_ids) if publish_ids.is_file() else []
+                listObj = openfile(publish_ids) if os.path.isfile(publish_ids) else []
                 listObj.append({"_id": mongo_id})
                 with open(publish_ids, 'w', encoding="utf-8") as publish_file:
                     json.dump(listObj, publish_file, ensure_ascii=False, indent=4)

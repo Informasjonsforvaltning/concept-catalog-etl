@@ -44,4 +44,4 @@ publish:
 	python3 ./publish.py -o ./tmp/
 
 clean:
-	rm ./tmp/*.json
+	rm -r ./tmp/*
