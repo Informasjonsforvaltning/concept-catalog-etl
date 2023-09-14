@@ -246,7 +246,7 @@ def transform_concept(concept, mongo_id):
                 print(str(concept["key"]) + ": Multiple values in Offentlig tilgjengelig")
             if (concept["status"].upper() == "GODKJENT") and (field["value"][0].upper() == "JA"):
                 listObj = openfile(publish_ids) if os.path.isfile(publish_ids) else []
-                listObj.append({"_id": mongo_id})
+                listObj.append(mongo_id)
                 with open(publish_ids, 'w', encoding="utf-8") as publish_file:
                     json.dump(listObj, publish_file, ensure_ascii=False, indent=4)
 

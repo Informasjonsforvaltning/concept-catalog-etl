@@ -13,7 +13,7 @@ def create_id_file():
     concepts = openfile(concepts_file)
     id_file = {
         "admin_users": [],
-        "history_users": [],
+        "comment_users": [],
         "concepts": []
     }
 
