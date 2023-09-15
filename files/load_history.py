@@ -28,7 +28,7 @@ with open(args.outputdirectory + 'transformed_history.json') as history_file:
     total_failed = 0
     fail_log = {}
     for mongo_id in transformed_json:
-        print("Inserting history for concept: " + mongo_id)
+        # print("Inserting history for concept: " + mongo_id)
         for history in transformed_json[mongo_id]:
             transformed_history = convert_iso(history)
             # print("Inserting ID: " + transformed_history["_id"])

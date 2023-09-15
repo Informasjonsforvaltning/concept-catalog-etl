@@ -28,7 +28,7 @@ with open(args.outputdirectory + 'transformed_comments.json') as comment_file:
     total_failed = 0
     fail_log = {}
     for mongo_id in transformed_json:
-        print("Inserting history for concept: " + mongo_id)
+        # print("Inserting comments for concept: " + mongo_id)
         for comment in transformed_json[mongo_id]:
             transformed_comment = convert_iso(comment)
             # print("Inserting ID: " + mongo_id)
