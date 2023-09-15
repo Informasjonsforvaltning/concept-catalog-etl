@@ -4,6 +4,7 @@ import uuid
 import random
 from datetime import datetime
 import os.path
+import re
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-o', '--outputdirectory', help="the path to the directory of the output files", required=True)
@@ -39,9 +40,6 @@ def transform(u_file):
 
     return transformed_concepts
 
-# TODO:
-# "Offentlig tilgjengelig?" , se nedenfor
-
 
 def transform_concept(concept, mongo_id):
     transformed_concept = {
@@ -52,7 +50,7 @@ def transform_concept(concept, mongo_id):
         },
         "anbefaltTerm": {
             "navn": {
-                "nb": concept["summary"]
+                "nb": strip_jira_links(["summary"])
             }
         },
         "erPublisert": "false",
@@ -91,52 +89,52 @@ def transform_concept(concept, mongo_id):
         if field["fieldName"] == "Alternativ term":
             tillattTerm = transformed_concept.get("tillattTerm", {})
             tillattTerm["nb"] = [
-                field["value"]
+                strip_jira_links(field["value"])
             ]
             transformed_concept["tillattTerm"] = tillattTerm
 
         if field["fieldName"] == "Term engelsk":
             term = transformed_concept.get("anbefaltTerm", {})
             name = term.get("navn", {})
-            name["en"] = field["value"]
+            name["en"] = strip_jira_links(field["value"])
             term["navn"] = name
             transformed_concept["anbefaltTerm"] = term
         if field["fieldName"] == "Term nynorsk":
             term = transformed_concept.get("anbefaltTerm", {})
             name = term.get("navn", {})
-            name["nn"] = field["value"]
+            name["nn"] = strip_jira_links(field["value"])
             term["navn"] = name
             transformed_concept["anbefaltTerm"] = term
 
         # Begrepseier (internfelt)
         if field["fieldName"] == "Begrepseier":
             internal_fields = transformed_concept.get("interneFelt", {})
-            owner = intern_begrepseier.get(field["value"])
+            owner = intern_begrepseier.get(strip_jira_links(field["value"]))
             if owner:
                 internal_fields["8317e9b4-ec05-470a-9f94-deb12d87f033"] = {
                     "value": owner
                 }
             else:
-                print(str(concept["key"]) + ": Unknown owner: " + field["value"])
+                print(str(concept["key"]) + ": Unknown owner: " + strip_jira_links(field["value"]))
             transformed_concept["interneFelt"] = internal_fields
 
         # Definisjon
         if field["fieldName"] == "Definisjon":
             definisjon = transformed_concept.get("definisjon", {})
             text = definisjon.get("tekst", {})
-            text["nb"] = field["value"]
+            text["nb"] = strip_jira_links(field["value"])
             definisjon["tekst"] = text
             transformed_concept["definisjon"] = definisjon
         if field["fieldName"] == "Definisjon engelsk":
             definisjon = transformed_concept.get("definisjon", {})
             text = definisjon.get("tekst", {})
-            text["en"] = field["value"]
+            text["en"] = strip_jira_links(field["value"])
             definisjon["tekst"] = text
             transformed_concept["definisjon"] = definisjon
         if field["fieldName"] == "Definisjon nynorsk":
             definisjon = transformed_concept.get("definisjon", {})
             text = definisjon.get("tekst", {})
-            text["nn"] = field["value"]
+            text["nn"] = strip_jira_links(field["value"])
             definisjon["tekst"] = text
             transformed_concept["definisjon"] = definisjon
 
@@ -144,39 +142,39 @@ def transform_concept(concept, mongo_id):
         if field["fieldName"] == "Eksempel":
             eksempel = transformed_concept.get("eksempel", {})
             eksempel["nb"] = [
-                field["value"]
+                strip_jira_links(field["value"])
             ]
             transformed_concept["eksempel"] = eksempel
 
         # Ekstern begrepseier (internfelt)
         if field["fieldName"] == "Ekstern begrepseier":
             internal_fields = transformed_concept.get("interneFelt", {})
-            ext_owner = ekstern_begrepseier.get(field["value"])
+            ext_owner = ekstern_begrepseier.get(strip_jira_links(field["value"]))
             if ext_owner:
                 internal_fields["0da72785-ede5-49ab-b2de-20f7790320f0"] = {
                     "value": ext_owner
                 }
             else:
-                print(str(concept["key"]) + ": Unknown external owner: " + field["value"])
+                print(str(concept["key"]) + ": Unknown external owner: " + strip_jira_links(field["value"]))
             transformed_concept["interneFelt"] = internal_fields
 
         # Fagområde
         if field["fieldName"] == "Fagområde":
             subject_area = transformed_concept.get("fagområde", {})
             text_list = subject_area.get("nb", [])
-            text_list.append(field["value"])
+            text_list.append(strip_jira_links(field["value"]))
             subject_area["nb"] = text_list
             transformed_concept["fagområde"] = subject_area
 
         # Forkortelse
         if field["fieldName"] == "Forkortelse":
-            transformed_concept["abbreviatedLabel"] = field["value"]
+            transformed_concept["abbreviatedLabel"] = strip_jira_links(field["value"])
 
         # Forslag til fagområde (internfelt)
         if field["fieldName"] == "Forslag til fagområde":
             internal_fields = transformed_concept.get("interneFelt", {})
             internal_fields["568acb38-485c-445f-a773-caace03a8483"] = {
-                "value": field["value"]
+                "value": strip_jira_links(field["value"])
             }
             transformed_concept["interneFelt"] = internal_fields
 
@@ -184,7 +182,7 @@ def transform_concept(concept, mongo_id):
         if field["fieldName"] == "Frarådet term":
             unadvisedTerm = transformed_concept.get("frarådetTerm", {})
             unadvisedTerm["nb"] = [
-                field["value"]
+                strip_jira_links(field["value"])
             ]
             transformed_concept["frarådetTerm"] = unadvisedTerm
 
@@ -192,7 +190,7 @@ def transform_concept(concept, mongo_id):
         if field["fieldName"] == "Forhold til kilde":
             definisjon = transformed_concept.get("definisjon", {})
             kildebeskrivelse = definisjon.get("kildebeskrivelse", {})
-            kildebeskrivelse["forholdTilKilde"] = mapkildetype(field["value"])
+            kildebeskrivelse["forholdTilKilde"] = mapkildetype(strip_jira_links(field["value"]))
             definisjon["kildebeskrivelse"] = kildebeskrivelse
             transformed_concept["definisjon"] = definisjon
 
@@ -201,7 +199,7 @@ def transform_concept(concept, mongo_id):
             definisjon = transformed_concept.get("definisjon", {})
             kildebeskrivelse = definisjon.get("kildebeskrivelse", {})
             kilde = kildebeskrivelse.get("kilde", [])
-            kilde += geturitekst(getstrings(field["value"]))
+            kilde += geturitekst(getstrings(strip_jira_links(field["value"])))
             kildebeskrivelse["kilde"] = kilde
             definisjon["kildebeskrivelse"] = kildebeskrivelse
             transformed_concept["definisjon"] = definisjon
@@ -211,7 +209,7 @@ def transform_concept(concept, mongo_id):
             definisjon = transformed_concept.get("definisjon", {})
             kildebeskrivelse = definisjon.get("kildebeskrivelse", {})
             kilde = kildebeskrivelse.get("kilde", [])
-            kilde += getmerknadtekst(getstrings(field["value"]))
+            kilde += getmerknadtekst(getstrings(strip_jira_links(field["value"])))
             kildebeskrivelse["kilde"] = kilde
             definisjon["kildebeskrivelse"] = kildebeskrivelse
             transformed_concept["definisjon"] = definisjon
@@ -220,7 +218,7 @@ def transform_concept(concept, mongo_id):
         if field["fieldName"] == "Folkelig forklaring":
             folkeligForklaring = transformed_concept.get("folkeligForklaring", {})
             tekst = folkeligForklaring.get("tekst", {})
-            tekst["nb"] = field["value"]
+            tekst["nb"] = strip_jira_links(field["value"])
             folkeligForklaring["tekst"] = tekst
             transformed_concept["folkeligForklaring"] = folkeligForklaring
 
@@ -228,7 +226,7 @@ def transform_concept(concept, mongo_id):
         if field["fieldName"] == "Merknad":
             merknad = transformed_concept.get("merknad", {})
             merknad["nb"] = [
-                field["value"]
+                strip_jira_links(field["value"])
             ]
             transformed_concept["merknad"] = merknad
 
@@ -236,15 +234,15 @@ def transform_concept(concept, mongo_id):
         if field["fieldName"] == "Merknad - nynorsk":
             merknad = transformed_concept.get("merknad", {})
             merknad["nn"] = [
-                field["value"]
+                strip_jira_links(field["value"])
             ]
             transformed_concept["merknad"] = merknad
 
         # Print id to file if concept should be published in publish job
         if field["fieldName"] == "Offentlig tilgjengelig?":
-            if len(field["value"]) > 1:
+            if len(strip_jira_links(field["value"])) > 1:
                 print(str(concept["key"]) + ": Multiple values in Offentlig tilgjengelig")
-            if (concept["status"].upper() == "GODKJENT") and (field["value"][0].upper() == "JA"):
+            if (concept["status"].upper() == "GODKJENT") and (strip_jira_links(field["value"])[0].upper() == "JA"):
                 listObj = openfile(publish_ids) if os.path.isfile(publish_ids) else []
                 listObj.append(mongo_id)
                 with open(publish_ids, 'w', encoding="utf-8") as publish_file:
@@ -290,6 +288,13 @@ def getstrings(value):
         return value.split(";")
     else:
         return []
+
+
+def strip_jira_links(string):
+    if string is not None:
+        return re.sub(r"\[(.*?)\|.*?]", r"\1", string)
+    else:
+        return None
 
 
 def set_status(status):
