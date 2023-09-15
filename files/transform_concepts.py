@@ -240,9 +240,9 @@ def transform_concept(concept, mongo_id):
 
         # Print id to file if concept should be published in publish job
         if field["fieldName"] == "Offentlig tilgjengelig?":
-            if len(strip_jira_links(field["value"])) > 1:
+            if len(field["value"]) > 1:
                 print(str(concept["key"]) + ": Multiple values in Offentlig tilgjengelig")
-            if (concept["status"].upper() == "GODKJENT") and (strip_jira_links(field["value"])[0].upper() == "JA"):
+            if (concept["status"].upper() == "GODKJENT") and (field["value"][0].upper() == "JA"):
                 listObj = openfile(publish_ids) if os.path.isfile(publish_ids) else []
                 listObj.append(mongo_id)
                 with open(publish_ids, 'w', encoding="utf-8") as publish_file:
