@@ -50,7 +50,7 @@ def transform_concept(concept, mongo_id):
         },
         "anbefaltTerm": {
             "navn": {
-                "nb": strip_jira_links(["summary"])
+                "nb": strip_jira_links(concept["summary"])
             }
         },
         "erPublisert": "false",
