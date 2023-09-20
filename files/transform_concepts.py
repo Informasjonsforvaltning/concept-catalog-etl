@@ -220,6 +220,9 @@ def transform_concept(concept):
         with open(publish_ids, 'w', encoding="utf-8") as publish_file:
             json.dump(listObj, publish_file, ensure_ascii=False, indent=4)
 
+    transformed_concept = remove_empty_from_dict(transformed_concept)
+    transformed_concept["versjonsnr"]
+
     return remove_empty_from_dict(transformed_concept)
 
 
@@ -230,11 +233,18 @@ def openfile(file_name):
 
 def remove_empty_from_dict(d):
     if type(d) is dict:
-        return dict((k, remove_empty_from_dict(v)) for k, v in d.items() if v and remove_empty_from_dict(v))
+        return dict((k, remove_empty_from_dict(v)) for k, v in d.items() if should_keep_value(v))
     elif type(d) is list:
-        return [remove_empty_from_dict(v) for v in d if v and remove_empty_from_dict(v)]
+        return [remove_empty_from_dict(v) for v in d if should_keep_value(v)]
     else:
         return d
+
+
+def should_keep_value(value):
+    if type(value) is dict or type(value) is list:
+        return len(value) > 0
+    else:
+        return value is not None
 
 
 def convert_bool(string_value):
