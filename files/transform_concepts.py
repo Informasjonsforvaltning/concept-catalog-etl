@@ -220,9 +220,6 @@ def transform_concept(concept):
         with open(publish_ids, 'w', encoding="utf-8") as publish_file:
             json.dump(listObj, publish_file, ensure_ascii=False, indent=4)
 
-    transformed_concept = remove_empty_from_dict(transformed_concept)
-    transformed_concept["versjonsnr"]
-
     return remove_empty_from_dict(transformed_concept)
 
 
