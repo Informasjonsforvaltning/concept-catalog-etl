@@ -57,7 +57,8 @@ def transform_concept(concept):
                         concept["term"]
                         .get("properties")
                         .get("http://www.skatteetaten.no/schema/properties/sourceType", {})
-                        .get("value")
+                        .get("value"),
+                        concept["term"].get("identifier")
                     ),
                 "kilde": [{
                     "uri":
@@ -179,7 +180,7 @@ def transform_concept(concept):
                 .get("value")
         },
         "originaltBegrep": concept["term"].get("identifier"),
-        "status": set_status_uri(
+        "statusURI": set_status_uri(
             concept["term"]
             .get("properties")
             .get("http://www.skatteetaten.no/schema/properties/conceptstatus", {})
@@ -219,12 +220,21 @@ def transform_concept(concept):
         with open(publish_ids, 'w', encoding="utf-8") as publish_file:
             json.dump(listObj, publish_file, ensure_ascii=False, indent=4)
 
-    return transformed_concept
+    return remove_empty_from_dict(transformed_concept)
 
 
 def openfile(file_name):
     with open(file_name) as json_file:
         return json.load(json_file)
+
+
+def remove_empty_from_dict(d):
+    if type(d) is dict:
+        return dict((k, remove_empty_from_dict(v)) for k, v in d.items() if v and remove_empty_from_dict(v))
+    elif type(d) is list:
+        return [remove_empty_from_dict(v) for v in d if v and remove_empty_from_dict(v)]
+    else:
+        return d
 
 
 def convert_bool(string_value):
@@ -255,7 +265,7 @@ def getstrings(value):
         return []
 
 
-def mapkildetype(kildetype):
+def mapkildetype(kildetype, begrep_id):
     if kildetype == "sitat fra kilde":
         return "SITATFRAKILDE"
     elif kildetype == "basert på kilde":
@@ -263,6 +273,7 @@ def mapkildetype(kildetype):
     elif kildetype == "egendefinert":
         return "EGENDEFINERT"
     else:
+        print("Unknown kildetype: " + str(kildetype) + " for begrep: " + str(begrep_id))
         return None
 
 
