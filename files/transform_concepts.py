@@ -230,9 +230,17 @@ def openfile(file_name):
 
 def remove_empty_from_dict(d):
     if type(d) is dict:
-        return dict((k, remove_empty_from_dict(v)) for k, v in d.items() if should_keep_value(v))
+        new_dict = {}
+        for k, v in d.items():
+            if should_keep_value(v):
+                new_dict[k] = remove_empty_from_dict(v)
+        return new_dict if len(new_dict) > 0 else None
     elif type(d) is list:
-        return [remove_empty_from_dict(v) for v in d if should_keep_value(v)]
+        new_list = []
+        for v in d:
+            if should_keep_value(v):
+                new_list.append(remove_empty_from_dict(v))
+        return new_list if len(new_list) > 0 else None
     else:
         return d
 
