@@ -232,15 +232,19 @@ def remove_empty_from_dict(d):
     if type(d) is dict:
         new_dict = {}
         for k, v in d.items():
-            if should_keep_value(v):
-                new_dict[k] = remove_empty_from_dict(v)
-        return new_dict if len(new_dict) > 0 else None
+            tmp_v = remove_empty_from_dict(v)
+            if should_keep_value(tmp_v):
+                new_dict[k] = tmp_v
+        if len(new_dict) > 0:
+            return new_dict
     elif type(d) is list:
         new_list = []
         for v in d:
-            if should_keep_value(v):
-                new_list.append(remove_empty_from_dict(v))
-        return new_list if len(new_list) > 0 else None
+            tmp_v = remove_empty_from_dict(v)
+            if should_keep_value(tmp_v):
+                new_list.append(tmp_v)
+        if len(new_list) > 0:
+            return new_list
     else:
         return d
 
