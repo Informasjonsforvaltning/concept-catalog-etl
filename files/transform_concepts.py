@@ -216,11 +216,11 @@ def transform_concept(concept, mongo_id):
 
         # Folkelig forklaring
         if field["fieldName"] == "Folkelig forklaring":
-            folkeligForklaring = transformed_concept.get("folkeligForklaring", {})
+            folkeligForklaring = transformed_concept.get("definisjonForAllmennheten", {})
             tekst = folkeligForklaring.get("tekst", {})
             tekst["nb"] = strip_jira_links(field["value"])
             folkeligForklaring["tekst"] = tekst
-            transformed_concept["folkeligForklaring"] = folkeligForklaring
+            transformed_concept["definisjonForAllmennheten"] = folkeligForklaring
 
         # Merknad
         if field["fieldName"] == "Merknad":
