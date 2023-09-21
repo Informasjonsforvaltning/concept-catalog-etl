@@ -98,7 +98,7 @@ def transform_concept(concept):
         },
         "erPublisert": "false",
         "fagområdeKoder": get_fagomraade(concept["term"]["vocabIdentifier"]),
-        "folkeligForklaring": {
+        "definisjonForAllmennheten": {
             "tekst": {
                 "nb":
                     concept["term"]

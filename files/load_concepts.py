@@ -16,14 +16,12 @@ errorfileName = args.outputdirectory + "load_errors.json"
 
 def convert_iso(begrep):
     endringstidspunkt = begrep["endringslogelement"]["endringstidspunkt"]
-    gyldigFom = begrep["gyldigFom"]
-    gyldigTom = begrep["gyldigTom"]
     if endringstidspunkt is not None:
         begrep["endringslogelement"]["endringstidspunkt"] = datetime.strptime(endringstidspunkt, "%Y-%m-%dT%H:%M:%S.000Z")
-    if gyldigFom is not None:
-        begrep["gyldigFom"] = datetime.strptime(gyldigFom, "%Y-%m-%dT%H:%M:%S.000Z")
-    if gyldigTom is not None:
-        begrep["gyldigTom"] = datetime.strptime(gyldigTom, "%Y-%m-%dT%H:%M:%S.000Z")
+    if begrep.get("gyldigFom") is not None:
+        begrep["gyldigFom"] = datetime.strptime(begrep["gyldigFom"], "%Y-%m-%dT%H:%M:%S.000Z")
+    if begrep.get("gyldigTom") is not None:
+        begrep["gyldigTom"] = datetime.strptime(begrep["gyldigTom"], "%Y-%m-%dT%H:%M:%S.000Z")
     return begrep
 
 
