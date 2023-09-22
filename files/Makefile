@@ -1,11 +1,28 @@
 .PHONY: test
 all: transform load
-transform: transform_users transform_concepts transform_comments transform_history
+transform: generate_mapping transform_concepts transform_comments transform_history make_delete_file
 load: load_users load_concepts load_comments load_history
+fix_metadata: extract_metadata transform_metadata load_metadata
 
-delete:
-	echo "Make delete-file"
+extract_metadata:
+	echo "Extracting metadata...."
+	python3 ./extract_metadata.py -o ./tmp/
+
+transform_metadata:
+	echo "Transforming metadata...."
+	python3 ./transform_metadata.py -o ./tmp/
+
+load_metadata:
+	echo "Loading metadata...."
+	python3 ./load_metadata.py -o ./tmp/
+
+make_delete_file:
+	echo "Making delete file...."
 	python3 ./get_ids.py -o ./tmp/
+
+generate_mapping:
+	echo "Generating mapping...."
+	python3 ./map_published_concepts.py -o ./tmp/
 
 transform_users:
 	echo "Transforming users...."

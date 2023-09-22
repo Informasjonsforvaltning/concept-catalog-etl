@@ -1,0 +1,1 @@
+# last opp transformed metadata, og slett alle med _id = data.brreg

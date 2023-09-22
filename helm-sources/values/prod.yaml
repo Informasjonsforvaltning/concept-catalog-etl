@@ -1,2 +1,3 @@
 #DValues for prod environment
 NAMESPACE: prod
+CONCEPT_CATALOG_URI: https://concept-catalog.fellesdatakatalog.digdir.no/collections/974760673/concepts/

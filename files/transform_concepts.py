@@ -248,6 +248,9 @@ def transform_concept(concept, mongo_id):
                 with open(publish_ids, 'w', encoding="utf-8") as publish_file:
                     json.dump(listObj, publish_file, ensure_ascii=False, indent=4)
 
+        if strip_jira_links(concept["summary"]) in mapped_identifiers:
+            mapped_fdkIds[mongo_id] = mapped_identifiers[strip_jira_links(concept['summary'])]
+
     return transformed_concept
 
 
@@ -322,10 +325,12 @@ def convert_date(timestamp):
 
 
 concepts_file = "brreg_concepts.json"
-admin_users_file = args.outputdirectory + "transformed_admin_users.json"
-admin_users = openfile(admin_users_file)
+admin_users = openfile(args.outputdirectory + "transformed_admin_users.json")
 outputfileName = args.outputdirectory + "transformed_concepts.json"
 publish_ids = args.outputdirectory + "publish_ids.json"
+fdkId_mapping = args.outputdirectory + "fdkId_mapping.json"
+mapped_identifiers = openfile(args.outputdirectory + "mapped_identifiers.json")
+mapped_fdkIds = {}
 
 # Kodelisteverdi for ekstern_begrepseier - FDK
 ekstern_begrepseier = {
@@ -376,3 +381,6 @@ intern_begrepseier = {
 
 with open(outputfileName, 'w', encoding="utf-8") as outfile:
     json.dump(transform(concepts_file), outfile, ensure_ascii=False, indent=4)
+
+with open(fdkId_mapping, 'w', encoding="utf-8") as fdk_mapping_file:
+    json.dump(mapped_fdkIds, fdk_mapping_file, ensure_ascii=False, indent=4)
