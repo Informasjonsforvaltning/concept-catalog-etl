@@ -133,7 +133,7 @@ dmypy.json
 *.sql
 
 # Temp files with extracted data
-/tmp
+*/tmp
 
 #IDEA
 .idea

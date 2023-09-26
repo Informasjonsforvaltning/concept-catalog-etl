@@ -180,6 +180,20 @@ def transform_concept(concept):
                 .get("value")
         },
         "originaltBegrep": concept["term"].get("identifier"),
+        "definisjonForSpesialister": {
+            "tekst": {
+                "nb":
+                    "Jurist: " +
+                    concept["term"]
+                    .get("properties")
+                    .get("http://www.skatteetaten.no/schema/properties/legalExplanation")
+                    .get("value") if
+                    concept["term"]
+                    .get("properties")
+                    .get("http://www.skatteetaten.no/schema/properties/legalExplanation")
+                    .get("value") is not None else None
+            },
+        },
         "statusURI": set_status_uri(
             concept["term"]
             .get("properties")
@@ -313,6 +327,8 @@ def set_status_uri(status):
         return "http://publications.europa.eu/resource/authority/concept-status/CANDIDATE"
     elif status == "Tilbaketrukket":
         return "http://publications.europa.eu/resource/authority/concept-status/RETIRED"
+    elif status == "Under arbeid":
+        return "http://publications.europa.eu/resource/authority/concept-status/CANDIDATE"
     else:
         print("Unknown status: " + str(status))
 
