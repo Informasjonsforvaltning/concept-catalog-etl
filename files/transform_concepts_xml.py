@@ -174,6 +174,12 @@ def transform_concept(concept):
         with open(publish_ids, 'w', encoding="utf-8") as publish_file:
             json.dump(listObj, publish_file, ensure_ascii=False, indent=4)
 
+    if concept.get("note") is not None:
+        dictObj = openfile(comments) if os.path.isfile(comments) else {}
+        dictObj[concept.get("identifier")] = concept.get("note")
+        with open(comments, 'w', encoding="utf-8") as comment_file:
+            json.dump(dictObj, comment_file, ensure_ascii=False, indent=4)
+
     return remove_empty_from_dict(transformed_concept)
 
 
@@ -286,12 +292,13 @@ def convert_date(dateobject):
 
 outputfileName = args.outputdirectory + "transformed_concepts.json"
 publish_ids = args.outputdirectory + "publish_ids.json"
-concepts_file = "skatt_concepts.json"
+concepts_file = args.outputdirectory + "skatt_concepts.json"
+comments = args.outputdirectory + "skatt_comments.json"
 
-with open("fagomraader_name_to_codelist.json") as fd:
+with open(args.outputdirectory + "fagomraader_name_to_codelist.json") as fd:
     fagomraader = json.load(fd)
 
-with open("skatt_concepts.xml") as fd:
+with open(args.outputdirectory + "skatt_concepts.xml") as fd:
     xml = xmltodict.parse(fd.read())
 
 with open(concepts_file, 'w', encoding="utf-8") as outfile:
