@@ -1,7 +1,6 @@
 .PHONY: test
-all: transform load
-transform json: transform_concepts_json delete
-transform xml: transform_concepts_xml delete
+transform_json: transform_concepts_json delete
+transform_xml: transform_concepts_xml delete
 load: load_concepts
 
 delete:
