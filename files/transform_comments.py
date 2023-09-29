@@ -16,8 +16,9 @@ def transform(c_file):
     transformed_comments = {}
 
     for concept_id in comment_file:
-        result = transform_comment(comment_file[concept_id], concept_id)
-        transformed_comments[concept_id] = result
+        if comment_file[concept_id] is not None and len(comment_file[concept_id]) > 1:
+            result = transform_comment(comment_file[concept_id], concept_id)
+            transformed_comments[concept_id] = result
     return transformed_comments
 
 
