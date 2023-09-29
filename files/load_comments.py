@@ -28,15 +28,14 @@ with open(args.outputdirectory + 'transformed_comments.json') as comment_file:
     total_failed = 0
     fail_log = {}
     for mongo_id in transformed_json:
-        for comment in transformed_json[mongo_id]:
-            transformed_comment = convert_iso(comment)
-            insert_result = db.comment.insert_one(transformed_comment)
-            if insert_result:
-                total_inserted += 1
-            else:
-                total_failed += 1
-                print("Update failed: " + mongo_id)
-                fail_log[mongo_id] = transformed_json[mongo_id]
+        transformed_comment = convert_iso(transformed_json[mongo_id])
+        insert_result = db.comment.insert_one(transformed_comment)
+        if insert_result:
+            total_inserted += 1
+        else:
+            total_failed += 1
+            print("Update failed: " + mongo_id)
+            fail_log[mongo_id] = transformed_json[mongo_id]
     print("Total number of comments inserted: " + str(total_inserted))
     print("Total number of comments inserts failed: " + str(total_failed))
     with open(errorfileName, 'w', encoding="utf-8") as err_file:
