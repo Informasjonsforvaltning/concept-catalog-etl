@@ -3,3 +3,5 @@ requests
 rdflib
 gunicorn
 python-dotenv
+xmltodict
+pymongo
