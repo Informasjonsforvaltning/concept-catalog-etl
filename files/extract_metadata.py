@@ -42,7 +42,10 @@ for id_dict in fdk_concept_list:
     fdkMetas[_id]["issued"] = id_dict.get("issued")
 
 print("Total number of extracted brregMetas: " + str(len(brregMetas)))
-print("Total number of extracted fdkMetas: " + str(len(brregMetas)))
+print("Total number of extracted fdkMetas: " + str(len(fdkMetas)))
 
-with open(args.outputdirectory + 'mongo_conceptMeta.json', 'w', encoding="utf-8") as outfile:
-    json.dump([brregMetas, fdkMetas], outfile, ensure_ascii=False, indent=4)
+with open(args.outputdirectory + 'mongo_brregMeta.json', 'w', encoding="utf-8") as outfile:
+    json.dump(brregMetas, outfile, ensure_ascii=False, indent=4)
+
+with open(args.outputdirectory + 'mongo_fdkMeta.json', 'w', encoding="utf-8") as outfile:
+    json.dump(fdkMetas, outfile, ensure_ascii=False, indent=4)
