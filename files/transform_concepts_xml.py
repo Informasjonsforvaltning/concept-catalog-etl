@@ -117,7 +117,8 @@ def transform_concept(concept):
             # Forvaltningsmerknad
             "ea21bbec-a262-4223-b234-09045c499098": {
                 "value":
-                    concept.get("forvaltningsmerknad")
+                    concept.get("forvaltningsmerknad", {})
+                    .get("no")
             },
             # Teknisk begrepsnavn
             "5dc1d0ba-1638-4ed8-b5b4-ea4fa43df5d3": {
