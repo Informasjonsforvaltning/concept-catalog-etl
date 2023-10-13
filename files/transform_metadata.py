@@ -8,22 +8,34 @@ args = parser.parse_args()
 
 
 #  TODO:
-# Finn _id = concept-catalog (..) mongo_id , og _id = identifikator fra mapping og extract
-# Kopier fdkId og issued fra data.brreg til concept-catalog, og slett data.brreg element etter load
+# Finn _id = concept-catalog.(...)/mongo_id , og _id = identifikator fra mapping og extract
+# Kopier fdkId og issued fra data.brreg til concept-catalog
 
-def transform(fdk_meta_file, brreg_meta_file):
+def transform():
     transformed_meta = {}
-    with open(fdk_meta_file) as fdk_file:
-        fdk_meta = json.load(fdk_file)
-    with open(brreg_meta_file) as brreg_file:
-        brreg_meta = json.load(brreg_file)
-
+    fdk_meta = openfile(args.outputdirectory + "mongo_fdkMeta.json")
+    brreg_meta = openfile(args.outputdirectory + "mongo_brregMeta.json")
+    transformed_concepts = openfile(args.outputdirectory + "transformed_concepts.json")
+    publish_ids = openfile(args.outputdirectory + "publish_ids.json")
+    mapped_identifiers = openfile(args.outputdirectory + "mapped_identifiers.json")
+    for concept_id in publish_ids:
+        term = transformed_concepts[concept_id]["anbefaltTerm"]["navn"]["nb"]
+        fdk_id = os.environ['CONCEPT_CATALOG_URI'] + concept_id
+        if term in mapped_identifiers and fdk_id in fdk_meta:
+            brregMeta = brreg_meta[mapped_identifiers[term]]
+            transformed_meta[fdk_id] = {}
+            transformed_meta[fdk_id]["fdkId"] = brregMeta["fdkId"]
+            transformed_meta[fdk_id]["issued"] = brregMeta["issued"]
     return transformed_meta
 
+
+def openfile(file_name):
+    with open(file_name) as json_file:
+        return json.load(json_file)
+
+
 outputfileName = args.outputdirectory + "transformed_metadata.json"
-fdk_meta_file = args.outputdirectory + "mongo_fdkMeta.json"
-brreg_meta_file = args.outputdirectory + "mongo_brregMeta.json"
 
 
 with open(outputfileName, 'w', encoding="utf-8") as outfile:
-    json.dump(transform(fdk_meta_file, brreg_meta_file), outfile, ensure_ascii=False, indent=4)
+    json.dump(transform(), outfile, ensure_ascii=False, indent=4)

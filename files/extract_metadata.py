@@ -38,8 +38,6 @@ for id_dict in brreg_concept_list:
 for id_dict in fdk_concept_list:
     _id = id_dict["_id"]
     fdkMetas[_id] = {}
-    fdkMetas[_id]["fdkId"] = id_dict.get("fdkId")
-    fdkMetas[_id]["issued"] = id_dict.get("issued")
 
 print("Total number of extracted brregMetas: " + str(len(brregMetas)))
 print("Total number of extracted fdkMetas: " + str(len(fdkMetas)))
