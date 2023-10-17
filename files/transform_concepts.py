@@ -324,7 +324,7 @@ def convert_date(timestamp):
         return None
 
 
-concepts_file = "brreg_concepts.json"
+concepts_file = args.outputdirectory + "brreg_concepts.json"
 admin_users = openfile(args.outputdirectory + "transformed_admin_users.json")
 outputfileName = args.outputdirectory + "transformed_concepts.json"
 publish_ids = args.outputdirectory + "publish_ids.json"

@@ -1,6 +1,6 @@
 .PHONY: test
 all: transform load
-transform: generate_mapping transform_concepts transform_comments transform_history make_delete_file
+transform: generate_mapping transform_users transform_concepts transform_comments transform_history make_delete_file
 load: load_users load_concepts load_comments load_history
 fix_metadata: extract_metadata transform_metadata load_metadata
 
@@ -22,7 +22,7 @@ make_delete_file:
 
 generate_mapping:
 	echo "Generating mapping...."
-	python3 ./map_published_concepts.py -o ./tmp/
+	python3 ./map_identifiers.py -o ./tmp/
 
 transform_users:
 	echo "Transforming users...."

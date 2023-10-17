@@ -11,7 +11,6 @@ brreg_published = requests.get("https://data.brreg.no/begrep/").json()
 identifiers = {}
 guids = {}
 for item in brreg_published:
-    print(item)
     if "http://data.brreg.no/begrep/" in item:
         identifiers[brreg_published[item]["http://www.w3.org/2008/05/skos-xl#prefLabel"][0]["value"]] = item
     elif "_:" in item and brreg_published[item].get("http://www.w3.org/2008/05/skos-xl#literalForm") is not None:
