@@ -50,7 +50,7 @@ def openfile(file_name):
         return json.load(json_file)
 
 
-input_file = args.outputdirectory + "brreg_concepts.json"
+input_file = "brreg_concepts.json"
 comment_outputfileName = args.outputdirectory + "transformed_comment_users.json"
 admin_outputfileName = args.outputdirectory + "transformed_admin_users.json"
 

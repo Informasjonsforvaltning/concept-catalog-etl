@@ -17,13 +17,13 @@ def transform():
     publish_ids = openfile(args.outputdirectory + "publish_ids.json")
     fdkId_mapping = openfile(args.outputdirectory + "fdkId_mapping.json")
     for concept_id in publish_ids:
-        fdk_id = os.environ['CONCEPT_CATALOG_URI'] + concept_id
-        if fdk_id in fdk_meta:
-            brreg_id = fdkId_mapping[concept_id]
-            brregMeta = brreg_meta[brreg_id]
-            transformed_meta[fdk_id] = {}
-            transformed_meta[fdk_id]["fdkId"] = brregMeta["fdkId"]
-            transformed_meta[fdk_id]["issued"] = brregMeta["issued"]
+        new_id_uri = os.environ['CONCEPT_CATALOG_URI'] + concept_id
+        if new_id_uri in fdk_meta:
+            old_id_uri = fdkId_mapping[concept_id]
+            brregMeta = brreg_meta[old_id_uri]
+            transformed_meta[new_id_uri] = {}
+            transformed_meta[new_id_uri]["fdkId"] = brregMeta["fdkId"]
+            transformed_meta[new_id_uri]["issued"] = brregMeta["issued"]
     return transformed_meta
 
 
