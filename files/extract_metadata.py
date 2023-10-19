@@ -18,10 +18,10 @@ if response not in ["y", "yes", "yep", "roger", "jada", "ja", "j", "yeah", "can 
     exit("Exiting ...")
 
 delete_result = admin_db.datasources.delete_one({"url": "https://data.brreg.no/begrep/"})
-if delete_result:
+if delete_result.acknowledged:
     print("Successfully deleted datasource for https://data.brreg.no/begrep/")
 else:
-    exit("Delete failed, exiting ...")
+    print("Datasource not found ...")
 
 db = connection.conceptHarvester
 fdk_pattern = re.compile(os.environ['CONCEPT_CATALOG_URI'], re.I)

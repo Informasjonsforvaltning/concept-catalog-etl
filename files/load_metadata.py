@@ -23,7 +23,7 @@ with open(args.outputdirectory + 'transformed_metadata.json') as metadata_file:
     fail_log = {}
     for mongo_id in transformed_json:
         transformed_begrep = transformed_json[mongo_id]
-        insert_result = db.conceptMeta.update_one({'_id': mongo_id}, transformed_begrep)
+        insert_result = db.conceptMeta.update_one({'_id': mongo_id}, {"$set": transformed_begrep})
         if insert_result.modified_count == 1:
             total_inserted += 1
         else:

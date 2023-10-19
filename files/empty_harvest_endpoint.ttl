@@ -1,0 +1,25 @@
+@prefix schema: <http://schema.org/> .
+@prefix adms:  <http://www.w3.org/ns/adms#> .
+@prefix spdx:  <http://spdx.org/rdf/terms#> .
+@prefix iso:   <http://iso.org/25012/2008/dataquality/> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix skosxl: <http://www.w3.org/2008/05/skos-xl#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix dqv:   <http://www.w3.org/ns/dqv#> .
+@prefix skosno: <http://difi.no/skosno#> .
+@prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+@prefix xkos:  <http://rdf-vocabulary.ddialliance.org/xkos#> .
+@prefix oa:    <http://www.w3.org/ns/prov#> .
+@prefix dct:   <http://purl.org/dc/terms/> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dcatno: <http://difi.no/dcatno#> .
+@prefix dcat:  <http://www.w3.org/ns/dcat#> .
+@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+
+<http://data.brreg.no/begrep>
+        a               skos:Collection ;
+        rdfs:label      "begrepssamling" ;
+        dct:identifier  "http://data.brreg.no/begrep" ;
+        dct:publisher   <https://data.brreg.no/enhetsregisteret/api/enheter/974760673> .

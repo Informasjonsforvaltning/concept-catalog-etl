@@ -36,6 +36,8 @@ spec:
               secretKeyRef:
                 name: mongo-{{ required "Missing value NAMESPACE" .Values.NAMESPACE }}
                 key: MONGO_PASSWORD
+          - name: CONCEPT_CATALOG_URI
+            value: {{ required "Missing value CONCEPT_CATALOG_URI" .Values.CONCEPT_CATALOG_URI | quote }}
           image: {{ required "Missing value DOCKER_IMAGE_NAME" .Values.DOCKER_IMAGE_NAME }}
           imagePullPolicy: Always
           name: concept-catalog-etl
