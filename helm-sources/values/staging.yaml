@@ -1,2 +1,3 @@
 #DValues for staging environment
 NAMESPACE: staging
+CONCEPT_CATALOG_URI: "https://concept-catalog.staging.fellesdatakatalog.digdir.no/collections/974761076/concepts/"
