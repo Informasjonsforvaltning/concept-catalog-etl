@@ -78,5 +78,4 @@ jobs:
 
     - name: Deploy to GCP
       run: |
-        gcloud container clusters get-credentials digdir-fdk-dev --region europe-north1-a --project digdir-fdk-dev
         kubectl apply -f ./kubectlapply.yaml --force
