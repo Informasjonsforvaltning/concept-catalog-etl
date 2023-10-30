@@ -174,14 +174,7 @@ def transform_concept(concept):
         with open(publish_ids, 'w', encoding="utf-8") as publish_file:
             json.dump(listObj, publish_file, ensure_ascii=False, indent=4)
 
-    if concept.get("note", {}).get("no") is not None and len(concept.get("note", {}).get("no")) > 1:
-        dictObj = openfile(comments) if os.path.isfile(comments) else {}
-        dictObj[concept.get("identifier")] = concept.get("note").get("no")
-        with open(comments, 'w', encoding="utf-8") as comment_file:
-            json.dump(dictObj, comment_file, ensure_ascii=False, indent=4)
-
     return remove_empty_from_dict(transformed_concept)
-
 
 def openfile(file_name):
     with open(file_name) as json_file:
