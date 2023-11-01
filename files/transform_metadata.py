@@ -7,9 +7,6 @@ parser.add_argument('-o', '--outputdirectory', help="the path to the directory o
 args = parser.parse_args()
 
 
-# Finn _id = concept-catalog.(...)/mongo_id , og _id = identifikator fra mapping og extract
-# Kopier fdkId og issued fra data.brreg til concept-catalog
-
 def transform():
     transformed_meta = {}
     fdk_meta = openfile(args.outputdirectory + "mongo_fdkMeta.json")
@@ -18,8 +15,8 @@ def transform():
     fdkId_mapping = openfile(args.outputdirectory + "fdkId_mapping.json")
     for concept_id in publish_ids:
         new_id_uri = os.environ['CONCEPT_CATALOG_URI'] + concept_id
-        if new_id_uri in fdk_meta:
-            old_id_uri = fdkId_mapping[concept_id]
+        old_id_uri = fdkId_mapping[concept_id]
+        if new_id_uri in fdk_meta and old_id_uri in brreg_meta:
             brregMeta = brreg_meta[old_id_uri]
             transformed_meta[new_id_uri] = {}
             transformed_meta[new_id_uri]["fdkId"] = brregMeta["fdkId"]
