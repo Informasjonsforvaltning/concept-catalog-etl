@@ -3,7 +3,7 @@ import argparse
 import uuid
 import random
 from datetime import datetime
-import os.path
+import os
 import re
 
 parser = argparse.ArgumentParser()
