@@ -20,18 +20,28 @@ def transform(u_file):
     history_filename = args.outputdirectory + "brreg_history.json"
     comments = {}
     history = {}
+    concepts_see_also_jira_ids = {}
 
     projects = con_file["projects"]
     project = next(prj for prj in projects if prj["name"] == "BEGREP")
     concepts = project["issues"]
+    id_mapping = {}
     for concept in concepts:
         mongo_id = str(uuid.UUID(int=rd.getrandbits(128), version=4))
         result = transform_concept(concept, mongo_id)
-        transformed_concepts[mongo_id] = result
+        id_mapping[concept["key"]] = mongo_id
+        transformed_concepts[mongo_id] = result[0]
+        concepts_see_also_jira_ids[mongo_id] = result[1]
         if concept.get("comments") is not None:
             comments[mongo_id] = concept["comments"]
         if concept.get("history") is not None:
             history[mongo_id] = concept["history"]
+
+    for concept_id in concepts_see_also_jira_ids:
+        transformed_concepts[concept_id]["seOgså"] = []
+        for jira_id in concepts_see_also_jira_ids[concept_id]:
+            if jira_id in id_mapping:
+                transformed_concepts[concept_id]["seOgså"].append(id_mapping[jira_id])
 
     with open(comments_filename, 'w', encoding="utf-8") as brreg_comments_file:
         json.dump(comments, brreg_comments_file, ensure_ascii=False, indent=4)
@@ -42,6 +52,8 @@ def transform(u_file):
 
 
 def transform_concept(concept, mongo_id):
+    jira_links = set()
+
     transformed_concept = {
         "_id": mongo_id,
         "_class": "no.fdk.concept_catalog.model.BegrepDBO",
@@ -251,7 +263,7 @@ def transform_concept(concept, mongo_id):
         if strip_jira_links(concept["summary"]) in mapped_identifiers:
             mapped_fdkIds[mongo_id] = mapped_identifiers[strip_jira_links(concept['summary'])]
 
-    return transformed_concept
+    return [transformed_concept, jira_links]
 
 
 def getuser(brreg_user):
@@ -295,6 +307,7 @@ def getstrings(value):
 
 def strip_jira_links(string):
     if string is not None:
+        jira_links.add(re.findall(r"\[.*?\|(.*?)]", string))
         return re.sub(r"\[(.*?)\|.*?]", r"\1", string)
     else:
         return None
@@ -331,6 +344,7 @@ publish_ids = args.outputdirectory + "publish_ids.json"
 fdkId_mapping = args.outputdirectory + "fdkId_mapping.json"
 mapped_identifiers = openfile(args.outputdirectory + "mapped_identifiers.json")
 mapped_fdkIds = {}
+jira_links = set()
 
 # Kodelisteverdi for ekstern_begrepseier - FDK
 ekstern_begrepseier = {
