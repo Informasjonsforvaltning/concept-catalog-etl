@@ -38,10 +38,13 @@ def transform(u_file):
             history[mongo_id] = concept["history"]
 
     for concept_id in concepts_see_also_jira_ids:
-        transformed_concepts[concept_id]["seOgså"] = []
+        seeAlso = []
         for jira_id in concepts_see_also_jira_ids[concept_id]:
-            if jira_id in id_mapping:
-                transformed_concepts[concept_id]["seOgså"].append(id_mapping[jira_id])
+            split_id = jira_id.split('/')[-1]
+            if split_id in id_mapping:
+                seeAlso.append(os.environ['CONCEPT_CATALOG_URI'] + id_mapping[split_id])
+        if len(seeAlso) > 0:
+            transformed_concepts[concept_id]["seOgså"] = seeAlso
 
     with open(comments_filename, 'w', encoding="utf-8") as brreg_comments_file:
         json.dump(comments, brreg_comments_file, ensure_ascii=False, indent=4)
@@ -307,7 +310,7 @@ def getstrings(value):
 
 def strip_jira_links(string):
     if string is not None:
-        jira_links.add(re.findall(r"\[.*?\|(.*?)]", string))
+        jira_links.update(re.findall(r"\[.*?\|(.*?)]", string))
         return re.sub(r"\[(.*?)\|.*?]", r"\1", string)
     else:
         return None
