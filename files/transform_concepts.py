@@ -55,6 +55,7 @@ def transform(u_file):
 
 
 def transform_concept(concept, mongo_id):
+    global jira_links
     jira_links = set()
 
     transformed_concept = {
@@ -309,6 +310,7 @@ def getstrings(value):
 
 
 def strip_jira_links(string):
+    global jira_links
     if string is not None:
         jira_links.update(re.findall(r"\[.*?\|(.*?)]", string))
         return re.sub(r"\[(.*?)\|.*?]", r"\1", string)
