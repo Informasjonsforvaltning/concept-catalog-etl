@@ -168,7 +168,8 @@ def transform_concept(concept):
                 concept.get("validTo")
             )
     }
-    if concept.get("nonPublic").lower() == "nei":
+    publishable_status = ["godkjent", "kvalifisert - formell og innholdsmessig korrekt"]
+    if concept.get("nonPublic").lower() == "nei" and concept.get("conceptStatus").lower() in publishable_status:
         listObj = openfile(publish_ids) if os.path.isfile(publish_ids) else []
         listObj.append(concept.get("identifier"))
         with open(publish_ids, 'w', encoding="utf-8") as publish_file:
@@ -289,10 +290,10 @@ publish_ids = args.outputdirectory + "publish_ids.json"
 concepts_file = "skatt_concepts.json"
 comments = args.outputdirectory + "skatt_comments.json"
 
-with open("fagomraader_name_to_codelist.json") as fd:
+with open(args.outputdirectory + "fagomraader_name_to_codelist.json") as fd:
     fagomraader = json.load(fd)
 
-with open("skatt_concepts.xml") as fd:
+with open(args.outputdirectory + "komplett_uttrekk.xml") as fd:
     xml = xmltodict.parse(fd.read())
 
 with open(concepts_file, 'w', encoding="utf-8") as outfile:
