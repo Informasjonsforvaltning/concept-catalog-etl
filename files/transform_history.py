@@ -27,7 +27,7 @@ def transform_change(history_list, concept_id):
         transformed_story = {
             "_id": mongo_id,
             "catalogId": "974760673",
-            "dateTime": convert_date(story["created"]),
+            "datetime": convert_date(story["created"]),
             "operations": transform_story(story["items"]),
             "person": getuser(story["author"]),
             "resourceId": concept_id
