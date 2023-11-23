@@ -148,8 +148,8 @@ def transform_concept(concept):
         "statusURI":
             set_status_uri(
                 concept.get("conceptStatus")
-                if concept.get("conceptStatus") == concept.get("konseptstatus")
-                else concept.get("konseptstatus")
+                if concept.get("conceptStatus") == concept.get("konseptStatus")
+                else concept.get("konseptStatus")
         ),
         "tillattTerm": {
             "nb": getstrings(
@@ -258,23 +258,23 @@ def mapkildetype(kildetype, begrep_id):
 
 
 def set_status_uri(status):
-    if status == "Utkast":
+    if status.lower() == "utkast":
         return "http://publications.europa.eu/resource/authority/concept-status/DRAFT"
-    elif status == "Registrert":
+    elif status.lower() == "Registrert":
         return "http://publications.europa.eu/resource/authority/concept-status/DRAFT"
-    elif status == "Høring":
+    elif status.lower() == "høring":
         return "http://publications.europa.eu/resource/authority/concept-status/CANDIDATE"
-    elif status == "Godkjent":
+    elif status.lower() == "godkjent":
         return "http://publications.europa.eu/resource/authority/concept-status/CURRENT"
-    elif status == "Klar til godkjenning":
+    elif status.lower() == "klar til godkjenning":
         return "http://publications.europa.eu/resource/authority/concept-status/WAITING"
-    elif status == "Kvalitetssikring":
+    elif status.lower() == "kvalitetssikring":
         return "http://publications.europa.eu/resource/authority/concept-status/CANDIDATE"
-    elif status == "Kvalifisert - formell og innholdsmessig korrekt":
+    elif status.lower() == "kvalifisert - formell og innholdsmessig korrekt":
         return "http://publications.europa.eu/resource/authority/concept-status/CANDIDATE"
-    elif status == "Tilbaketrukket":
+    elif status.lower() == "tilbaketrukket":
         return "http://publications.europa.eu/resource/authority/concept-status/RETIRED"
-    elif status == "Under behandling":
+    elif status.lower() == "under behandling":
         return "http://publications.europa.eu/resource/authority/concept-status/CANDIDATE"
     else:
         print("Unknown status: " + str(status))
