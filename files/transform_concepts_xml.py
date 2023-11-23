@@ -258,26 +258,31 @@ def mapkildetype(kildetype, begrep_id):
 
 
 def set_status_uri(status):
-    if status.lower() == "utkast":
-        return "http://publications.europa.eu/resource/authority/concept-status/DRAFT"
-    elif status.lower() == "Registrert":
-        return "http://publications.europa.eu/resource/authority/concept-status/DRAFT"
-    elif status.lower() == "høring":
-        return "http://publications.europa.eu/resource/authority/concept-status/CANDIDATE"
-    elif status.lower() == "godkjent":
-        return "http://publications.europa.eu/resource/authority/concept-status/CURRENT"
-    elif status.lower() == "klar til godkjenning":
-        return "http://publications.europa.eu/resource/authority/concept-status/WAITING"
-    elif status.lower() == "kvalitetssikring":
-        return "http://publications.europa.eu/resource/authority/concept-status/CANDIDATE"
-    elif status.lower() == "kvalifisert - formell og innholdsmessig korrekt":
-        return "http://publications.europa.eu/resource/authority/concept-status/CANDIDATE"
-    elif status.lower() == "tilbaketrukket":
-        return "http://publications.europa.eu/resource/authority/concept-status/RETIRED"
-    elif status.lower() == "under behandling":
-        return "http://publications.europa.eu/resource/authority/concept-status/CANDIDATE"
+    if status is not None:
+        if status.lower() == "utkast":
+            return "http://publications.europa.eu/resource/authority/concept-status/DRAFT"
+        elif status.lower() == "registrert":
+            return "http://publications.europa.eu/resource/authority/concept-status/DRAFT"
+        elif status.lower() == "høring":
+            return "http://publications.europa.eu/resource/authority/concept-status/CANDIDATE"
+        elif status.lower() == "godkjent":
+            return "http://publications.europa.eu/resource/authority/concept-status/CURRENT"
+        elif status.lower() == "klar til godkjenning":
+            return "http://publications.europa.eu/resource/authority/concept-status/WAITING"
+        elif status.lower() == "kvalitetssikring":
+            return "http://publications.europa.eu/resource/authority/concept-status/CANDIDATE"
+        elif status.lower() == "kvalifisert - formell og innholdsmessig korrekt":
+            return "http://publications.europa.eu/resource/authority/concept-status/CANDIDATE"
+        elif status.lower() == "tilbaketrukket":
+            return "http://publications.europa.eu/resource/authority/concept-status/RETIRED"
+        elif status.lower() == "under behandling":
+            return "http://publications.europa.eu/resource/authority/concept-status/CANDIDATE"
+        else:
+            print("Unknown status: " + str(status))
+            return None
     else:
-        print("Unknown status: " + str(status))
+        print("Status is None")
+        return None
 
 
 def convert_date(dateobject):
