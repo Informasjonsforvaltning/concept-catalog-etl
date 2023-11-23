@@ -229,8 +229,9 @@ def convert_bool(string_value):
 
 
 def get_fagomraade(fagomraade_string):
-    if fagomraade_string.split('/')[-1] in fagomraader:
-        return [str(fagomraader[fagomraade_string])]
+    fagomraade = fagomraade_string.split('/')[-1]
+    if fagomraade in fagomraader:
+        return [str(fagomraader[fagomraade])]
     else:
         return []
 
@@ -296,7 +297,7 @@ comments = args.outputdirectory + "skatt_comments.json"
 with open(args.outputdirectory + "fagomraader_name_to_codelist.json") as fd:
     fagomraader = json.load(fd)
 
-with open(args.outputdirectory + "komplett_uttrekk.xml") as fd:
+with open(args.outputdirectory + "skatt_concepts.xml") as fd:
     xml = xmltodict.parse(fd.read())
 
 with open(concepts_file, 'w', encoding="utf-8") as outfile:
