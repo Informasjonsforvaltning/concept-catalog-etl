@@ -14,7 +14,7 @@ def transform():
     publish_ids = openfile(args.outputdirectory + "publish_ids.json")
     for concept_id in publish_ids:
         new_id_uri = os.environ['CONCEPT_CATALOG_URI'] + concept_id
-        old_id_uri = "http:/begrepskatalogen/begrep/" + concept_id
+        old_id_uri = "http://begrepskatalogen/begrep/" + concept_id
         if new_id_uri in fdk_meta and old_id_uri in skatt_meta:
             skattMeta = skatt_meta[old_id_uri]
             transformed_meta[new_id_uri] = {}
