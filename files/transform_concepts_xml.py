@@ -145,8 +145,11 @@ def transform_concept(concept):
                     else None
             },
         },
-        "statusURI": set_status_uri(
-            concept.get("conceptStatus")
+        "statusURI":
+            set_status_uri(
+                concept.get("conceptStatus")
+                if concept.get("conceptStatus") == concept.get("konseptstatus")
+                else concept.get("konseptstatus")
         ),
         "tillattTerm": {
             "nb": getstrings(
@@ -226,7 +229,7 @@ def convert_bool(string_value):
 
 
 def get_fagomraade(fagomraade_string):
-    if fagomraade_string in fagomraader:
+    if fagomraade_string.split('/')[-1] in fagomraader:
         return [str(fagomraader[fagomraade_string])]
     else:
         return []
