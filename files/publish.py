@@ -9,7 +9,7 @@ args = parser.parse_args()
 
 def publish(concepts_to_be_published):
     publish_result = {}
-    id_token = input("Please enter your id_token: ")
+    id_token = input("Please enter your id_token (from registration): ")
     for concept in concepts_to_be_published:
         endpoint = f"http://concept-catalog:8080/begreper/{concept}/publish"
         headers = {"Authorization": f"Bearer {id_token}"}

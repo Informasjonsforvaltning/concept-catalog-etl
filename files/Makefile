@@ -1,6 +1,7 @@
 .PHONY: test
 transform: transform_concepts_xml create_delete_file
 load: load_concepts
+publish: publish_concepts
 fix_metadata: extract_metadata transform_metadata load_metadata
 
 extract_metadata:
@@ -31,7 +32,7 @@ load_concepts:
 	echo "Loading concepts...."
 	python3 ./load_concepts.py -o ./tmp/
 
-publish:
+publish_concepts:
 	echo "Publishing...."
 	python3 ./publish.py -o ./tmp/
 

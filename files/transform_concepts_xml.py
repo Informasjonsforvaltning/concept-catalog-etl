@@ -177,7 +177,7 @@ def transform_concept(concept):
         print("konseptStatus: " + str(concept.get("konseptStatus")))
     publishable_status = ["godkjent", "kvalifisert - formell og innholdsmessig korrekt", "kvalifisert"]
     status = concept.get("konseptStatus") if concept.get("konseptStatus") is not None else concept.get("conceptStatus")
-    if concept.get("nonPublic").lower() == "nei" and status in publishable_status:
+    if concept.get("nonPublic").lower() == "nei" and status.lower() in publishable_status:
         listObj = openfile(publish_ids) if os.path.isfile(publish_ids) else []
         listObj.append(concept.get("identifier"))
         with open(publish_ids, 'w', encoding="utf-8") as publish_file:
@@ -288,7 +288,7 @@ def convert_date(dateobject):
                 datetime.datetime.strptime(dateobject, '%Y-%m-%d'),
                 "%Y-%m-%dT%H:%M:%S.000Z")
     else:
-        return None
+        return datetime.datetime.strftime(datetime.datetime.now(), "%Y-%m-%dT%H:%M:%S.000Z")
 
 
 outputfileName = args.outputdirectory + "transformed_concepts.json"
