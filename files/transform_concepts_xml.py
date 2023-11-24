@@ -171,12 +171,13 @@ def transform_concept(concept):
                 concept.get("validTo")
             )
     }
-    if transformed_concept["statusUri"] is None:
+    if transformed_concept["statusURI"] is None:
         print("StatusUri is None for concept: " + str(concept["identifier"]))
         print("conceptStatus: " + str(concept.get("conceptStatus")))
         print("konseptStatus: " + str(concept.get("konseptStatus")))
-    publishable_status = ["godkjent", "kvalifisert - formell og innholdsmessig korrekt"]
-    if concept.get("nonPublic").lower() == "nei" and concept.get("conceptStatus").lower() in publishable_status:
+    publishable_status = ["godkjent", "kvalifisert - formell og innholdsmessig korrekt", "kvalifisert"]
+    status = concept.get("konseptStatus") if concept.get("konseptStatus") is not None else concept.get("conceptStatus")
+    if concept.get("nonPublic").lower() == "nei" and status in publishable_status:
         listObj = openfile(publish_ids) if os.path.isfile(publish_ids) else []
         listObj.append(concept.get("identifier"))
         with open(publish_ids, 'w', encoding="utf-8") as publish_file:
