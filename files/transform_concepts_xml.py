@@ -148,7 +148,7 @@ def transform_concept(concept):
         "statusURI":
             set_status_uri(
                 concept.get("conceptStatus")
-                if concept.get("conceptStatus") == concept.get("konseptStatus")
+                if concept.get("conceptStatus") == concept.get("konseptStatus") or concept.get("konseptStatus") is None
                 else concept.get("konseptStatus")
         ),
         "tillattTerm": {
@@ -171,6 +171,10 @@ def transform_concept(concept):
                 concept.get("validTo")
             )
     }
+    if transformed_concept["statusUri"] is None:
+        print("StatusUri is None for concept: " + str(concept["identifier"]))
+        print("conceptStatus: " + str(concept.get("conceptStatus")))
+        print("konseptStatus: " + str(concept.get("konseptStatus")))
     publishable_status = ["godkjent", "kvalifisert - formell og innholdsmessig korrekt"]
     if concept.get("nonPublic").lower() == "nei" and concept.get("conceptStatus").lower() in publishable_status:
         listObj = openfile(publish_ids) if os.path.isfile(publish_ids) else []
@@ -259,24 +263,16 @@ def mapkildetype(kildetype, begrep_id):
 
 def set_status_uri(status):
     if status is not None:
-        if status.lower() == "utkast":
+        if status.lower() in ["utkast", "registrert"]:
             return "http://publications.europa.eu/resource/authority/concept-status/DRAFT"
-        elif status.lower() == "registrert":
-            return "http://publications.europa.eu/resource/authority/concept-status/DRAFT"
-        elif status.lower() == "høring":
+        elif status.lower() in ["høring", "kvalitetssikring", "kvalifisert - formell og innholdsmessig korrekt", "kvalifisert", "under behandling"]:
             return "http://publications.europa.eu/resource/authority/concept-status/CANDIDATE"
         elif status.lower() == "godkjent":
             return "http://publications.europa.eu/resource/authority/concept-status/CURRENT"
         elif status.lower() == "klar til godkjenning":
             return "http://publications.europa.eu/resource/authority/concept-status/WAITING"
-        elif status.lower() == "kvalitetssikring":
-            return "http://publications.europa.eu/resource/authority/concept-status/CANDIDATE"
-        elif status.lower() == "kvalifisert - formell og innholdsmessig korrekt":
-            return "http://publications.europa.eu/resource/authority/concept-status/CANDIDATE"
-        elif status.lower() == "tilbaketrukket":
+        elif status.lower() in ["tilbaketrukket", "erstattet"]:
             return "http://publications.europa.eu/resource/authority/concept-status/RETIRED"
-        elif status.lower() == "under behandling":
-            return "http://publications.europa.eu/resource/authority/concept-status/CANDIDATE"
         else:
             print("Unknown status: " + str(status))
             return None
