@@ -15,9 +15,9 @@ errorfileName = args.outputdirectory + "load_history_errors.json"
 
 
 def convert_iso(story):
-    createdDate = story["dateTime"]
+    createdDate = story["datetime"]
     if createdDate is not None:
-        story["dateTime"] = datetime.strptime(createdDate, "%Y-%m-%dT%H:%M:%S.000Z")
+        story["datetime"] = datetime.strptime(createdDate, "%Y-%m-%dT%H:%M:%S.000Z")
     return story
 
 
