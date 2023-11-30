@@ -1,5 +1,5 @@
 .PHONY: test
-transform: transform_concepts_xml create_delete_file
+transform: transform_concepts create_delete_file
 load: load_concepts
 publish: publish_concepts
 fix_metadata: extract_metadata transform_metadata load_metadata
@@ -20,13 +20,9 @@ create_delete_file:
 	echo "Make delete-file"
 	python3 ./get_ids.py -o ./tmp/
 
-transform_concepts_json:
+transform_concepts:
 	echo "Transforming concepts...."
-	python3 ./transform_concepts_json.py -o ./tmp/
-
-transform_concepts_xml:
-	echo "Transforming concepts...."
-	python3 ./transform_concepts_xml.py -o ./tmp/
+	python3 ./transform_concepts.py -o ./tmp/
 
 load_concepts:
 	echo "Loading concepts...."

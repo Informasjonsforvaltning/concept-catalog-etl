@@ -63,7 +63,7 @@ def transform_concept(concept):
             "endretAv":
                 concept.get("lastUpdatedBy"),
             "endringstidspunkt":
-                convert_date(
+                convert_last_updated(
                     concept.get("lastUpdated")
                 )
         },
@@ -163,11 +163,11 @@ def transform_concept(concept):
             "patch": 1
         },
         "gyldigFom":
-            convert_date(
+            convert_valid_period(
                 concept.get("validFrom")
             ),
         "gyldigTom":
-            convert_date(
+            convert_valid_period(
                 concept.get("validTo")
             )
     }
@@ -282,7 +282,16 @@ def set_status_uri(status):
         return None
 
 
-def convert_date(dateobject):
+def convert_valid_period(dateobject):
+    if dateobject:
+        return datetime.datetime.strftime(
+                datetime.datetime.strptime(dateobject, '%Y-%m-%d'),
+                "%Y-%m-%dT%H:%M:%S.000Z")
+    else:
+        return None
+
+
+def convert_last_updated(dateobject):
     if dateobject:
         return datetime.datetime.strftime(
                 datetime.datetime.strptime(dateobject, '%Y-%m-%d'),
