@@ -127,7 +127,7 @@ def transform_concept(concept, mongo_id):
             internal_fields = transformed_concept.get("interneFelt", {})
             owner = intern_begrepseier.get(strip_jira_links(field["value"]))
             if owner:
-                internal_fields["8317e9b4-ec05-470a-9f94-deb12d87f033"] = {
+                internal_fields["c707276d-2f2e-4c13-b6a6-f066878d594b"] = {
                     "value": owner
                 }
             else:
