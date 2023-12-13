@@ -176,11 +176,18 @@ def transform_concept(concept, mongo_id):
 
         # Fagområde
         if field["fieldName"] == "Fagområde":
-            subject_area = transformed_concept.get("fagområde", {})
-            text_list = subject_area.get("nb", [])
-            text_list.append(strip_jira_links(field["value"]))
-            subject_area["nb"] = text_list
-            transformed_concept["fagområde"] = subject_area
+            field_value = strip_jira_links(field["value"])
+            if field_value in fagomraade:
+                transformed_concept["fagområdeKoder"] = [
+                    fagomraade[field_value]
+                ]
+            else:
+                print(str(concept["key"]) + ": Unknown fagområde: " + field_value)
+                subject_area = transformed_concept.get("fagområde", {})
+                text_list = subject_area.get("nb", [])
+                text_list.append(field_value)
+                subject_area["nb"] = text_list
+                transformed_concept["fagområde"] = subject_area
 
         # Forkortelse
         if field["fieldName"] == "Forkortelse":
@@ -371,6 +378,46 @@ ekstern_begrepseier = {
     "SSB": "11170",
     "UDI": "11171"
 }
+# Kodelisteverdi for fagområde - FDK
+fagomraade = {
+    "Kompensasjonsordninger": "14",
+    "Reelle rettighetshavere": "22",
+    "Registerforvalning": "10500",
+    "Register for offentlig støtte": "10700",
+    "Informasjonsforvaltning": "11000",
+    "Felleskomponent": "11724",
+    "Enhetsregisteret": "11725",
+    "IKT": "11727",
+    "Konkurs": "11730",
+    "Panterett": "11731",
+    "Informasjonssikkerhet": "11734",
+    "Avtalerett": "11737",
+    "Økonomi": "11739",
+    "Tinglysing": "11740",
+    "Personvern": "11741",
+    "Sikkerhet": "11742",
+    "Tilgjengeliggjøring": "11745",
+    "Statistikk": "11746",
+    "Person": "11802",
+    "Adresse": "11803",
+    "Vergemål": "11900",
+    "Tvangsfullbyrdelse": "11901",
+    "Virksomhetsarkitektur": "12304",
+    "EMAS": "12404",
+    "Forvaltningsrett": "12900",
+    "Foretaksregisteret": "13300",
+    "Oppgaveregisteret": "13400",
+    "Arkitektur": "13501",
+    "Årsregnskap": "13510",
+    "Konsern": "13789",
+    "Kapital": "13790",
+    "Dokumentasjonsforvaltning": "14701",
+    "Styring og kontroll": "15902",
+    "Organisasjonsform": "16300",
+    "Cybersikkerhet": "16403"
+
+}
+
 # Kodelisteverdi for intern_begrepseier - FDK
 intern_begrepseier = {
     "Informasjonsteknologi (IT)": "10506",
