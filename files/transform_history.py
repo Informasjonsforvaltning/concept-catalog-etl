@@ -1,5 +1,6 @@
 import json
 import argparse
+import re
 import uuid
 import random
 from datetime import datetime
@@ -47,6 +48,8 @@ def transform_story(items):
 
 
 def create_jsonpatch(item):
+    global jira_links
+    jira_links = set()
     fdk_field = json_field_map.get(item["field"])
     operation = {}
     user_field = ["/opprettetAv", "/tildeltBruker"]
@@ -72,12 +75,12 @@ def create_jsonpatch(item):
         if item.get("oldValue") is None and item.get("newValue") is not None:
             operation["op"] = "add"
             operation["path"] = fdk_field
-            operation["value"] = item["newValue"]
+            operation["value"] = strip_jira_links(item["newValue"])
         # Replace
         if item.get("oldValue") is not None and item.get("newValue") is not None:
             operation["op"] = "replace"
             operation["path"] = fdk_field
-            operation["value"] = item["newValue"]
+            operation["value"] = strip_jira_links(["newValue"])
         # Remove
         if item.get("oldValue") is not None and item.get("newValue") is None:
             operation["op"] = "remove"
@@ -127,6 +130,15 @@ def get_operation(field, value, display_value):
         return display_value
 
 
+def strip_jira_links(string):
+    global jira_links
+    if string is not None:
+        jira_links.update(re.findall(r"\[.*?\|(.*?)]", string))
+        return re.sub(r"\[(.*?)\|.*?]", r"\1", string)
+    else:
+        return None
+
+
 def openfile(file_name):
     with open(file_name) as json_file:
         return json.load(json_file)
@@ -146,13 +158,14 @@ comment_users_file = args.outputdirectory + "transformed_comment_users.json"
 comment_users = openfile(comment_users_file)
 outputfileName = args.outputdirectory + "transformed_history.json"
 unknown_fields_file = args.outputdirectory + "unknown_fields.txt"
+jira_links = set()
 json_field_map = {
     "summary": "/anbefaltTerm/navn/nb",
     "created": "/opprettet",
     "reporter": "/opprettetAv",
-    "Offentlig tilgjengelig": "/erPublisert",
+    "Offentlig tilgjengelig?": "/erPublisert",
     "status": "/status",
-    "assignee": "/tildeltBruker",
+    "assignee": "/assignedUser",
     "Alternativ term": "/tillattTerm/nb",
     "Alternativt term": "/tillattTerm/nb",  # Typo exists in BRREG-comments
     "Begrepseier": "/interneFelt",
@@ -167,12 +180,23 @@ json_field_map = {
     "Definisjon nynorsk": "/definisjon/tekst/nn",
     "Eksempel": "/eksempel/nb",
     "Fagområde": "/fagområdeKoder",
+    "Forkortelse": "/abbreviatedLabel",
     "Frarådet term": "/frarådetTerm/nb",
     "Forhold til kilde": "/definisjon/kildebeskrivelse/forholdTilKilde",
     "Kilde til definisjon": "/definisjon/kildebeskrivelse/kilde",
+    "Kilde til merknad": "/merknad/kildebeskrivelse/kilde",  # Does not exist in FDK, but is used in BRREG-history
+    "Kilde til forklaring": "/forklaring/kildebeskrivelse/kilde",  # Does not exist in FDK, but is used in BRREG-history
+    "Kilde til kommentar": "/kommentar/kildebeskrivelse/kilde",  # Does not exist in FDK, but is used in BRREG-history
     "Folkelig forklaring": "/folkeligForklaring/tekst/nb",
     "Merknad": "/merknad/nb",
-    "Merknad - nynorsk": "/merknad/nn"
+    "Merknad - nynorsk": "/merknad/nn",
+    "Godkjent": "/godkjent",  # Does not exist in FDK, but is used in BRREG-history
+    "Bruksområde": "/bruksområde",  # Does not exist in FDK, but is used in BRREG-history
+    "Forklaring": "/forklaring",  # Does not exist in FDK, but is used in BRREG-history
+    "Godkjenner": "/godkjenner",  # Does not exist in FDK, but is used in BRREG-history
+    "Godkjennere": "/godkjenner",  # Does not exist in FDK, but is used in BRREG-history, suspected typo
+    "Organisatorisk eier": "/organisatoriskEier",  # Does not exist in FDK, but is used in BRREG-history
+    "labels": "/labels"  # Does not exist in FDK, but is used in BRREG-history
 }
 begrepseier = {
     "10506": "Informasjonsteknologi (IT)",

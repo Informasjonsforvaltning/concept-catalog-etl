@@ -232,7 +232,9 @@ def transform_concept(concept, mongo_id):
             definisjon = transformed_concept.get("definisjon", {})
             kildebeskrivelse = definisjon.get("kildebeskrivelse", {})
             kilde = kildebeskrivelse.get("kilde", [])
-            kilde += getmerknadtekst(getstrings(strip_jira_links(field["value"])))
+            merknad_tekst = getmerknadtekst(getstrings(strip_jira_links(field["value"])))
+            if merknad_tekst not in kilde:
+                kilde += merknad_tekst
             kildebeskrivelse["kilde"] = kilde
             definisjon["kildebeskrivelse"] = kildebeskrivelse
             transformed_concept["definisjon"] = definisjon
@@ -382,7 +384,7 @@ ekstern_begrepseier = {
 fagomraade = {
     "Kompensasjonsordninger": "14",
     "Reelle rettighetshavere": "22",
-    "Registerforvalning": "10500",
+    "Registerforvaltning": "10500",
     "Register for offentlig støtte": "10700",
     "Informasjonsforvaltning": "11000",
     "Felleskomponent": "11724",

@@ -1,5 +1,6 @@
 import json
 import argparse
+import re
 import uuid
 import random
 from datetime import datetime
@@ -22,13 +23,15 @@ def transform(c_file):
 
 
 def transform_comment(comment_list, concept_id):
+    global jira_links
+    jira_links = set()
     transformed_comments = []
     for comment in comment_list:
         mongo_id = str(uuid.UUID(int=rd.getrandbits(128), version=4))
         transformed_comment = {
             "_id": mongo_id,
             "_class": "no.digdir.catalog_comments_service.model.CommentDBO",
-            "comment": comment["body"],
+            "comment": strip_jira_links(comment["body"]),
             "createdDate": convert_date(comment["created"]),
             "orgNumber": "974760673",
             "topicId": concept_id,
@@ -44,6 +47,15 @@ def getuser(brreg_user):
         if user["name"] == brreg_user:
             return user["_id"]
     return None
+
+
+def strip_jira_links(string):
+    global jira_links
+    if string is not None:
+        jira_links.update(re.findall(r"\[.*?\|(.*?)]", string))
+        return re.sub(r"\[(.*?)\|.*?]", r"\1", string)
+    else:
+        return None
 
 
 def openfile(file_name):
@@ -71,6 +83,7 @@ brreg_comments_file = args.outputdirectory + "brreg_comments.json"
 comment_users_file = args.outputdirectory + "transformed_comment_users.json"
 comment_users = openfile(comment_users_file)
 outputfileName = args.outputdirectory + "transformed_comments.json"
+jira_links = set()
 
 with open(outputfileName, 'w', encoding="utf-8") as outfile:
     json.dump(transform(brreg_comments_file), outfile, ensure_ascii=False, indent=4)
