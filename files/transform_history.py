@@ -119,6 +119,10 @@ def get_operation(field, value, display_value):
                 "value": display_value
             }
         }
+    elif field in fagomraade:
+        return {
+            "fagområdeKoder": [value]
+        }
     else:
         return display_value
 
@@ -162,7 +166,7 @@ json_field_map = {
     "Definisjon Engelsk": "/definisjon/tekst/en",
     "Definisjon nynorsk": "/definisjon/tekst/nn",
     "Eksempel": "/eksempel/nb",
-    "Fagområde": "/fagområde/nb",
+    "Fagområde": "/fagområdeKoder",
     "Frarådet term": "/frarådetTerm/nb",
     "Forhold til kilde": "/definisjon/kildebeskrivelse/forholdTilKilde",
     "Kilde til definisjon": "/definisjon/kildebeskrivelse/kilde",
@@ -213,7 +217,43 @@ ekstern_begrepseier = {
     "11170": "SSB",
     "11171": "UDI"
 }
-
+fagomraade = {
+    "14": "Kompensasjonsordninger",
+    "22": "Reelle rettighetshavere",
+    "10500": "Registerforvaltning",
+    "10700": "Register for offentlig støtte",
+    "11000": "Informasjonsforvaltning",
+    "11724": "Felleskomponent",
+    "11725": "Enhetsregisteret",
+    "11727": "IKT",
+    "11730": "Konkurs",
+    "11731": "Panterett",
+    "11734": "Informasjonssikkerhet",
+    "11737": "Avtalerett",
+    "11739": "Økonomi",
+    "11740": "Tinglysing",
+    "11741": "Personvern",
+    "11742": "Sikkerhet",
+    "11745": "Tilgjengeliggjøring",
+    "11746": "Statistikk",
+    "11802": "Person",
+    "11803": "Adresse",
+    "11900": "Vergemål",
+    "11901": "Tvangsfullbyrdelse",
+    "12304": "Virksomhetsarkitektur",
+    "12404": "EMAS",
+    "12900": "Forvaltningsrett",
+    "13300": "Foretaksregisteret",
+    "13400": "Oppgaveregisteret",
+    "13501": "Arkitektur",
+    "13510": "Årsregnskap",
+    "13789": "Konsern",
+    "13790": "Kapital",
+    "14701": "Dokumentasjonsforvaltning",
+    "15902": "Styring og kontroll",
+    "16300": "Organisasjonsform",
+    "16403": "Cybersikkerhet"
+}
 internal_codelists = {
     "Begrepseier": "c707276d-2f2e-4c13-b6a6-f066878d594b",
     "Ekstern begrepseier": "0da72785-ede5-49ab-b2de-20f7790320f0"
