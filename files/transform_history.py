@@ -132,11 +132,15 @@ def get_operation(field, value, display_value):
 
 def strip_jira_links(string):
     global jira_links
-    if string is not None:
+    if string is not None and isinstance(string, str):
         jira_links.update(re.findall(r"\[.*?\|(.*?)]", string))
         return re.sub(r"\[(.*?)\|.*?]", r"\1", string)
+    elif string is not None and isinstance(string, list):
+        for i in range(len(string)):
+            string[i] = strip_jira_links(string[i])
+        return string
     else:
-        return None
+        return string
 
 
 def openfile(file_name):

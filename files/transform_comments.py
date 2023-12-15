@@ -55,7 +55,7 @@ def strip_jira_links(string):
         jira_links.update(re.findall(r"\[.*?\|(.*?)]", string))
         return re.sub(r"\[(.*?)\|.*?]", r"\1", string)
     else:
-        return None
+        return string
 
 
 def openfile(file_name):
