@@ -246,8 +246,8 @@ ekstern_begrepseier = {
     "11171": "UDI"
 }
 fagomraade = {
-    "14": "Kompensasjonsordninger",
-    "22": "Reelle rettighetshavere",
+    "15100": "Kompensasjonsordninger",
+    "14502": "Reelle rettighetshavere",
     "10500": "Registerforvaltning",
     "10700": "Register for offentlig støtte",
     "11000": "Informasjonsforvaltning",

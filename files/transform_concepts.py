@@ -382,8 +382,8 @@ ekstern_begrepseier = {
 }
 # Kodelisteverdi for fagområde - FDK
 fagomraade = {
-    "Kompensasjonsordninger": "14",
-    "Reelle rettighetshavere": "22",
+    "Kompensasjonsordninger": "15100",
+    "Reelle rettighetshavere": "14502",
     "Registerforvaltning": "10500",
     "Register for offentlig støtte": "10700",
     "Informasjonsforvaltning": "11000",
