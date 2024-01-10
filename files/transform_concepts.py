@@ -147,9 +147,9 @@ def transform_concept(concept):
         },
         "statusURI":
             set_status_uri(
-                concept.get("conceptStatus")
-                if concept.get("conceptStatus") == concept.get("konseptStatus") or concept.get("konseptStatus") is None
-                else concept.get("konseptStatus")
+                concept.get("konseptStatus")
+                if concept.get("konseptStatus") is not None
+                else concept.get("conceptStatus")
         ),
         "tillattTerm": {
             "nb": getstrings(
