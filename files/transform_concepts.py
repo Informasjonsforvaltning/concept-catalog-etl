@@ -95,7 +95,7 @@ def transform_concept(concept, mongo_id):
     else:
         transformed_concept["endringslogelement"] = {
             "endretAv":
-                getuser(concept["history"][-1]["author"])["name"],
+                getuser(concept["reporter"])["name"],
             "endringstidspunkt":
                 convert_date(concept["created"])
         }
