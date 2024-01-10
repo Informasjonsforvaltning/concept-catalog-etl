@@ -159,8 +159,8 @@ def transform_concept(concept):
         },
         "versjonsnr": {
             "major": 0,
-            "minor": 1,
-            "patch": 0
+            "minor": 0,
+            "patch": 1
         },
         "gyldigFom":
             convert_valid_period(
