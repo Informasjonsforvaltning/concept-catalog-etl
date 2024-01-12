@@ -312,9 +312,6 @@ concepts_file = "skatt_concepts.json"
 comments = args.outputdirectory + "skatt_comments.json"
 
 
-if input("Has sourceForPouplarDefinition-typo been checked?") not in ["y", "yes", "yep", "roger", "jada", "ja", "j", "yeah", "can confirm", "yessir", "yessiree"]:
-    sys.exit("Please check sourceForPouplarDefinition-typo and run again")
-
 with open(args.outputdirectory + "fagomraader_name_to_codelist.json") as fd:
     fagomraader = json.load(fd)
 
