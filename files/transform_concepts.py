@@ -2,6 +2,8 @@ import json
 import argparse
 import datetime
 import os
+import sys
+
 import xmltodict
 
 parser = argparse.ArgumentParser()
@@ -79,7 +81,11 @@ def transform_concept(concept):
                 "kilde": [{
                     "tekst":
                         concept
-                        .get("sourceForPouplarExplanation", {})  # XML has typo in this field
+                        .get("sourceForPouplarExplanation", {})
+                        .get("no")
+                        if concept.get("sourceForPouplarExplanation") is not None
+                        # Handle situation where typo is fixed:
+                        else concept.get("sourceForPopularDefinition", {})
                         .get("no")
                 }]
             }
@@ -304,6 +310,10 @@ outputfileName = args.outputdirectory + "transformed_concepts.json"
 publish_ids = args.outputdirectory + "publish_ids.json"
 concepts_file = "skatt_concepts.json"
 comments = args.outputdirectory + "skatt_comments.json"
+
+
+if input("Has sourceForPouplarDefinition-typo been checked?") not in ["y", "yes", "yep", "roger", "jada", "ja", "j", "yeah", "can confirm", "yessir", "yessiree"]:
+    sys.exit("Please check sourceForPouplarDefinition-typo and run again")
 
 with open(args.outputdirectory + "fagomraader_name_to_codelist.json") as fd:
     fagomraader = json.load(fd)
