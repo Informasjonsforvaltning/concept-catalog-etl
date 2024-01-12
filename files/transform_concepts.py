@@ -217,6 +217,18 @@ def transform_concept(concept, mongo_id):
             definisjon["kildebeskrivelse"] = kildebeskrivelse
             transformed_concept["definisjon"] = definisjon
 
+        # Godkjenner (internfelt)
+        if field["fieldName"] == "Responsible":
+            internal_fields = transformed_concept.get("interneFelt", {})
+            responsible = godkjenner.get(strip_jira_links(field["value"]))
+            if responsible:
+                internal_fields["a2f1f5e3-6f6a-4c0e-8b3c-9e9b1a0f2e5e"] = {
+                    "value": strip_jira_links(field["value"])
+                }
+            else:
+                print(str(concept["key"]) + ": Unknown godkjenner: " + strip_jira_links(field["value"]))
+            transformed_concept["interneFelt"] = internal_fields
+
         # Kilde til definisjon
         if field["fieldName"] == "Kilde til definisjon":
             definisjon = transformed_concept.get("definisjon", {})
@@ -446,6 +458,12 @@ intern_begrepseier = {
     "Register over reelle rettighetshavere": "15900"
 }
 
+godkjenner = {
+    "nam": "0",
+    "ark": "1",
+    "isto": "2",
+    "agj": "3"
+}
 
 with open(outputfileName, 'w', encoding="utf-8") as outfile:
     json.dump(transform(concepts_file), outfile, ensure_ascii=False, indent=4)

@@ -197,8 +197,8 @@ json_field_map = {
     "Godkjent": "/godkjent",  # Does not exist in FDK, but is used in BRREG-history
     "Bruksområde": "/bruksområde",  # Does not exist in FDK, but is used in BRREG-history
     "Forklaring": "/forklaring",  # Does not exist in FDK, but is used in BRREG-history
-    "Godkjenner": "/godkjenner",  # Does not exist in FDK, but is used in BRREG-history
-    "Godkjennere": "/godkjenner",  # Does not exist in FDK, but is used in BRREG-history, suspected typo
+    "Godkjenner": "/interneFelt",  # Does not exist in FDK, but is used in BRREG-history
+    "Godkjennere": "/godkjennere",  # Does not exist in FDK, but is used in BRREG-history, suspected typo
     "Organisatorisk eier": "/organisatoriskEier",  # Does not exist in FDK, but is used in BRREG-history
     "labels": "/labels"  # Does not exist in FDK, but is used in BRREG-history
 }
