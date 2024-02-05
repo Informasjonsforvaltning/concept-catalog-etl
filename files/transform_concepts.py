@@ -372,98 +372,10 @@ mapped_identifiers = openfile(args.outputdirectory + "mapped_identifiers.json")
 mapped_fdkIds = {}
 jira_links = set()
 
-# Kodelisteverdi for ekstern_begrepseier - FDK
-ekstern_begrepseier = {
-    "Arkivverket": "11160",
-    "Datatilsynet": "11420",
-    "Digitaliseringsdirektoratet": "11162",
-    "Direktoratet for e-helse": "11161",
-    "Direktoratet for forvaltning og økonomistyring": "11337",
-    "Helsedirektoratet": "11163",
-    "Kartverket": "11164",
-    "KS": "11165",
-    "Lotteri- og stiftelsestilsynet": "15104",
-    "Lånekassen": "11166",
-    "NAV": "11167",
-    "Politiet": "11168",
-    "Posten Norge": "12600",
-    "Skatteetaten": "11169",
-    "Språkrådet": "11336",
-    "SSB": "11170",
-    "UDI": "11171"
-}
-# Kodelisteverdi for fagområde - FDK
-fagomraade = {
-    "Kompensasjonsordninger": "15100",
-    "Reelle rettighetshavere": "14502",
-    "Registerforvaltning": "10500",
-    "Register for offentlig støtte": "10700",
-    "Informasjonsforvaltning": "11000",
-    "Felleskomponent": "11724",
-    "Enhetsregisteret": "11725",
-    "IKT": "11727",
-    "Konkurs": "11730",
-    "Panterett": "11731",
-    "Informasjonssikkerhet": "11734",
-    "Avtalerett": "11737",
-    "Økonomi": "11739",
-    "Tinglysing": "11740",
-    "Personvern": "11741",
-    "Sikkerhet": "11742",
-    "Tilgjengeliggjøring": "11745",
-    "Statistikk": "11746",
-    "Person": "11802",
-    "Adresse": "11803",
-    "Vergemål": "11900",
-    "Tvangsfullbyrdelse": "11901",
-    "Virksomhetsarkitektur": "12304",
-    "EMAS": "12404",
-    "Forvaltningsrett": "12900",
-    "Foretaksregisteret": "13300",
-    "Oppgaveregisteret": "13400",
-    "Arkitektur": "13501",
-    "Årsregnskap": "13510",
-    "Konsern": "13789",
-    "Kapital": "13790",
-    "Dokumentasjonsforvaltning": "14701",
-    "Styring og kontroll": "15902",
-    "Organisasjonsform": "16300",
-    "Cybersikkerhet": "16403"
-
-}
-
-# Kodelisteverdi for intern_begrepseier - FDK
-intern_begrepseier = {
-    "Informasjonsteknologi (IT)": "10506",
-    "Registerforvaltning (RF)": "10507",
-    "IT - Infrastruktur": "10511",
-    "IT - Systemutvikling 1": "10901",
-    "IT - Systemutvikling 2": "10902",
-    "RF - Tinglysning og regnskap": "10911",
-    "RF - Registerdrift": "15301",
-    "RF - Jus": "15302",
-    "RF - Samordning og system": "15303",
-    "FU - Registerutvikling": "15305",
-    "FU - Datadrevet utvikling": "15306",
-    "IT - Styring": "15307",
-    "Virksomhetsstyring (VST)": "15310",
-    "VST - Plan og styring": "15311",
-    "VST - HR": "15312",
-    "VST - Fellestjenester": "15313",
-    "Enhetsregisteret": "15800",
-    "Foretaksregisteret": "15801",
-    "Ektepaktregisteret": "15802",
-    "Løsøreregisteret": "15803",
-    "Regnskapsregisteret": "15804",
-    "Register over reelle rettighetshavere": "15900"
-}
-
-godkjenner = {
-    "nam": "0",
-    "ark": "1",
-    "isto": "2",
-    "agj": "3"
-}
+ekstern_begrepseier = openfile(args.outputdirectory + "transform_concepts_ekstern_begrepseier.json")
+fagomraade = openfile(args.outputdirectory + "transform_concepts_fagomraade.json")
+intern_begrepseier = openfile(args.outputdirectory + "transform_concepts_intern_begrepseier.json")
+godkjenner = openfile(args.outputdirectory + "transform_concepts_godkjenner.json")
 
 with open(outputfileName, 'w', encoding="utf-8") as outfile:
     json.dump(transform(concepts_file), outfile, ensure_ascii=False, indent=4)

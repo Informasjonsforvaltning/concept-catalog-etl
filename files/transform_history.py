@@ -202,95 +202,11 @@ json_field_map = {
     "Organisatorisk eier": "/organisatoriskEier",  # Does not exist in FDK, but is used in BRREG-history
     "labels": "/labels"  # Does not exist in FDK, but is used in BRREG-history
 }
-begrepseier = {
-    "10506": "Informasjonsteknologi (IT)",
-    "10507": "Registerforvaltning (RF)",
-    "10511": "IT - Infrastruktur",
-    "10901": "IT - Systemutvikling 1",
-    "10902": "IT - Systemutvikling 2",
-    "10911": "RF - Tinglysning og regnskap",
-    "15301": "RF - Registerdrift",
-    "15302": "RF - Jus",
-    "15303": "RF - Samordning og system",
-    "15305": "FU - Registerutvikling",
-    "15306": "FU - Datadrevet utvikling",
-    "15307": "IT - Styring",
-    "15310": "Virksomhetsstyring (VST)",
-    "15311": "VST - Plan og styring",
-    "15312": "VST - HR",
-    "15313": "VST - Fellestjenester",
-    "15800": "Enhetsregisteret",
-    "15801": "Foretaksregisteret",
-    "15802": "Ektepaktregisteret",
-    "15803": "Løsøreregisteret",
-    "15804": "Regnskapsregisteret",
-    "15900": "Register over reelle rettighetshavere"
-}
-ekstern_begrepseier = {
-    "11160": "Arkivverket",
-    "11420": "Datatilsynet",
-    "11162": "Digitaliseringsdirektoratet",
-    "11161": "Direktoratet for e-helse",
-    "11337": "Direktoratet for forvaltning og økonomistyring",
-    "11163": "Helsedirektoratet",
-    "11164": "Kartverket",
-    "11165": "KS",
-    "15104": "Lotteri- og stiftelsestilsynet",
-    "11166": "Lånekassen",
-    "11167": "NAV",
-    "11168": "Politiet",
-    "12600": "Posten Norge",
-    "11169": "Skatteetaten",
-    "11336": "Språkrådet",
-    "11170": "SSB",
-    "11171": "UDI"
-}
-fagomraade = {
-    "15100": "Kompensasjonsordninger",
-    "14502": "Reelle rettighetshavere",
-    "10500": "Registerforvaltning",
-    "10700": "Register for offentlig støtte",
-    "11000": "Informasjonsforvaltning",
-    "11724": "Felleskomponent",
-    "11725": "Enhetsregisteret",
-    "11727": "IKT",
-    "11730": "Konkurs",
-    "11731": "Panterett",
-    "11734": "Informasjonssikkerhet",
-    "11737": "Avtalerett",
-    "11739": "Økonomi",
-    "11740": "Tinglysing",
-    "11741": "Personvern",
-    "11742": "Sikkerhet",
-    "11745": "Tilgjengeliggjøring",
-    "11746": "Statistikk",
-    "11802": "Person",
-    "11803": "Adresse",
-    "11900": "Vergemål",
-    "11901": "Tvangsfullbyrdelse",
-    "12304": "Virksomhetsarkitektur",
-    "12404": "EMAS",
-    "12900": "Forvaltningsrett",
-    "13300": "Foretaksregisteret",
-    "13400": "Oppgaveregisteret",
-    "13501": "Arkitektur",
-    "13510": "Årsregnskap",
-    "13789": "Konsern",
-    "13790": "Kapital",
-    "14701": "Dokumentasjonsforvaltning",
-    "15902": "Styring og kontroll",
-    "16300": "Organisasjonsform",
-    "16403": "Cybersikkerhet"
-}
-internal_codelists = {
-    "Begrepseier": "c707276d-2f2e-4c13-b6a6-f066878d594b",
-    "Ekstern begrepseier": "0da72785-ede5-49ab-b2de-20f7790320f0"
-}
-
-internal_fields = {
-    "Forslag til fagområde": "568acb38-485c-445f-a773-caace03a8483"
-}
-
+begrepseier = openfile(args.outputdirectory + "transform_history_begrepseier.json")
+ekstern_begrepseier = openfile(args.outputdirectory + "transform_history_ekstern_begrepseier.json")
+fagomraade = openfile(args.outputdirectory + "transform_history_fagomraade.json")
+internal_codelists = openfile(args.outputdirectory + "transform_history_internal_codelists.json")
+internal_fields = openfile(args.outputdirectory + "transform_history_internal_fields.json")
 
 with open(outputfileName, 'w', encoding="utf-8") as outfile:
     json.dump(transform(brreg_history_file), outfile, ensure_ascii=False, indent=4)
