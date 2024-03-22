@@ -70,7 +70,7 @@ def transform_concept(concept):
                 )
         },
         "erPublisert": "false",
-        "fagområdeKoder": get_fagomraade(concept.get("subject")),
+        "fagområdeKoder": get_fagomraade(concept.get("subject"), concept["identifier"]),
         "definisjonForAllmennheten": {
             "tekst": {
                 "nb":
@@ -239,11 +239,11 @@ def convert_bool(string_value):
         return string_value
 
 
-def get_fagomraade(fagomraade_string):
-    fagomraade = fagomraade_string.split('/')[-1]
+def get_fagomraade(fagomraade, begrep_id):
     if fagomraade in fagomraader:
         return [str(fagomraader[fagomraade])]
     else:
+        print("Unknown fagområde: " + fagomraade + " for begrep: " + str(begrep_id))
         return []
 
 
