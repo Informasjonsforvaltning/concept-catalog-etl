@@ -15,6 +15,8 @@ def publish(concepts_to_be_published):
         headers = {"Authorization": f"Bearer {id_token}"}
         r = requests.post(endpoint, headers=headers)
         publish_result[concept] = r.status_code
+        if r.status_code != 200:
+            print("Publish failed for concept: " + concept)
     return publish_result
 
 

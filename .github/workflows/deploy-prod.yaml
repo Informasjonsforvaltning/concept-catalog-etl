@@ -3,7 +3,7 @@ name: Build and deploy to prod when merged to master
 on:
   push:
     branches:
-      - no
+      - chore/hos/etl-skatt
 
 jobs:
   build-and-deploy:
