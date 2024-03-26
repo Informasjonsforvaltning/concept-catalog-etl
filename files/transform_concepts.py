@@ -2,24 +2,48 @@ import json
 import argparse
 import datetime
 import os
-import sys
+import re
+import uuid
+import random
 
 import xmltodict
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-o', '--outputdirectory', help="the path to the directory of the output files", required=True)
 args = parser.parse_args()
+rd = random.Random()
+rd.seed(357)
 
 
 def transform(c_file):
     concepts = openfile(c_file)
     transformed_concepts = {}
     transformed_count = 0
+    duplicate_count = 0
+    duplicates = []
     for concept in concepts["begrepCollection"]["begrepMember"]:
         result = transform_concept(concept)
-        transformed_concepts[result.get("_id")] = result
+        if result.get("_id") not in transformed_concepts:
+            transformed_concepts[result.get("_id")] = result
+        else:
+            new_id = str(uuid.UUID(int=rd.getrandbits(128), version=4))
+            duplicates.append(
+                "Term: "
+                + result.get("anbefaltTerm", {}).get("navn", {}).get("nb")
+                + " || Duplicate identifier: "
+                + result.get("_id")
+                + " || New identifier: "
+                + new_id)
+            result["_id"] = new_id
+            result["originaltBegrep"] = new_id
+            transformed_concepts[new_id] = result
+            duplicate_count += 1
         transformed_count += 1
     print("Total number of transformed concepts: " + str(transformed_count))
+    print("Total number of publishable concepts: " + str(len(openfile(publish_ids))))
+    print("Total number of duplicate concepts (will not be published): " + str(duplicate_count))
+    for duplicate in duplicates:
+        print(duplicate)
     return transformed_concepts
 
 
@@ -185,10 +209,10 @@ def transform_concept(concept):
     status = concept.get("konseptStatus") if concept.get("konseptStatus") is not None else concept.get("conceptStatus")
     if concept.get("nonPublic").lower() == "nei" and status.lower() in publishable_status:
         listObj = openfile(publish_ids) if os.path.isfile(publish_ids) else []
-        listObj.append(concept.get("identifier"))
-        with open(publish_ids, 'w', encoding="utf-8") as publish_file:
-            json.dump(listObj, publish_file, ensure_ascii=False, indent=4)
-
+        if concept.get("identifier") not in listObj:
+            listObj.append(concept.get("identifier"))
+            with open(publish_ids, 'w', encoding="utf-8") as publish_file:
+                json.dump(listObj, publish_file, ensure_ascii=False, indent=4)
     return remove_empty_from_dict(transformed_concept)
 
 
@@ -239,12 +263,18 @@ def convert_bool(string_value):
         return string_value
 
 
-def get_fagomraade(fagomraade, begrep_id):
-    if fagomraade in fagomraader:
-        return [str(fagomraader[fagomraade])]
-    else:
-        print("Unknown fagområde: " + fagomraade + " for begrep: " + str(begrep_id))
-        return []
+def get_fagomraade(begrep_fo, begrep_id):
+    for fagomraade in fagomraader:
+        if begrep_fo.lower() == fagomraade.lower():
+            return [str(fagomraader[fagomraade])]
+
+    # print("Unknown sub-fagområde, looking for root: " + begrep_fo + ": " + str(begrep_id))
+    root_fagomraade = begrep_fo.split("/")[0]
+    for fagomraade in fagomraader:
+        if root_fagomraade.lower() == fagomraade.lower():
+            return [str(fagomraader[fagomraade])]
+    print("Unknown fagområde: " + begrep_fo + ": " + str(begrep_id))
+    return []
 
 
 def getstrings(value):
@@ -297,6 +327,13 @@ def convert_valid_period(dateobject):
         return None
 
 
+def modify_duplicate_id(old_id):
+    modified_id = re.sub(r'([0-9a-f]{8}-[0-9a-f]{4}-)([0-9a-f]{3,4})-([0-9a-f]{3,4}-[0-9a-f]{12})',
+                         r'\g<1>' + '0000' + r'-\g<3>',
+                         old_id)
+    return modified_id
+
+
 def convert_last_updated(dateobject):
     if dateobject:
         return datetime.datetime.strftime(
@@ -308,8 +345,7 @@ def convert_last_updated(dateobject):
 
 outputfileName = args.outputdirectory + "transformed_concepts.json"
 publish_ids = args.outputdirectory + "publish_ids.json"
-concepts_file = "skatt_concepts.json"
-comments = args.outputdirectory + "skatt_comments.json"
+concepts_file = args.outputdirectory + "skatt_concepts.json"
 
 
 with open(args.outputdirectory + "fagomraader_name_to_codelist.json") as fd:
