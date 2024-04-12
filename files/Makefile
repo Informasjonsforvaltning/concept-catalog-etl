@@ -1,17 +1,15 @@
 .PHONY: test
-extract: extract_concepts
-transform: transform_concepts
-load: load_concepts
+all: extract transform load
 
-extract_concepts:
+extract:
 	echo "Extracting concepts...."
 	python3 ./extract.py -o ./tmp/
 
-transform_concepts:
+transform:
 	echo "Transforming concepts...."
 	python3 ./transform.py -o ./tmp/
 
-load_concepts:
+load:
 	echo "Loading concepts...."
 	python3 ./load.py -o ./tmp/
 
