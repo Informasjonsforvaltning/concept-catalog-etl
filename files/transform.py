@@ -7,12 +7,59 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-o', '--outputdirectory', help="the path to the directory of the output files", required=True)
 args = parser.parse_args()
 
+utkast = 0
+kandidat= 0
+gjeldende = 0
+til_godkjenning = 0
+foreldet = 0
+ukjent = 0
 
-def get_correct_fagomraade(_id):
-    for concept in migrate_file:
-        if concept["identifier"] == _id:
-            return [convert_file.get(concept["subject"])]
-    return False
+def get_correct_version(status_uri):
+    global utkast
+    global kandidat
+    global gjeldende
+    global til_godkjenning
+    global foreldet
+    global ukjent
+    if status_uri == 'http://publications.europa.eu/resource/authority/concept-status/DRAFT':
+        utkast += 1
+        return {
+            "major": 0,
+            "minor": 1,
+            "patch": 0
+        }
+    elif status_uri == 'http://publications.europa.eu/resource/authority/concept-status/CANDIDATE':
+        kandidat += 1
+        return {
+            "major": 0,
+            "minor": 5,
+            "patch": 0
+        }
+    elif status_uri == 'http://publications.europa.eu/resource/authority/concept-status/CURRENT':
+        gjeldende += 1
+        return {
+            "major": 1,
+            "minor": 0,
+            "patch": 0
+        }
+    elif status_uri == 'http://publications.europa.eu/resource/authority/concept-status/WAITING':
+        til_godkjenning += 1
+        return {
+            "major": 0,
+            "minor": 8,
+            "patch": 0
+        }
+    elif status_uri == 'http://publications.europa.eu/resource/authority/concept-status/RETIRED':
+        foreldet += 1
+        return {
+            "major": 2,
+            "minor": 0,
+            "patch": 0
+        }
+    else:
+        ukjent += 1
+        print(status_uri)
+        return None
 
 
 def transform(c_file):
@@ -24,16 +71,15 @@ def transform(c_file):
         if result:
             transformed_concepts[concept] = result
             transformed_count += 1
-    print("Total number of transformed concepts (should be 189): " + str(transformed_count))
+    print("Total number of transformed concepts: " + str(transformed_count))
     return transformed_concepts
 
 
 def transform_concept(_id, concept):
-    transformed_concept = concept
-    check_fagomraade = get_correct_fagomraade(_id)
-    if concept["fagområdeKoder"][0] != check_fagomraade[0]:
-        print("Identifier: " + _id + " ||| " + "Concept fagområde: " + concept["fagområdeKoder"][0] + " ||| " + "Check fagområde: " + check_fagomraade[0])
-        transformed_concept["fagområdeKoder"] = get_correct_fagomraade(_id)
+    transformed_concept = {}
+    version = get_correct_version(concept["statusURI"])
+    if version is not None:
+        transformed_concept["versjonsnr"] = version
         return transformed_concept
     else:
         return None
@@ -46,8 +92,12 @@ def openfile(file_name):
 
 outputfileName = args.outputdirectory + "transformed_concepts.json"
 concepts_file = args.outputdirectory + "extracted_concepts.json"
-migrate_file = openfile(args.outputdirectory + "skatt_concepts.json")
-convert_file = openfile(args.outputdirectory + "fagomraader_name_to_codelist.json")
 
 with open(outputfileName, 'w', encoding="utf-8") as outfile:
     json.dump(transform(concepts_file), outfile, ensure_ascii=False, indent=4)
+print("Utkast: " + str(utkast))
+print("Kandidat: " + str(kandidat))
+print("Gjeldende: " + str(gjeldende))
+print("Til godkjenning: " + str(til_godkjenning))
+print("Foreldet: " + str(foreldet))
+print("Ukjent : " + str(ukjent))
