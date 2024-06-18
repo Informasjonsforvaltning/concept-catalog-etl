@@ -1,4 +1,6 @@
 import json
+from datetime import datetime
+
 from pymongo import MongoClient
 import argparse
 import re
@@ -30,6 +32,7 @@ db = connection["concept-catalogue"]
 extracted_concepts = list(db.begrep.find())
 intern_relation_concepts = {}
 published_concepts = []
+affected_concept_ids = []
 affected_concepts = {}
 
 for id_dict in extracted_concepts:
@@ -39,39 +42,46 @@ for id_dict in extracted_concepts:
     internBegrepsRelasjon = id_dict.get("internBegrepsRelasjon", [])
 
     for internSeeAlso_id in internSeeAlso:
-        if internSeeAlso_id not in intern_relation_concepts:
-            intern_relation_concepts[internSeeAlso_id] = [concept_id]
-        else:
-            intern_relation_concepts[internSeeAlso_id].append(concept_id)
+        lst = intern_relation_concepts.get(internSeeAlso_id, [])
+        lst.append(concept_id)
+        intern_relation_concepts[internSeeAlso_id] = lst
 
     for internErstattesAv_id in internErstattesAv:
-        if internErstattesAv_id not in intern_relation_concepts:
-            intern_relation_concepts[internErstattesAv_id] = [concept_id]
-        else:
-            intern_relation_concepts[internErstattesAv_id].append(concept_id)
+        lst = intern_relation_concepts.get(internErstattesAv_id, [])
+        lst.append(concept_id)
+        intern_relation_concepts[internErstattesAv_id] = lst
 
     for internBegrepsRelasjon_dict in internBegrepsRelasjon:
         internBegrepsRelasjon_id = internBegrepsRelasjon_dict.get("relatertBegrep")
-        if internBegrepsRelasjon_id is not None:
-            if internBegrepsRelasjon_id not in intern_relation_concepts:
-                intern_relation_concepts[internBegrepsRelasjon_id] = [concept_id]
-            else:
-                intern_relation_concepts[internBegrepsRelasjon_id].append(concept_id)
+        lst = intern_relation_concepts.get(internBegrepsRelasjon_id, [])
+        lst.append(concept_id)
+        intern_relation_concepts[internBegrepsRelasjon_id] = lst
 
 for id_dict in extracted_concepts:
     concept_id = id_dict["_id"]
     isPublished = id_dict.get("erPublisert", False)
-    if concept_id in intern_relation_concepts and isPublished:
+    if concept_id in intern_relation_concepts and isPublished is True:
         published_concepts.append(concept_id)
+
+for relation_id in intern_relation_concepts:
+    if relation_id in published_concepts:
+        for concept_id in intern_relation_concepts[relation_id]:
+            affected_concept_ids.append(concept_id)
+
 
 for id_dict in extracted_concepts:
     concept_id = id_dict["_id"]
-    if concept_id in published_concepts:
+    if concept_id in affected_concept_ids:
         affected_concepts[concept_id] = id_dict
 
 
+def datetime_serializer(obj):
+    if isinstance(obj, datetime):
+        return obj.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+
+
 with open(args.outputdirectory + 'published_concepts.json', 'w', encoding="utf-8") as outfile:
-    json.dump(published_concepts, outfile, ensure_ascii=False, indent=4)
+    json.dump(published_concepts, outfile, ensure_ascii=False, indent=4, default=datetime_serializer)
 
 with open(args.outputdirectory + 'affected_concepts.json', 'w', encoding="utf-8") as outfile:
-    json.dump(affected_concepts, outfile, ensure_ascii=False, indent=4)
+    json.dump(affected_concepts, outfile, ensure_ascii=False, indent=4, default=datetime_serializer)

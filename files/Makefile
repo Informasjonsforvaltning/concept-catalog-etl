@@ -14,4 +14,4 @@ load:
 	python3 ./load.py -o ./tmp/
 
 clean:
-	rm -r ./tmp/*
+	rm -r ./tmp/*.json

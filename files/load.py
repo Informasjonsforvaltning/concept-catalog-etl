@@ -24,9 +24,9 @@ with open(args.outputdirectory + 'transformed_concepts.json') as begrep_file:
             total_updated += 1
         else:
             total_failed += 1
-            print("Insertion failed: " + mongo_id)
+            print("Update failed: " + mongo_id)
             fail_log[mongo_id] = transformed_json[mongo_id]
-    print("Total number of concepts inserted: " + str(total_updated) + " || Expected: " + str(len(transformed_json)))
-    print("Total number of concept inserts failed: " + str(total_failed))
+    print("Total number of concepts updated: " + str(total_updated) + " || Expected: " + str(len(transformed_json)))
+    print("Total number of concept updates failed: " + str(total_failed))
     with open(errorfileName, 'w', encoding="utf-8") as err_file:
         json.dump(fail_log, err_file, ensure_ascii=False, indent=4)
