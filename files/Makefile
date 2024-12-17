@@ -1,13 +1,13 @@
 .PHONY: test
-all: extract transform load
+all: extract delete load
 
 extract:
 	echo "Extracting concepts...."
 	python3 ./extract.py -o ./tmp/
 
-transform:
-	echo "Transforming concepts...."
-	python3 ./transform.py -o ./tmp/
+delete:
+	echo "Deleting concepts...."
+	python3 ./delete.py -o ./tmp/
 
 load:
 	echo "Loading concepts...."
